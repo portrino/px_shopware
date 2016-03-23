@@ -1,0 +1,10 @@
+plugin.tx_pxshopware {
+    view {
+        templateRootPath = {$plugin.tx_pxshopware.view.templateRootPath}
+        partialRootPath = {$plugin.tx_pxshopware.view.partialRootPath}
+        layoutRootPath = {$plugin.tx_pxshopware.view.layoutRootPath}
+    }
+    persistence {
+        storagePid = {$plugin.tx_pxshopware.persistence.storagePid}
+    }
+}

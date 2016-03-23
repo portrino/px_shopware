@@ -1,0 +1,18 @@
+plugin.tx_pxshopware {
+    view {
+        # cat=plugin.tx_pxshopware/file; type=string; label=Path to template root (FE)
+        templateRootPath = EXT:px_shopware/Resources/Private/Templates/
+        # cat=plugin.tx_pxshopware/file; type=string; label=Path to template partials (FE)
+        partialRootPath = EXT:px_shopware/Resources/Private/Partials/
+        # cat=plugin.tx_pxshopware/file; type=string; label=Path to template layouts (FE)
+        layoutRootPath = EXT:px_shopware/Resources/Private/Layouts/
+    }
+    persistence {
+        # cat=plugin.tx_pxshopware//a; type=string; label=Default storage PID
+        storagePid =
+    }
+
+    settings {
+
+    }
+}

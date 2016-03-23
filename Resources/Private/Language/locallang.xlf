@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2016-03-15T14:04:30Z">
+        <header>
+            <type>module</type>
+            <description>Language labels for the PxShopware extension in the FRONTEND</description>
+            <authorName>Andre Wuttig</authorName>
+            <authorEmail>wuttig@portrino.de</authorEmail>
+            <generator>LFEditor</generator>
+        </header>
+        <body>
+
+        </body>
+    </file>
+</xliff>
