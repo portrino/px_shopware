@@ -26,76 +26,46 @@ namespace Portrino\PxShopware\Domain\Model\Shopware;
  ***************************************************************/
 
 /**
- * Class AbstractShopwareModel
+ * Class Detail
  *
  * @package Portrino\PxShopware\Domain\Model\Shopware
  */
-abstract class AbstractShopwareModel {
-
-    /**
-     * id
-     *
-     * @var string
-     */
-    protected $id = '';
+class Detail extends AbstractShopwareModel {
 
     /**
      * @var string
      */
-    protected $raw;
+    protected $number = '';
 
     /**
-     * AbstractShopwareModel constructor.
+     * Detail constructor.
      *
      * @param mixed $raw
      */
     public function __construct($raw) {
         $this->setRaw($raw);
-        if (isset($this->raw->id)) {
-            $this->setId($this->raw->id);
+        if (isset($this->raw->mainDetail->id)) {
+            $this->setId($this->raw->mainDetail->id);
+        }
+
+        if (isset($this->raw->mainDetail->number)) {
+            $this->setNumber($this->raw->mainDetail->number);
         }
     }
 
     /**
      * @return string
      */
-    public function getId() {
-        return $this->id;
+    public function getNumber() {
+        return $this->number;
     }
 
     /**
-     * @param string $id
+     * @param string $number
      */
-    public function setId($id) {
-        $this->id = $id;
+    public function setNumber($number) {
+        $this->number = $number;
     }
 
-    /**
-     * @return string
-     */
-    public function getName() {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name) {
-        $this->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRaw() {
-        return $this->raw;
-    }
-
-    /**
-     * @param string $raw
-     */
-    public function setRaw($raw) {
-        $this->raw = $raw;
-    }
 
 }
