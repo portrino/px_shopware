@@ -6,5 +6,19 @@ plugin.tx_pxshopware {
     }
     persistence {
         storagePid = {$plugin.tx_pxshopware.persistence.storagePid}
+        classes {
+            Portrino\PxShopware\Domain\Model\Item {
+                newRecordStoragePid = {$plugin.tx_pxshopware.persistence.classes.Portrino\PxShopware\Domain\Model\Item.newRecordStoragePid}
+            }
+        }
+    }
+
+    settings {
+        api {
+            url = {$plugin.tx_pxshopware.settings.api.url}
+            username = {$plugin.tx_pxshopware.settings.api.username}
+            key = {$plugin.tx_pxshopware.settings.api.key}
+        }
+        cacheLifeTime = {$plugin.tx_pxshopware.settings.cacheLifeTime}
     }
 }

@@ -30,7 +30,7 @@ namespace Portrino\PxShopware\Domain\Model;
  *
  * @package Portrino\PxShopware\Domain\Model
  */
-class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class Item extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
     /**
      * cacheIdentifier
@@ -44,7 +44,7 @@ class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
      *
      * @var \DateTime
      */
-    protected $date = NULL;
+    protected $lastUpdate = NULL;
 
     /**
      * result
@@ -52,6 +52,14 @@ class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
      * @var string
      */
     protected $result = '';
+
+    /**
+     * @param string $cacheIdentifier
+     */
+    function __construct($cacheIdentifier) {
+        $this->setCacheIdentifier($cacheIdentifier);
+        $this->setLastUpdate(new \DateTime('now'));
+    }
 
     /**
      * @return string
@@ -70,22 +78,22 @@ class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
     /**
      * @return \DateTime
      */
-    public function getDate() {
-        return $this->date;
+    public function getLastUpdate() {
+        return $this->lastUpdate;
     }
 
     /**
-     * @param \DateTime $date
+     * @param \DateTime $lastUpdate
      */
-    public function setDate($date) {
-        $this->date = $date;
+    public function setLastUpdate($lastUpdate) {
+        $this->lastUpdate = $lastUpdate;
     }
 
     /**
-     * @return string
+     * @return mixed
      */
     public function getResult() {
-        return $this->result;
+        return json_decode($this->result);
     }
 
     /**
@@ -95,4 +103,10 @@ class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
         $this->result = $result;
     }
 
+    /**
+     * return boolean
+     */
+    public function shouldBeUpdated($cacheLifeTime) {
+        return $this->getLastUpdate()->getTimestamp() + $cacheLifeTime < time();
+    }
 }
