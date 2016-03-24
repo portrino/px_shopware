@@ -33,9 +33,19 @@ namespace Portrino\PxShopware\Domain\Model\Shopware;
 class Article extends AbstractShopwareModel {
 
     /**
+     * @var string
+     */
+    protected $name = '';
+
+    /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<Portrino\PxShopware\Domain\Model\Shopware\Media>
      */
     protected $images = array();
+
+    /**
+     * @var \Portrino\PxShopware\Domain\Model\Shopware\Detail
+     */
+    protected $detail = array();
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\MediaClient
@@ -43,8 +53,23 @@ class Article extends AbstractShopwareModel {
      */
     protected $mediaClient;
 
+    /**
+     * @var \Portrino\PxShopware\Service\Shopware\DetailClient
+     * @inject
+     */
+    protected $detailClient;
+
+    /**
+     * Article constructor.
+     *
+     * @param mixed $raw
+     */
     public function __construct($raw) {
         parent::__construct($raw);
+
+        if (isset($this->raw->name)) {
+            $this->setName($this->raw->name);
+        }
 
         $this->initStorageObjects();
     }
@@ -68,6 +93,13 @@ class Article extends AbstractShopwareModel {
                     $media = $this->mediaClient->findById($image->id);
                     $this->addImage($media);
                 }
+            }
+        }
+
+        if (isset($this->getRaw()->mainDetailId)) {
+            if (!isset($this->getRaw()->mainDetail)) {
+                $detail = $this->detailClient->findById($this->getId());
+                $this->setDetail($detail);
             }
         }
     }
@@ -114,4 +146,24 @@ class Article extends AbstractShopwareModel {
         $this->images = $images;
     }
 
+    /**
+     * @return Detail
+     */
+    public function getDetail() {
+        return $this->detail;
+    }
+
+    /**
+     * @param Detail $detail
+     */
+    public function setDetail($detail) {
+        $this->detail = $detail;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrdnerNumber() {
+        return ($this->getDetail() != NULL) ? $this->getDetail()->getNumber() : '';
+    }
 }

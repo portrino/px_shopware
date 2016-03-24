@@ -125,7 +125,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     public function initializeObject() {
         $this->applicationContext = GeneralUtility::getApplicationContext();
 
-        $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
+        $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,'PxShopware');
 
         $this->apiUrl = isset($this->settings['api']['url']) ? $this->settings['api']['url'] : FALSE;
         if ($this->apiUrl === FALSE) {

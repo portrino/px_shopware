@@ -1,5 +1,5 @@
 <?php
-namespace Portrino\PxShopware\Domain\Model\Shopware;
+namespace Portrino\PxShopware\Service\Shopware;
 
 /***************************************************************
  *  Copyright notice
@@ -26,76 +26,34 @@ namespace Portrino\PxShopware\Domain\Model\Shopware;
  ***************************************************************/
 
 /**
- * Class AbstractShopwareModel
+ * Class DetailClient
  *
- * @package Portrino\PxShopware\Domain\Model\Shopware
+ * @package Portrino\PxShopware\Service\Shopware
  */
-abstract class AbstractShopwareModel {
-
-    /**
-     * id
-     *
-     * @var string
-     */
-    protected $id = '';
+class DetailClient extends AbstractShopwareApiClient {
 
     /**
      * @var string
      */
-    protected $raw;
+    protected $endpoint = 'articles';
 
     /**
-     * AbstractShopwareModel constructor.
-     *
-     * @param mixed $raw
+     * @var
      */
-    public function __construct($raw) {
-        $this->setRaw($raw);
-        if (isset($this->raw->id)) {
-            $this->setId($this->raw->id);
-        }
-    }
+    protected $entityClassName = \Portrino\PxShopware\Domain\Model\Shopware\Detail::class;
 
     /**
      * @return string
      */
-    public function getId() {
-        return $this->id;
+    public function getEndpoint() {
+        return $this->endpoint;
     }
 
     /**
-     * @param string $id
+     * @return mixed
      */
-    public function setId($id) {
-        $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName() {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name) {
-        $this->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRaw() {
-        return $this->raw;
-    }
-
-    /**
-     * @param string $raw
-     */
-    public function setRaw($raw) {
-        $this->raw = $raw;
+    public function getEntityClassName() {
+        return $this->entityClassName;
     }
 
 }

@@ -22,3 +22,5 @@ plugin.tx_pxshopware {
         cacheLifeTime = {$plugin.tx_pxshopware.settings.cacheLifeTime}
     }
 }
+
+module.tx_pxshopware < plugin.tx_pxshopware

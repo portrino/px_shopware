@@ -14,6 +14,9 @@ $boot = function ($_EXTKEY) {
         'Pi1',
         'LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.list_type.pxshopware_pi1'
     );
+    $pluginSignature = str_replace('_', '', $_EXTKEY) . '_pi1';
+    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($pluginSignature, 'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForms/flexform_pi1.xml');
 
 };
 

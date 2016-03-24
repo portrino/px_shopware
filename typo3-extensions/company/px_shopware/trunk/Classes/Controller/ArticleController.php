@@ -46,6 +46,9 @@ class ArticleController extends AbstractController {
      */
     public function listAction() {
         $result = $this->shopwareClient->findById(6);
+
+        \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($result);
+        exit;
     }
 
 
