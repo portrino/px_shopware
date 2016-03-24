@@ -10,9 +10,20 @@ plugin.tx_pxshopware {
     persistence {
         # cat=plugin.tx_pxshopware//a; type=string; label=Default storage PID
         storagePid =
+        classes {
+            Portrino\PxShopware\Domain\Model\Item {
+                newRecordStoragePid =
+            }
+        }
     }
 
     settings {
-
+        api {
+            url =
+            username =
+            key =
+        }
+        # the duration after which the item is updated via REST-API
+        cacheLifeTime = 3600
     }
 }

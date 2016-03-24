@@ -1,5 +1,6 @@
 <?php
-namespace Portrino\PxShopware\Service;
+namespace Portrino\PxShopware\Service\Shopware;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -25,10 +26,34 @@ namespace Portrino\PxShopware\Service;
  ***************************************************************/
 
 /**
- * Class ShopwareClient
+ * Class ArticleClient
  *
- * @package Portrino\PxShopware\Service
+ * @package Portrino\PxShopware\Service\Shopware
  */
-class ShopwareClient implements \TYPO3\CMS\Core\SingletonInterface {
+class ArticleClient extends AbstractShopwareApiClient {
+
+    /**
+     * @var string
+     */
+    protected $endpoint = 'articles';
+
+    /**
+     * @var
+     */
+    protected $entityClassName = \Portrino\PxShopware\Domain\Model\Shopware\Article::class;
+
+    /**
+     * @return string
+     */
+    public function getEndpoint() {
+        return $this->endpoint;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEntityClassName() {
+        return $this->entityClassName;
+    }
 
 }

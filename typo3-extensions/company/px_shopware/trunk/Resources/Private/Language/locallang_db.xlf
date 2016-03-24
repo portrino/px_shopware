@@ -9,7 +9,25 @@
             <authorEmail>wuttig@portrino.de</authorEmail>
         </header>
         <body>
+            <trans-unit id="tx_pxshopware_domain_model_item">
+                <source>Item</source>
+            </trans-unit>
 
+            <trans-unit id="tx_pxshopware_domain_model_item.cache_identifier">
+                <source>Cache Identifier</source>
+            </trans-unit>
+
+            <trans-unit id="tx_pxshopware_domain_model_item.last_update">
+                <source>(Last Update)</source>
+            </trans-unit>
+
+            <trans-unit id="tx_pxshopware_domain_model_item.result">
+                <source>Result (json-encoded)</source>
+            </trans-unit>
+
+            <trans-unit id="tt_content.list_type.pxshopware_pi1">
+                <source>Article</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
