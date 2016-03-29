@@ -38,18 +38,4 @@ class ArticleController extends AbstractController {
      */
     protected $shopwareClient;
 
-    /**
-     * action index
-     *
-     *
-     * @return void
-     */
-    public function listAction() {
-        $result = $this->shopwareClient->findById(6);
-
-        \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($result);
-        exit;
-    }
-
-
 }

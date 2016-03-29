@@ -1,5 +1,5 @@
 <?php
-namespace Portrino\PxShopware\Domain\Model\Shopware;
+namespace Portrino\PxShopware\Domain\Model;
 
 /***************************************************************
  *  Copyright notice
@@ -28,7 +28,7 @@ namespace Portrino\PxShopware\Domain\Model\Shopware;
 /**
  * Class Detail
  *
- * @package Portrino\PxShopware\Domain\Model\Shopware
+ * @package Portrino\PxShopware\Domain\Model
  */
 class Detail extends AbstractShopwareModel {
 
@@ -43,10 +43,7 @@ class Detail extends AbstractShopwareModel {
      * @param mixed $raw
      */
     public function __construct($raw) {
-        $this->setRaw($raw);
-        if (isset($this->raw->mainDetail->id)) {
-            $this->setId($this->raw->mainDetail->id);
-        }
+        parent::__construct($raw);
 
         if (isset($this->raw->mainDetail->number)) {
             $this->setNumber($this->raw->mainDetail->number);

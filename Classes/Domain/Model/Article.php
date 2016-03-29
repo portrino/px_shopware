@@ -1,5 +1,5 @@
 <?php
-namespace Portrino\PxShopware\Domain\Model\Shopware;
+namespace Portrino\PxShopware\Domain\Model;
 
 /***************************************************************
  *  Copyright notice
@@ -28,7 +28,7 @@ namespace Portrino\PxShopware\Domain\Model\Shopware;
 /**
  * Class Article
  *
- * @package Portrino\PxShopware\Domain\Model\Shopware
+ * @package Portrino\PxShopware\Domain\Model
  */
 class Article extends AbstractShopwareModel {
 
@@ -38,12 +38,17 @@ class Article extends AbstractShopwareModel {
     protected $name = '';
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<Portrino\PxShopware\Domain\Model\Shopware\Media>
+     * @var string
+     */
+    protected $description = '';
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<Portrino\PxShopware\Domain\Model\Media>
      */
     protected $images = array();
 
     /**
-     * @var \Portrino\PxShopware\Domain\Model\Shopware\Detail
+     * @var \Portrino\PxShopware\Domain\Model\Detail
      */
     protected $detail = array();
 
@@ -71,6 +76,15 @@ class Article extends AbstractShopwareModel {
             $this->setName($this->raw->name);
         }
 
+        /**
+         * set description in dependence of the description or descriptionLong attribute
+         */
+        if (isset($this->raw->description) && $this->raw->description != '') {
+            $this->setDescription($this->raw->description);
+        } else if (isset($this->raw->descriptionLong) && $this->raw->descriptionLong != '') {
+            $this->setDescription($this->raw->descriptionLong);
+        }
+
         $this->initStorageObjects();
     }
 
@@ -89,8 +103,8 @@ class Article extends AbstractShopwareModel {
     public function initializeObject() {
         if (isset($this->getRaw()->images) && is_array($this->getRaw()->images)) {
             foreach ($this->raw->images as $image) {
-                if (isset($image->id)) {
-                    $media = $this->mediaClient->findById($image->id);
+                if (isset($image->mediaId)) {
+                    $media = $this->mediaClient->findById($image->mediaId);
                     $this->addImage($media);
                 }
             }
@@ -105,31 +119,59 @@ class Article extends AbstractShopwareModel {
     }
 
     /**
+     * @return string
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name) {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription() {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description) {
+        $this->description = $description;
+    }
+
+    /**
      * Adds a image
      *
-     * @param \Portrino\PxShopware\Domain\Model\Shopware\Media $image
+     * @param \Portrino\PxShopware\Domain\Model\Media $image
      *
      * @return void
      */
-    public function addImage(\Portrino\PxShopware\Domain\Model\Shopware\Media $image) {
+    public function addImage(\Portrino\PxShopware\Domain\Model\Media $image) {
         $this->images->attach($image);
     }
 
     /**
      * Removes a image
      *
-     * @param \Portrino\PxShopware\Domain\Model\Shopware\Media $imageToRemove The image to be removed
+     * @param \Portrino\PxShopware\Domain\Model\Media $imageToRemove The image to be removed
      *
      * @return void
      */
-    public function removeMedia(\Portrino\PxShopware\Domain\Model\Shopware\Media $imageToRemove) {
+    public function removeMedia(\Portrino\PxShopware\Domain\Model\Media $imageToRemove) {
         $this->images->detach($imageToRemove);
     }
 
     /**
      * Returns the images
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Shopware\Media> $images
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Media> $images
      */
     public function getImages() {
         return $this->images;
@@ -138,12 +180,21 @@ class Article extends AbstractShopwareModel {
     /**
      * Sets the images
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Shopware\Media> $images
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Media> $images
      *
      * @return void
      */
     public function setImages(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $images) {
         $this->images = $images;
+    }
+
+    /**
+     * Return the first image
+     *
+     * @return NULL|\Portrino\PxShopware\Domain\Model\Media
+     */
+    public function getFirstImage() {
+        return ($this->getImages() != NULL) ? array_values($this->getImages()->toArray())[0] : NULL;
     }
 
     /**

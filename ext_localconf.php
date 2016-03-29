@@ -15,6 +15,39 @@ $boot = function ($_EXTKEY) {
         )
     );
 
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        'Portrino.' . $_EXTKEY,
+        'Pi2',
+        array(
+            'Category' => 'list',
+        ),
+        // non-cacheable actions
+        array(
+            'Category' => 'list',
+        )
+    );
+
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($_EXTKEY, 'setup',
+    '[GLOBAL]
+    tt_content.pxshopware_pi1 = COA
+    tt_content.pxshopware_pi1 {
+        10 = < lib.stdheader
+        20 >
+        20 = < plugin.tx_pxshopware_pi1
+    }
+    ', TRUE);
+
+
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($_EXTKEY, 'setup',
+    '[GLOBAL]
+    tt_content.pxshopware_pi2 = COA
+    tt_content.pxshopware_pi2 {
+        10 = < lib.stdheader
+        20 >
+        20 = < plugin.tx_pxshopware_pi2
+    }
+    ', TRUE);
+
     /** @var array $version */
     $version = \TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionStringToArray(TYPO3_version);
 
@@ -26,12 +59,30 @@ $boot = function ($_EXTKEY) {
         $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
 
         $iconRegistry->registerIcon(
-            'px-shopware-tx-pxshopware-domain-model-item',
+            'px-shopware',
             \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
             array(
                 'source' => 'EXT:' . $_EXTKEY . '/ext_icon.svg'
             )
         );
+
+        /**
+         * register icons for each plugin
+         */
+        $pluginSignatures = array(
+            0 => str_replace('_', '', $_EXTKEY) . '_pi1',
+            1 => str_replace('_', '', $_EXTKEY) . '_pi2'
+        );
+        foreach ($pluginSignatures as $pluginSignature) {
+            $iconRegistry->registerIcon(
+                str_replace('_', '-', $pluginSignature),
+                \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+                array(
+                    'source' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/' . $pluginSignature . '.svg'
+                )
+            );
+        }
+
     }
 
     /**

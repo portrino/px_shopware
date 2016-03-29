@@ -222,6 +222,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
                 $httpCode = curl_getinfo($this->cURL, CURLINFO_HTTP_CODE);
 
                 $entry = $this->prepareResponse($result, $httpCode);
+
                 $this->cache->set($cacheIdentifier, $entry, array(), $this->cacheLifeTime);
 
             } catch (ShopwareApiClientException $exception) {
