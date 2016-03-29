@@ -26,21 +26,21 @@ namespace Portrino\PxShopware\Service\Shopware;
  ***************************************************************/
 
 /**
- * Class MediaClient
+ * Class CategoryClient
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-class MediaClient extends AbstractShopwareApiClient {
+class CategoryClient extends AbstractShopwareApiClient {
 
     /**
      * @var string
      */
-    protected $endpoint = 'media';
+    protected $endpoint = 'categories';
 
     /**
-     * @var string
+     * @var
      */
-    protected $entityClassName = \Portrino\PxShopware\Domain\Model\Media::class;
+    protected $entityClassName = \Portrino\PxShopware\Domain\Model\Category::class;
 
     /**
      * @return string

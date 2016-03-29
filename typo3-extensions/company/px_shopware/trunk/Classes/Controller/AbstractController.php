@@ -27,6 +27,7 @@ namespace Portrino\PxShopware\Controller;
 
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class AbstractController
@@ -56,6 +57,11 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * @var array
      */
     protected $extConf = array();
+
+    /**
+     * @var string
+     */
+    protected $language = '';
 
     /**
      * contains the ts settings for the current action
@@ -114,6 +120,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
         if (TYPO3_MODE === 'FE') {
             $this->typoScriptFrontendController = $GLOBALS['TSFE'];
+            $this->language = $this->typoScriptFrontendController->config['config']['language'];
         }
     }
 
@@ -133,7 +140,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             'controllerSettings' => $this->controllerSettings,
             'actionSettings' => $this->actionSettings,
             'extConf' => $this->extConf,
-            'dateTime' => $this->dateTime
+            'dateTime' => $this->dateTime,
+            'language' => $this->language
         ));
     }
 
@@ -226,7 +234,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                 GeneralUtility::devLog($exception->getMessage(), $this->extensionName, 1);
             }
 
-            $applicationContext = \TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext();
+            $applicationContext = GeneralUtility::getApplicationContext();
             if ($applicationContext->isProduction()) {
                 // If the property mapper did throw a \TYPO3\CMS\Extbase\Property\Exception, because it was unable to find the requested entity, call the page-not-found handler.
                 $previousException = $exception->getPrevious();
@@ -269,5 +277,27 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
             throw $exception;
         }
+    }
+
+    /**
+     * @var \Portrino\PxShopware\Service\Shopware\ArticleClient
+     * @inject
+     */
+    protected $shopwareClient;
+
+    /**
+     * action list
+     *
+     * @return void
+     */
+    public function listAction() {
+        $itemUidList = isset($this->settings['articles']) ? GeneralUtility::trimExplode(',', $this->settings['articles']) : array();
+        $items = new ObjectStorage();
+        foreach ($itemUidList as $itemUid) {
+            if ($item = $this->shopwareClient->findById($itemUid)) {
+                $items->attach($item);
+            }
+        }
+        $this->view->assign('items', $items);
     }
 }

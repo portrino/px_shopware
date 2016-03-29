@@ -18,12 +18,20 @@ plugin.tx_pxshopware {
     }
 
     settings {
+        # api configuration
         api {
             url =
             username =
             key =
         }
+
         # the duration after which the item is updated via REST-API
         cacheLifeTime = 3600
+
+        # no image configuration
+        noImage {
+            path = EXT:px_shopware/Resources/Public/Images/
+            filename = no_image_available.jpg
+        }
     }
 }

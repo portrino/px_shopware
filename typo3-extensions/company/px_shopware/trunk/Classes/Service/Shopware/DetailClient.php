@@ -40,7 +40,7 @@ class DetailClient extends AbstractShopwareApiClient {
     /**
      * @var
      */
-    protected $entityClassName = \Portrino\PxShopware\Domain\Model\Shopware\Detail::class;
+    protected $entityClassName = \Portrino\PxShopware\Domain\Model\Detail::class;
 
     /**
      * @return string

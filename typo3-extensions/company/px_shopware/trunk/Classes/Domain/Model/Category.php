@@ -1,5 +1,5 @@
 <?php
-namespace Portrino\PxShopware\Domain\Model\Shopware;
+namespace Portrino\PxShopware\Domain\Model;
 
 /***************************************************************
  *  Copyright notice
@@ -26,48 +26,44 @@ namespace Portrino\PxShopware\Domain\Model\Shopware;
  ***************************************************************/
 
 /**
- * Class AbstractShopwareModel
+ * Class Category
  *
- * @package Portrino\PxShopware\Domain\Model\Shopware
+ * @package Portrino\PxShopware\Domain\Model
  */
-abstract class AbstractShopwareModel {
-
-    /**
-     * id
-     *
-     * @var string
-     */
-    protected $id = '';
+class Category extends AbstractShopwareModel {
 
     /**
      * @var string
      */
-    protected $raw;
+    protected $name = '';
 
     /**
-     * AbstractShopwareModel constructor.
+     * Article constructor.
      *
      * @param mixed $raw
      */
     public function __construct($raw) {
-        $this->setRaw($raw);
-        if (isset($this->raw->id)) {
-            $this->setId($this->raw->id);
+        parent::__construct($raw);
+
+        if (isset($this->raw->name)) {
+            $this->setName($this->raw->name);
         }
+
+        $this->initStorageObjects();
     }
 
     /**
-     * @return string
+     * Initializes all \TYPO3\CMS\Extbase\Persistence\ObjectStorage properties.
+     *
+     * @return void
      */
-    public function getId() {
-        return $this->id;
+    protected function initStorageObjects() {
     }
 
     /**
-     * @param string $id
+     *
      */
-    public function setId($id) {
-        $this->id = $id;
+    public function initializeObject() {
     }
 
     /**
@@ -82,20 +78,6 @@ abstract class AbstractShopwareModel {
      */
     public function setName($name) {
         $this->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRaw() {
-        return $this->raw;
-    }
-
-    /**
-     * @param string $raw
-     */
-    public function setRaw($raw) {
-        $this->raw = $raw;
     }
 
 }

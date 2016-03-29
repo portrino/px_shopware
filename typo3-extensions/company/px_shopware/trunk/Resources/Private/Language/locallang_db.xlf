@@ -9,31 +9,45 @@
             <authorEmail>wuttig@portrino.de</authorEmail>
         </header>
         <body>
-            <trans-unit id="tx_pxshopware_domain_model_item">
-                <source>Item</source>
+            <trans-unit id="tx_pxshopware_wizard_header">
+                <source>Shopware</source>
             </trans-unit>
 
-            <trans-unit id="tx_pxshopware_domain_model_item.cache_identifier">
-                <source>Cache Identifier</source>
+            <trans-unit id="tt_content.CType.div.px_shopware">
+                <source>Shopware</source>
             </trans-unit>
 
-            <trans-unit id="tx_pxshopware_domain_model_item.last_update">
-                <source>(Last Update)</source>
+            <trans-unit id="tt_content.CType.pxshopware_pi1">
+                <source>Article(s)</source>
             </trans-unit>
-
-            <trans-unit id="tx_pxshopware_domain_model_item.result">
-                <source>Result (json-encoded)</source>
+            <trans-unit id="tt_content.CType.pxshopware_pi1.title">
+                <source>Article(s)</source>
             </trans-unit>
-
-            <trans-unit id="tt_content.list_type.pxshopware_pi1">
-                <source>Article</source>
+            <trans-unit id="tt_content.CType.pxshopware_pi1.description">
+                <source>Show one or more articles from Shopware</source>
             </trans-unit>
             <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings">
                 <source>Settings</source>
             </trans-unit>
-
             <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.articles">
                 <source>Articles</source>
+            </trans-unit>
+
+
+            <trans-unit id="tt_content.CType.pxshopware_pi2">
+                <source>Category(s)</source>
+            </trans-unit>
+            <trans-unit id="tt_content.CType.pxshopware_pi2.title">
+                <source>Category(s)</source>
+            </trans-unit>
+            <trans-unit id="tt_content.CType.pxshopware_pi2.description">
+                <source>Show one or more categories from Shopware</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi2.settings">
+                <source>Settings</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi2.settings.categories">
+                <source>Categories</source>
             </trans-unit>
 
         </body>

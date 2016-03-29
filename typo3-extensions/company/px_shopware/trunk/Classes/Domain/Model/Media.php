@@ -1,5 +1,5 @@
 <?php
-namespace Portrino\PxShopware\Service\Shopware;
+namespace Portrino\PxShopware\Domain\Model;
 
 /***************************************************************
  *  Copyright notice
@@ -26,34 +26,42 @@ namespace Portrino\PxShopware\Service\Shopware;
  ***************************************************************/
 
 /**
- * Class MediaClient
+ * Class Media
  *
- * @package Portrino\PxShopware\Service\Shopware
+ * @package Portrino\PxShopware\Domain\Model
  */
-class MediaClient extends AbstractShopwareApiClient {
+class Media extends AbstractShopwareModel {
 
     /**
      * @var string
      */
-    protected $endpoint = 'media';
+    protected $url = '';
 
     /**
-     * @var string
+     * Detail constructor.
+     *
+     * @param mixed $raw
      */
-    protected $entityClassName = \Portrino\PxShopware\Domain\Model\Media::class;
+    public function __construct($raw) {
+        parent::__construct($raw);
+
+        if (isset($this->raw->path)) {
+            $this->setUrl($this->raw->path);
+        }
+    }
 
     /**
      * @return string
      */
-    public function getEndpoint() {
-        return $this->endpoint;
+    public function getUrl() {
+        return $this->url;
     }
 
     /**
-     * @return mixed
+     * @param string $url
      */
-    public function getEntityClassName() {
-        return $this->entityClassName;
+    public function setUrl($url) {
+        $this->url = $url;
     }
 
 }
