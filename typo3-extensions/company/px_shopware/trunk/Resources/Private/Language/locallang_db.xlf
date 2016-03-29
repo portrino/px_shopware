@@ -9,6 +9,15 @@
             <authorEmail>wuttig@portrino.de</authorEmail>
         </header>
         <body>
+
+            <trans-unit id="clear_cache_menu.title">
+                <source>Flush shopware caches</source>
+            </trans-unit>
+
+            <trans-unit id="clear_cache_menu.description">
+                <source>Clear all shopware related caches for articles, categories etc.</source>
+            </trans-unit>
+
             <trans-unit id="tx_pxshopware_wizard_header">
                 <source>Shopware</source>
             </trans-unit>

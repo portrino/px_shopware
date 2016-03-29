@@ -1,5 +1,5 @@
 <?php
-namespace Portrino\PxShopware\Hooks;
+namespace Portrino\PxShopware\Backend\Hooks;
 
 /***************************************************************
  *  Copyright notice
@@ -38,7 +38,7 @@ use TYPO3\CMS\Lang\LanguageService;
  *
  * Class/Function which manipulates the rendering of items within the new content element wizard
  *
- * @package Portrino\PxShopware\Hooks
+ * @package Portrino\PxShopware\Backend\Hooks
  */
 class WizardItems implements NewContentElementWizardHookInterface {
 
