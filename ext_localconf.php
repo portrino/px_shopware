@@ -34,6 +34,22 @@ $boot = function ($_EXTKEY) {
         );
     }
 
+    /**
+     * create one cache for each endpoint
+     */
+    $endpoints = array('articles', 'categories', 'media');
+    foreach ($endpoints as $endpoint) {
+        if (FALSE === is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_' . $endpoint])) {
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_' . $endpoint] = array(
+                'frontend' => \TYPO3\CMS\Core\Cache\Frontend\StringFrontend::class,
+                'options' => array(
+                    'defaultLifetime' => 3600 // 1 hour cache lifetime
+                ),
+                'groups' => array('pages', 'all')
+            );
+        }
+    }
+
 };
 
 $boot($_EXTKEY);

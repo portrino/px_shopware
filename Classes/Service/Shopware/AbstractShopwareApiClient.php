@@ -55,6 +55,16 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     );
 
     /**
+     * @var string Key of the extension
+     */
+    protected $extensionName = 'PxShopware';
+
+    /**
+     * @var string Key of the extension
+     */
+    protected $extensionKey = 'px_shopware';
+
+    /**
      * @var string
      */
     protected $apiUrl = '';
@@ -112,12 +122,9 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     protected $applicationContext;
 
     /**
-     * itemRepository
-     *
-     * @var \Portrino\PxShopware\Domain\Repository\ItemRepository
-     * @inject
+     * @var \TYPO3\CMS\Core\Cache\Frontend\StringFrontend
      */
-    protected $itemRepository;
+    protected $cache;
 
     /**
      *
@@ -149,7 +156,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
         } //reset to 3600sec if intval() cant convert
 
         /**
-         * curl initialization block
+         * curl initialization
          */
         $this->cURL = curl_init();
         curl_setopt($this->cURL, CURLOPT_RETURNTRANSFER, true);
@@ -160,6 +167,13 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
         curl_setopt($this->cURL, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json; charset=utf-8',
         ));
+
+        /**
+         * cache initialization
+         */
+        $cacheManager = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
+        $this->cache = $cacheManager->getCache($this->extensionKey . '_' .$this->getEndpoint());
+
     }
 
     /**
@@ -168,12 +182,11 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
      * @param array $data
      * @param array $params
      *
-     * @return \Portrino\PxShopware\Domain\Model\Item
+     * @return string
      * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
     protected function call($url, $method = self::METHOD_GET, $data = array(), $params = array()) {
-        $item = NULL;
         $queryString = '';
 
         if (!empty($params)) {
@@ -183,20 +196,16 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
         $url = rtrim($url, '?') . '?';
         $url = $this->apiUrl . $url . $queryString;
 
-        /** @var \Portrino\PxShopware\Domain\Model\Item $item */
-        $item = $this->itemRepository->findOneByTypeAndCacheIdentifier($url);
         /**
-         * create new item object if it was not found
+         * try to get entry from cache
          */
-        if ($item === NULL) {
-            /** @var \Portrino\PxShopware\Domain\Model\Item $item */
-            $item = $this->objectManager->get(\Portrino\PxShopware\Domain\Model\Item::class, $url);
-        }
+        $cacheIdentifier = sha1((string)$url);
+        $entry = $this->cache->get($cacheIdentifier);
 
         /**
-         * if no item was new or item should be updated (cacheLifeTime) then make an api request
+         * if no entry was found within cache then make an api request
          */
-        if($item != NULL && ($item->_isNew() || $item->shouldBeUpdated($this->cacheLifeTime))) {
+        if($entry === FALSE) {
             try {
 
                 if (!in_array($method, $this->validMethods)) {
@@ -212,15 +221,8 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
                 $result   = curl_exec($this->cURL);
                 $httpCode = curl_getinfo($this->cURL, CURLINFO_HTTP_CODE);
 
-                $response = $this->prepareResponse($result, $httpCode);
-                $item->setResult($response);
-
-                if ($item->_isNew()) {
-                    $this->itemRepository->add($item);
-                } else if (!$item->_isNew()) {
-                    $this->itemRepository->update($item);
-                }
-                $this->persistenceManager->persistAll();
+                $entry = $this->prepareResponse($result, $httpCode);
+                $this->cache->set($cacheIdentifier, $entry, array(), $this->cacheLifeTime);
 
             } catch (ShopwareApiClientException $exception) {
 
@@ -230,7 +232,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
             }
         }
 
-        return $item;
+        return json_decode($entry);
     }
 
     /**
@@ -269,7 +271,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
      * @param $url
      * @param array $params
      *
-     * @return \Portrino\PxShopware\Domain\Model\Item
+     * @return string
      * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
      */
     public function get($url, $params = array()) {
@@ -281,7 +283,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
      * @param array $data
      * @param array $params
      *
-     * @return \Portrino\PxShopware\Domain\Model\Item
+     * @return string
      * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
      */
     public function post($url, $data = array(), $params = array()) {
@@ -293,7 +295,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
      * @param array $data
      * @param array $params
      *
-     * @return \Portrino\PxShopware\Domain\Model\Item
+     * @return string
      * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
      */
     public function put($url, $data = array(), $params = array()) {
@@ -304,7 +306,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
      * @param $url
      * @param array $params
      *
-     * @return \Portrino\PxShopware\Domain\Model\Item
+     * @return string
      * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
      */
     public function delete($url, $params = array()) {
@@ -312,31 +314,30 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     }
 
     /**
-     *
+     * @return string
      */
     protected function getValidEndpoint() {
         return rtrim($this->getEndpoint(), '/') . '/';
     }
 
     /**
-     * @return string
+     * @return mixed
      */
     abstract protected function getEndpoint();
 
     /**
-     * @return string
+     * @return mixed
      */
     abstract protected function getEntityClassName();
 
     /**
-     * @param int $id
+     * @param $id
      *
      * @return \Portrino\PxShopware\Domain\Model\Shopware\AbstractShopwareModel
      */
     public function findById($id) {
-        $item = $this->get($this->getValidEndpoint() . $id);
-        if ($item) {
-            $result = $item->getResult();
+        $result = $this->get($this->getValidEndpoint() . $id);
+        if ($result) {
             if (isset($result->data) && isset($result->data->id)) {
                 /** @var \Portrino\PxShopware\Domain\Model\Shopware\AbstractShopwareModel $shopwareModel */
                 $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $result->data);
@@ -345,15 +346,13 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
         return $shopwareModel;
     }
 
-
     /**
-     * @return \Portrino\PxShopware\Domain\Model\Shopware\AbstractShopwareModel
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
      */
     public function findAll() {
         $shopwareModels = new ObjectStorage();
-        $item = $this->get($this->getValidEndpoint());
-        if ($item) {
-            $result = $item->getResult();
+        $result = $this->get($this->getValidEndpoint());
+        if ($result) {
             if (isset($result->data) && is_array($result->data)) {
                 foreach ($result->data as $data) {
                     if (isset($data->id)) {
