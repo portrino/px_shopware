@@ -10,6 +10,46 @@
         </header>
         <body>
 
+            <trans-unit id="toolbar_items.shopware_connector_information">
+                <source>Shopware Connector Information</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.header">
+                <source>Shopware Connector Information</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop">
+                <source>Shopware</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.status">
+                <source>Status</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.status.connected">
+                <source>Connected</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.status.disconnected">
+                <source>Disconnected</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.version">
+                <source>Version</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.revision">
+                <source>Revision</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.shops">
+                <source>Shops</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache">
+                <source>Cache</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache.caches">
+                <source>Cache Tables</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache.caches.entries">
+                <source>entries</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache.status">
+                <source>Status</source>
+            </trans-unit>
+
             <trans-unit id="clear_cache_menu.title">
                 <source>Flush shopware caches</source>
             </trans-unit>

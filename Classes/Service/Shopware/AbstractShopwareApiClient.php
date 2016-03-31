@@ -127,27 +127,71 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     protected $cache;
 
     /**
+     * @var \TYPO3\CMS\Core\Log\Logger
+     */
+    protected $logger;
+
+    /**
+     * The user-object the script uses in backend mode
+     *
+     * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     */
+    public $BE_USER;
+
+    /**
      *
      */
     public function initializeObject() {
+        /** @var \TYPO3\CMS\Core\Log\LogManager $logger */
+        $this->logger = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class)->getLogger(__CLASS__);
+
+        if (TYPO3_MODE === 'BE') {
+            $this->BE_USER = $GLOBALS['BE_USER'];
+        }
+
         $this->applicationContext = GeneralUtility::getApplicationContext();
 
         $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,'PxShopware');
 
-        $this->apiUrl = isset($this->settings['api']['url']) ? $this->settings['api']['url'] : FALSE;
-        if ($this->apiUrl === FALSE) {
-            throw new ShopwareApiClientConfigurationException('No apiUrl given to connect to shopware REST-Service! Please add it to your TS or Flexform.', 1458807513);
-        }
-        $this->apiUrl = rtrim($this->apiUrl, '/') . '/';
+        try {
+            $this->apiUrl = isset($this->settings['api']['url']) ? $this->settings['api']['url'] : FALSE;
+            if ($this->apiUrl === FALSE) {
+                throw new ShopwareApiClientConfigurationException('No apiUrl given to connect to shopware REST-Service! Please add it to your TS or Flexform.', 1458807513);
+            }
+            $this->apiUrl = rtrim($this->apiUrl, '/') . '/';
 
-        $this->username = isset($this->settings['api']['username']) ? $this->settings['api']['username'] : FALSE;
-        if ($this->username === FALSE) {
-            throw new ShopwareApiClientConfigurationException('No username given to connect to shopware REST-Service! Please add it to your TS or Flexform.', 1458807514);
-        }
+            $this->username = isset($this->settings['api']['username']) ? $this->settings['api']['username'] : FALSE;
+            if ($this->username === FALSE) {
+                throw new ShopwareApiClientConfigurationException('No username given to connect to shopware REST-Service! Please add it to your TS or Flexform.', 1458807514);
+            }
 
-        $this->apiKey = isset($this->settings['api']['key']) ? $this->settings['api']['key'] : FALSE;
-        if ($this->apiKey === FALSE) {
-            throw new ShopwareApiClientConfigurationException('No apiKey given to connect to shopware REST-Service! Please add it to your TS or Flexform.', 1458807515);
+            $this->apiKey = isset($this->settings['api']['key']) ? $this->settings['api']['key'] : FALSE;
+            if ($this->apiKey === FALSE) {
+                throw new ShopwareApiClientConfigurationException('No apiKey given to connect to shopware REST-Service! Please add it to your TS or Flexform.', 1458807515);
+            }
+
+        } catch(ShopwareApiClientConfigurationException $exception) {
+            if (TYPO3_MODE === 'BE') {
+                $this->logger->log(
+                    \TYPO3\CMS\Core\Log\LogLevel::ERROR,
+                    $exception->getMessage(),
+                    array(
+                        'settings' => $this->settings['api'],
+                    )
+                );
+                $this->BE_USER->writelog(
+                    4,
+                    0,
+                    1,
+                    0,
+                    $exception->getMessage(),
+                    array(
+                        'settings' => $this->settings['api'],
+                    )
+                );
+            } else if (TYPO3_MODE === 'FE') {
+                throw $exception;
+            }
         }
 
         $this->cacheLifeTime = intval(empty($settings['cacheLifeTime']) ? 3600 : $settings['cacheLifeTime']);
@@ -168,11 +212,9 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
             'Content-Type: application/json; charset=utf-8',
         ));
 
-        /**
-         * cache initialization
-         */
+        /** @var \TYPO3\CMS\Core\Cache\CacheManager $cacheManager */
         $cacheManager = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
-        $this->cache = $cacheManager->getCache($this->extensionKey . '_' .$this->getEndpoint());
+        $this->cache = ($cacheManager->hasCache($this->extensionKey . '_' .$this->getEndpoint())) ? $cacheManager->getCache($this->extensionKey . '_' .$this->getEndpoint()) : NULL;
 
     }
 
@@ -181,14 +223,15 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
      * @param string $method
      * @param array $data
      * @param array $params
+     * @param boolean $doCacheRequest
      *
      * @return string
      * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
-    protected function call($url, $method = self::METHOD_GET, $data = array(), $params = array()) {
+    protected function call($url, $method = self::METHOD_GET, $data = array(), $params = array(), $doCacheRequest = TRUE) {
         $queryString = '';
-
+        $entry = NULL;
         if (!empty($params)) {
             $queryString = http_build_query($params);
         }
@@ -197,15 +240,23 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
         $url = $this->apiUrl . $url . $queryString;
 
         /**
-         * try to get entry from cache
+         * only cache when:
+         *  - GET METHOD is used
+         *  - doCacheRequest is TRUE
+         *  - cache is available
          */
-        $cacheIdentifier = sha1((string)$url);
-        $entry = $this->cache->get($cacheIdentifier);
+        if ($method == self::METHOD_GET && $doCacheRequest && $this->cache) {
+            /**
+             * try to get entry from cache
+             */
+            $cacheIdentifier = sha1((string)$url);
+            $entry = $this->cache->get($cacheIdentifier);
+        }
 
         /**
          * if no entry was found within cache then make an api request
          */
-        if($entry === FALSE) {
+        if($entry === FALSE || $entry === NULL) {
             try {
 
                 if (!in_array($method, $this->validMethods)) {
@@ -223,7 +274,15 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
 
                 $entry = $this->prepareResponse($result, $httpCode);
 
-                $this->cache->set($cacheIdentifier, $entry, array(), $this->cacheLifeTime);
+                /**
+                 * only cache when:
+                 *  - GET METHOD is used
+                 *  - doCacheRequest is TRUE
+                 *  - cache is available
+                 */
+                if ($method == self::METHOD_GET && $doCacheRequest && $this->cache) {
+                    $this->cache->set($cacheIdentifier, $entry, array(), $this->cacheLifeTime);
+                }
 
             } catch (ShopwareApiClientException $exception) {
 
@@ -271,12 +330,13 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     /**
      * @param $url
      * @param array $params
+     * @param bool $doCacheRequest
      *
      * @return string
      * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
      */
-    public function get($url, $params = array()) {
-        return $this->call($url, self::METHOD_GET, array(), $params);
+    public function get($url, $params = array(), $doCacheRequest = TRUE) {
+        return $this->call($url, self::METHOD_GET, array(), $params, $doCacheRequest);
     }
 
     /**
@@ -332,15 +392,70 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     abstract protected function getEntityClassName();
 
     /**
-     * @param $id
      *
-     * @return \Portrino\PxShopware\Domain\Model\Shopware\AbstractShopwareModel
+     */
+    public function isConnected() {
+        $result = FALSE;
+        $response = NULL;
+        try {
+            $response = $this->get('version', array(), FALSE);
+            if($response) {
+                $result = ($response->success);
+            }
+        } catch (\ShopwareApiClientException $exception) {
+
+            if (TYPO3_MODE === 'BE') {
+                $this->logger->log(
+                    \TYPO3\CMS\Core\Log\LogLevel::ERROR,
+                    $exception->getMessage(),
+                    array(
+                        'response' => $response,
+                    )
+                );
+                $this->BE_USER->writelog(
+                    4,
+                    0,
+                    1,
+                    0,
+                    $exception->getMessage(),
+                    array(
+                        'settings' => $this->settings['api'],
+                    )
+                );
+            } else if (TYPO3_MODE === 'FE') {
+                throw $exception;
+            }
+
+            $result = FALSE;
+        } finally {
+            return $result;
+        }
+    }
+
+    /**
+     * @return \Portrino\PxShopware\Domain\Model\AbstractShopwareModel
+     */
+    public function find() {
+        $result = $this->get($this->getValidEndpoint());
+        if ($result) {
+            if (isset($result->data)) {
+                /** @var \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $shopwareModel */
+                $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $result->data);
+            }
+        }
+        return $shopwareModel;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return \Portrino\PxShopware\Domain\Model\AbstractShopwareModel
      */
     public function findById($id) {
         $result = $this->get($this->getValidEndpoint() . $id);
         if ($result) {
             if (isset($result->data) && isset($result->data->id)) {
-                /** @var \Portrino\PxShopware\Domain\Model\Shopware\AbstractShopwareModel $shopwareModel */
+                /** @var \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $shopwareModel */
                 $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $result->data);
             }
         }

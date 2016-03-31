@@ -5,12 +5,6 @@ plugin.tx_pxshopware {
         layoutRootPath = {$plugin.tx_pxshopware.view.layoutRootPath}
     }
     persistence {
-        storagePid = {$plugin.tx_pxshopware.persistence.storagePid}
-        classes {
-            Portrino\PxShopware\Domain\Model\Item {
-                newRecordStoragePid = {$plugin.tx_pxshopware.persistence.classes.Portrino\PxShopware\Domain\Model\Item.newRecordStoragePid}
-            }
-        }
     }
 
     settings {

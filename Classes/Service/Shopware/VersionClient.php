@@ -1,5 +1,5 @@
 <?php
-namespace Portrino\PxShopware\Backend\Hooks;
+namespace Portrino\PxShopware\Service\Shopware;
 
 /***************************************************************
  *  Copyright notice
@@ -25,36 +25,35 @@ namespace Portrino\PxShopware\Backend\Hooks;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /**
- * Class Ajax
+ * Class VersionClient
  *
- * @package Portrino\PxShopware\Backend\Hooks
+ * @package Portrino\PxShopware\Service\Shopware
  */
-class Ajax {
+class VersionClient extends AbstractShopwareApiClient {
 
     /**
-     * @var string Key of the extension
+     * @var string
      */
-    protected $extensionKey = 'px_shopware';
+    protected $endpoint = 'version';
 
     /**
-     * @throws \TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException
+     * @var
      */
-    public function clearCache() {
-        /** @var \TYPO3\CMS\Core\Cache\CacheManager $cacheManager */
-        $cacheManager = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
+    protected $entityClassName = \Portrino\PxShopware\Domain\Model\Version::class;
 
-        /**
-         * create one cache for each endpoint
-         */
-        $endpoints = array('articles', 'categories', 'media');
-        foreach ($endpoints as $endpoint) {
-            if ($cacheManager->hasCache($this->extensionKey . '_' . $endpoint)) {
-                $cacheManager->getCache($this->extensionKey . '_' . $endpoint)->flush();
-            }
-        }
+    /**
+     * @return string
+     */
+    public function getEndpoint() {
+        return $this->endpoint;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEntityClassName() {
+        return $this->entityClassName;
     }
 
 }
