@@ -163,7 +163,6 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
         $this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['px_shopware']);
         $apiConfiguration = $this->extConf['api.'];
         $cacheConfiguration = $this->extConf['caching.'];
-        $loggingConfiguration = $this->extConf['logging.'];
 
         /**
          * config from TS or flexform
@@ -189,23 +188,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
 
         } catch(ShopwareApiClientConfigurationException $exception) {
             if (TYPO3_MODE === 'BE') {
-                $this->logger->log(
-                    \TYPO3\CMS\Core\Log\LogLevel::ERROR,
-                    $exception->getMessage(),
-                    array(
-                        'settings' => $this->settings['api'],
-                    )
-                );
-                $this->BE_USER->writelog(
-                    4,
-                    0,
-                    1,
-                    0,
-                    $exception->getMessage(),
-                    array(
-                        'settings' => $this->settings['api'],
-                    )
-                );
+                $this->logException($exception);
             } else if (TYPO3_MODE === 'FE') {
                 throw $exception;
             }
@@ -309,9 +292,10 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
                     $this->cache->set($cacheIdentifier, $entry, array(), $this->cacheLifeTime);
                 }
 
-            } catch (ShopwareApiClientException $exception) {
-
-                if ($this->applicationContext->isDevelopment()) {
+            } catch(ShopwareApiClientConfigurationException $exception) {
+                if (TYPO3_MODE === 'BE') {
+                    $this->logException($exception);
+                } else if (TYPO3_MODE === 'FE') {
                     throw $exception;
                 }
             }
@@ -400,6 +384,23 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     }
 
     /**
+     * @param \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException $exception
+     */
+    protected function logException($exception) {
+        $loggingConfiguration = $this->extConf['logging.'];
+        if ((boolean)$loggingConfiguration['disable'] != TRUE) {
+            $this->logger->log(
+                \TYPO3\CMS\Core\Log\LogLevel::ERROR,
+                $exception->getMessage(),
+                array(
+                    'code' => $exception->getCode()
+                )
+            );
+            $this->BE_USER->writelog(4, 0, 1, 0, $exception->getMessage(), array('code' => $exception->getCode()));
+        }
+    }
+
+    /**
      * @return string
      */
     protected function getValidEndpoint() {
@@ -424,27 +425,21 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
         $result = FALSE;
         $response = NULL;
         try {
-            $response = $this->get('version', array(), FALSE);
+            $response = $this->get('versio1n', array(), FALSE);
             if($response) {
                 $result = ($response->success);
             }
-        } catch (\ShopwareApiClientException $exception) {
-
+        } catch (ShopwareApiClientException $exception) {
             if (TYPO3_MODE === 'BE') {
-                $this->logger->log(
-                    \TYPO3\CMS\Core\Log\LogLevel::ERROR,
-                    $exception->getMessage(),
-                    array(
-                        'response' => $response,
-                    )
-                );
-                $this->BE_USER->writelog(4, 0, 1, 0, $exception->getMessage(), array('settings' => $this->settings['api']));
+                $this->logException($exception);
             } else if (TYPO3_MODE === 'FE') {
                 throw $exception;
             }
-
             $result = FALSE;
         } finally {
+
+
+
             return $result;
         }
     }
