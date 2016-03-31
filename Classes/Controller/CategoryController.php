@@ -33,7 +33,7 @@ namespace Portrino\PxShopware\Controller;
 class CategoryController extends AbstractController {
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\CategoryClient
+     * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
      * @inject
      */
     protected $shopwareClient;

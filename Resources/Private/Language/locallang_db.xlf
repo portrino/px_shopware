@@ -10,6 +10,25 @@
         </header>
         <body>
 
+            <trans-unit id="ext_conf_template.api.url">
+                <source>API-Url: e.g.: "http://www.my-online-shop.com/api/"</source>
+            </trans-unit>
+            <trans-unit id="ext_conf_template.api.username">
+                <source>API-Username: e.g.: "api-user"</source>
+            </trans-unit>
+            <trans-unit id="ext_conf_template.api.key">
+                <source>API-Key: e.g.: "0NeOU2Ovs1MMuDkv89a9J7ep1oeoGiQSDdrPeZ2y"</source>
+            </trans-unit>
+            <trans-unit id="ext_conf_template.caching.disable">
+                <source>Disable Caching: Warning! This may slow down your system!</source>
+            </trans-unit>
+            <trans-unit id="ext_conf_template.caching.lifetime">
+                <source>Cache Lifetime: The cache lifetime in seconds (e.g.: 3600 means 1 hour)</source>
+            </trans-unit>
+            <trans-unit id="ext_conf_template.logging.disable">
+                <source>Disable Logging: Disables logging for backend. Logging in frontend is disabled per default.</source>
+            </trans-unit>
+
             <trans-unit id="toolbar_items.shopware_connector_information">
                 <source>Shopware Connector Information</source>
             </trans-unit>
@@ -48,6 +67,12 @@
             </trans-unit>
             <trans-unit id="toolbar_items.shopware_connector_information.cache.status">
                 <source>Status</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache.status.active">
+                <source>Active</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache.status.inactive">
+                <source>Inactive</source>
             </trans-unit>
 
             <trans-unit id="clear_cache_menu.title">

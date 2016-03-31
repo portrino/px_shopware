@@ -85,12 +85,12 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
     protected $cacheInformation = array();
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\VersionClient
+     * @var \Portrino\PxShopware\Service\Shopware\VersionClientInterface
      */
     protected $versionClient;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\ShopClient
+     * @var \Portrino\PxShopware\Service\Shopware\ShopClientInterface
      */
     protected $shopClient;
 
@@ -113,8 +113,8 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
             return;
         }
         $this->objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-        $this->versionClient = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\VersionClient::class);
-        $this->shopClient = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\ShopClient::class);
+        $this->versionClient = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\VersionClientInterface::class);
+        $this->shopClient = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\ShopClientInterface::class);
 
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
 
@@ -242,14 +242,18 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
                     $caches .= $backend->getCacheTable() . '<br>(' . (string) $this->getDatabaseConnection()->exec_SELECTcountRows('*', $backend->getCacheTable()) . ' ' .  $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information.cache.caches.entries', TRUE) .') <br>';
                 }
                 $status = InformationStatus::STATUS_OK;
+                $value = $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information.cache.status.active', TRUE);
             } else {
                 $status = InformationStatus::STATUS_WARNING;
+                $value = $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information.cache.status.inactive', TRUE);
             }
         }
 
+
+
         $this->cacheInformation[] = array(
             'title' => $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information.cache.status', TRUE),
-            'value' => $status === InformationStatus::STATUS_OK ? 'active' : 'inactive',
+            'value' => $value,
             'status' => $status,
             'icon' => $this->iconFactory->getIcon('sysinfo-database', Icon::SIZE_SMALL)->render()
         );

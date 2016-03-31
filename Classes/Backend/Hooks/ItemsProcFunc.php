@@ -38,12 +38,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ItemsProcFunc {
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\ArticleClient
+     * @var \Portrino\PxShopware\Service\Shopware\ArticleClientInterface
      */
     protected $articleClient;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\CategoryClient
+     * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
      */
     protected $categoryClient;
 
@@ -63,8 +63,8 @@ class ItemsProcFunc {
      */
     public function __construct() {
         $this->objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-        $this->articleClient = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\ArticleClient::class);
-        $this->categoryClient = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\CategoryClient::class);
+        $this->articleClient = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\ArticleClientInterface::class);
+        $this->categoryClient = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\CategoryClientInterface::class);
     }
 
     /**
