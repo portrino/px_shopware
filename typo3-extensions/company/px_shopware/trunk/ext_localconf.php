@@ -70,6 +70,54 @@ $boot = function ($_EXTKEY) {
                 );
 
                 $iconRegistry->registerIcon(
+                    'px-shopware-toolbar-icon',
+                    \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+                    array(
+                        'source' => 'EXT:px_shopware/Resources/Public/Icons/toolbar_item.svg'
+                    )
+                );
+
+                $iconRegistry->registerIcon(
+                    'px-shopware-shop-connected',
+                    \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
+                    array(
+                        'name' => 'chain'
+                    )
+                );
+
+                $iconRegistry->registerIcon(
+                    'px-shopware-shop-disconnected',
+                    \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
+                    array(
+                        'name' => 'chain-broken'
+                    )
+                );
+
+                $iconRegistry->registerIcon(
+                    'px-shopware-shop-version',
+                    \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
+                    array(
+                        'name' => 'cog'
+                    )
+                );
+
+                $iconRegistry->registerIcon(
+                    'px-shopware-shop-revision',
+                    \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
+                    array(
+                        'name' => 'cogs'
+                    )
+                );
+
+                $iconRegistry->registerIcon(
+                    'px-shopware-shop-shop',
+                    \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
+                    array(
+                        'name' => 'shopping-cart'
+                    )
+                );
+
+                $iconRegistry->registerIcon(
                     'px-shopware-clear-cache',
                     \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
                     array(
@@ -104,7 +152,24 @@ $boot = function ($_EXTKEY) {
             );
 
             $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][] =
-                \Portrino\PxShopware\Backend\Hooks\ClearCacheMenu::class;
+                \Portrino\PxShopware\Backend\Toolbar\ClearCacheMenu::class;
+
+
+            $GLOBALS['TYPO3_CONF_VARS']['BE']['toolbarItems'][1435433105] =
+                \Portrino\PxShopware\Backend\ToolbarItems\ShopwareConnectorInformationToolbarItem::class;
+
+            /**
+             * log all PxShopware errors into separate file
+             */
+            $GLOBALS['TYPO3_CONF_VARS']['LOG']['Portrino']['PxShopware'] = array(
+                \TYPO3\CMS\Core\Log\LogLevel::ERROR => array(
+                    // add a FileWriter
+                    \TYPO3\CMS\Core\Log\Writer\FileWriter::class => array(
+                        // configuration for the writer
+                        'logFile' => 'typo3temp/logs/px_shopware.log'
+                    )
+                )
+            );
 
             break;
     }

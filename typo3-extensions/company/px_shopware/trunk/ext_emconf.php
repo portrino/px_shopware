@@ -11,17 +11,17 @@
  ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = array (
-    'title' => 'Shopware Integration for TYPO3',
+    'title' => 'Shopware Client for TYPO3',
     'description' => 'Provides frontend plugins to render articles, products from shopware systems',
     'category' => 'plugin',
     'author' => 'André Wuttig',
     'author_email' => 'wuttig@portrino.de',
     'author_company' => 'portrino GmbH',
-    'state' => 'alpha',
+    'state' => 'beta',
     'uploadfolder' => false,
     'createDirs' => '',
     'clearCacheOnLoad' => 0,
-    'version' => '0.0.1',
+    'version' => '1.0.0',
     'constraints' =>
     array (
         'depends' =>
