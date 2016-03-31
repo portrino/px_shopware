@@ -2,6 +2,8 @@
 defined('TYPO3_MODE') || die();
 
 $boot = function ($_EXTKEY) {
+    $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['px_shopware']);
+
     switch (TYPO3_MODE) {
         case 'FE':
 
@@ -175,20 +177,22 @@ $boot = function ($_EXTKEY) {
     }
 
     /**
-     * create one cache for each endpoint
+     * if caching was not disabled create one cache for each endpoint
      */
-    $endpoints = array('articles', 'categories', 'media');
-    foreach ($endpoints as $endpoint) {
-        if (FALSE === is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_' . $endpoint])) {
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_' . $endpoint] = array(
-                'frontend' => \TYPO3\CMS\Core\Cache\Frontend\StringFrontend::class,
-                'options' => array(
-                    'defaultLifetime' => 3600 // 1 hour cache lifetime
-                ),
-                'groups' => array('pages', 'all')
-            );
+    if ((boolean)$extConf['caching.']['disable'] != TRUE) {
+        $endpoints = array('articles', 'categories', 'media');
+        foreach ($endpoints as $endpoint) {
+            if (FALSE === is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_' . $endpoint])) {
+                $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_' . $endpoint] = array(
+                    'frontend' => \TYPO3\CMS\Core\Cache\Frontend\StringFrontend::class,
+                    'options' => array(
+                        'defaultLifetime' => 3600 // 1 hour cache lifetime
+                    )
+                );
+            }
         }
     }
+
 
 };
 

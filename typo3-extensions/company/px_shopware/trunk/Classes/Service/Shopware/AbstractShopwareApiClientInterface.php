@@ -33,12 +33,23 @@ namespace Portrino\PxShopware\Service\Shopware;
 interface AbstractShopwareApiClientInterface {
 
     /**
-     * @return \Portrino\PxShopware\Domain\Model\Shopware\AbstractShopwareModel
+     * @return bool
+     * @throws \ShopwareApiClientException
+     */
+    public function isConnected();
+
+    /**
+     * @return \Portrino\PxShopware\Domain\Model\AbstractShopwareModel
+     */
+    public function find();
+
+    /**
+     * @return \Portrino\PxShopware\Domain\Model\AbstractShopwareModel
      */
     public function findById($id);
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\AbstractShopwareModel>
      */
     public function findAll();
 

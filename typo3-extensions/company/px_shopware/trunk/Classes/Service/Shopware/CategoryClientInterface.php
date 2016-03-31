@@ -1,5 +1,5 @@
 <?php
-namespace Portrino\PxShopware\Controller;
+namespace Portrino\PxShopware\Service\Shopware;
 
 /***************************************************************
  *  Copyright notice
@@ -26,16 +26,9 @@ namespace Portrino\PxShopware\Controller;
  ***************************************************************/
 
 /**
- * Class ArticleController
+ * Interface CategoryClientInterface
  *
- * @package Portrino\PxShopware\Controller
+ * @package Portrino\PxShopware\Service\Shopware
  */
-class ArticleController extends AbstractController {
-
-    /**
-     * @var \Portrino\PxShopware\Service\Shopware\ArticleClientInterface
-     * @inject
-     */
-    protected $shopwareClient;
-
+interface CategoryClientInterface extends AbstractShopwareApiClientInterface {
 }

@@ -53,13 +53,13 @@ class Article extends AbstractShopwareModel {
     protected $detail = array();
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\MediaClient
+     * @var \Portrino\PxShopware\Service\Shopware\MediaClientInterface
      * @inject
      */
     protected $mediaClient;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\DetailClient
+     * @var \Portrino\PxShopware\Service\Shopware\DetailClientInterface
      * @inject
      */
     protected $detailClient;

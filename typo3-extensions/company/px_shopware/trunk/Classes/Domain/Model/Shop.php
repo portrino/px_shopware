@@ -1,5 +1,5 @@
 <?php
-namespace Portrino\PxShopware\Controller;
+namespace Portrino\PxShopware\Domain\Model;
 
 /***************************************************************
  *  Copyright notice
@@ -26,16 +26,42 @@ namespace Portrino\PxShopware\Controller;
  ***************************************************************/
 
 /**
- * Class ArticleController
+ * Class Version
  *
- * @package Portrino\PxShopware\Controller
+ * @package Portrino\PxShopware\Domain\Model
  */
-class ArticleController extends AbstractController {
+class Shop extends AbstractShopwareModel {
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\ArticleClientInterface
-     * @inject
+     * @var string
      */
-    protected $shopwareClient;
+    protected $name = '';
+
+    /**
+     * Version constructor.
+     *
+     * @param mixed $raw
+     */
+    public function __construct($raw) {
+        parent::__construct($raw);
+
+        if (isset($this->raw->name)) {
+            $this->setName($this->raw->name);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name) {
+        $this->name = $name;
+    }
 
 }
