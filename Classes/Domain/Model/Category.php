@@ -24,6 +24,8 @@ namespace Portrino\PxShopware\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class Category
@@ -55,7 +57,6 @@ class Category extends AbstractShopwareModel {
         if (isset($this->raw->name)) {
             $this->setName($this->raw->name);
         }
-
         $this->initStorageObjects();
     }
 

@@ -312,9 +312,12 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         foreach ($itemUidList as $itemUid) {
             if ($item = $this->shopwareClient->findById($itemUid)) {
                 $items->attach($item);
-            }
-            if ($this->isTrialVersion === TRUE) {
-                break;
+                /**
+                 * only show one item if isTrialVersio
+                 */
+                if ($this->isTrialVersion === TRUE) {
+                    break;
+                }
             }
         }
         $this->view->assign('items', $items);

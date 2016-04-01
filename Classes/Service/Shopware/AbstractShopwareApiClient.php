@@ -307,6 +307,8 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
                     throw $exception;
                 }
             }
+        } else {
+            return json_decode($entry);
         }
     }
 
