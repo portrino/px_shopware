@@ -25,6 +25,8 @@ namespace Portrino\PxShopware\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -107,6 +109,11 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     protected $shopwareClient;
 
     /**
+     * @var boolean
+     */
+    protected $isTrialVersion;
+
+    /**
      * Initializes the controller before invoking an action method.
      *
      * Override this method to solve tasks which all actions have in
@@ -115,7 +122,6 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * @return void
      */
     protected function initializeAction() {
-
         parent::initializeAction();
         $this->applicationContext = \TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext();
         $this->dateTime = new \DateTime('now', new \DateTimeZone('Europe/Berlin'));
@@ -123,6 +129,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         $this->extbaseFrameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $this->controllerSettings = $this->settings['controllers'][$this->request->getControllerName()];
         $this->actionSettings = $this->controllerSettings['actions'][$this->request->getControllerActionName()];
+
+        $this->isTrialVersion = ($this->shopwareClient->getStatus() === AbstractShopwareApiClientInterface::STATUS_CONNECTED_TRIAL);
 
         if (TYPO3_MODE === 'FE') {
             $this->typoScriptFrontendController = $GLOBALS['TSFE'];
@@ -149,6 +157,14 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             'dateTime' => $this->dateTime,
             'language' => $this->language
         ));
+
+        if ($this->isTrialVersion === TRUE) {
+            $this->addFlashMessage(
+                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('flash.warning.trial.description', $this->extensionName),
+                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('flash.warning.trial.title', $this->extensionName),
+                FlashMessage::WARNING
+            );
+        }
     }
 
     /**
@@ -296,6 +312,9 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         foreach ($itemUidList as $itemUid) {
             if ($item = $this->shopwareClient->findById($itemUid)) {
                 $items->attach($item);
+            }
+            if ($this->isTrialVersion === TRUE) {
+                break;
             }
         }
         $this->view->assign('items', $items);

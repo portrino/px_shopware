@@ -111,7 +111,9 @@
             <trans-unit id="toolbar_items.shopware_connector_information.cache.status.inactive">
                 <source>Inactive</source>
             </trans-unit>
-
+            <trans-unit id="toolbar_items.shopware_connector_information.configuration.status.missing">
+                <source> It seems you have missed to include the static TS template! Please insert it!</source>
+            </trans-unit>
             <trans-unit id="clear_cache_menu.title">
                 <source>Flush shopware caches</source>
             </trans-unit>

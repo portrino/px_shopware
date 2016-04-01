@@ -167,7 +167,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
         /**
          * config from TS or flexform
          */
-        $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,'PxShopware');
+        $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, 'PxShopware');
 
         try {
             $this->apiUrl = (isset($this->settings['api']['url']) && $this->settings['api']['url'] != '') ? $this->settings['api']['url'] : (isset($apiConfiguration['url']) ? $apiConfiguration['url'] : FALSE);
