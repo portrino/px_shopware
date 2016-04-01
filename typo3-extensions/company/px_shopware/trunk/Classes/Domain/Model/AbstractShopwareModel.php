@@ -45,15 +45,22 @@ abstract class AbstractShopwareModel {
     protected $raw;
 
     /**
+     * @var boolean
+     */
+    protected $token;
+
+    /**
      * AbstractShopwareModel constructor.
      *
-     * @param mixed $raw
+     * @param $raw
+     * @param $token
      */
-    public function __construct($raw) {
+    public function __construct($raw, $token) {
         $this->setRaw($raw);
         if (isset($this->raw->id)) {
             $this->setId($this->raw->id);
         }
+        $this->setToken($token);
     }
 
     /**
@@ -82,6 +89,20 @@ abstract class AbstractShopwareModel {
      */
     public function setRaw($raw) {
         $this->raw = $raw;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isToken() {
+        return $this->token;
+    }
+
+    /**
+     * @param boolean $token
+     */
+    public function setToken($token) {
+        $this->token = $token;
     }
 
 }

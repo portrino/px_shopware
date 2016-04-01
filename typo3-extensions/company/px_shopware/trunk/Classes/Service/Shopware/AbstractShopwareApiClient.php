@@ -170,20 +170,26 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
         $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,'PxShopware');
 
         try {
-            $this->apiUrl = isset($this->settings['api']['url']) ? $this->settings['api']['url'] : (isset($apiConfiguration['url']) ? $apiConfiguration['url'] : FALSE);
+            $this->apiUrl = (isset($this->settings['api']['url']) && $this->settings['api']['url'] != '') ? $this->settings['api']['url'] : (isset($apiConfiguration['url']) ? $apiConfiguration['url'] : FALSE);
+
             if ($this->apiUrl === FALSE) {
-                throw new ShopwareApiClientConfigurationException('No apiUrl given to connect to shopware REST-Service! Please add it to your TS or Flexform.', 1458807513);
+                throw new ShopwareApiClientConfigurationException('No apiUrl given to connect to shopware REST-Service! Please add it to your extension configuration, TS or flexform.', 1458807513);
             }
+
+            if (filter_var($this->apiUrl, FILTER_VALIDATE_URL) === FALSE) {
+                throw new ShopwareApiClientConfigurationException('apiUrl is not valid. Please enter a valid url in your extension configuration, TS or flexform.', 1459492118);
+            }
+
             $this->apiUrl = rtrim($this->apiUrl, '/') . '/';
 
-            $this->username = isset($this->settings['api']['username']) ? $this->settings['api']['username'] : (isset($apiConfiguration['username']) ? $apiConfiguration['username'] : FALSE);
+            $this->username = (isset($this->settings['api']['username']) && $this->settings['api']['username'] != '') ? $this->settings['api']['username'] : (isset($apiConfiguration['username']) ? $apiConfiguration['username'] : FALSE);
             if ($this->username === FALSE) {
-                throw new ShopwareApiClientConfigurationException('No username given to connect to shopware REST-Service! Please add it to your TS or Flexform.', 1458807514);
+                throw new ShopwareApiClientConfigurationException('No username given to connect to shopware REST-Service! Please add it to your extension configuration, TS or Flexform.', 1458807514);
             }
 
-            $this->apiKey = isset($this->settings['api']['key']) ? $this->settings['api']['key'] : (isset($apiConfiguration['key']) ? $apiConfiguration['key'] : FALSE);
+            $this->apiKey = (isset($this->settings['api']['key'])  && $this->settings['api']['key'] != '') ? $this->settings['api']['key'] : (isset($apiConfiguration['key']) ? $apiConfiguration['key'] : FALSE);
             if ($this->apiKey === FALSE) {
-                throw new ShopwareApiClientConfigurationException('No apiKey given to connect to shopware REST-Service! Please add it to your TS or Flexform.', 1458807515);
+                throw new ShopwareApiClientConfigurationException('No apiKey given to connect to shopware REST-Service! Please add it to your extension configuration, TS or Flexform.', 1458807515);
             }
 
         } catch(ShopwareApiClientConfigurationException $exception) {
@@ -240,9 +246,9 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     protected function call($url, $method = self::METHOD_GET, $data = array(), $params = array(), $doCacheRequest = TRUE) {
         $queryString = '';
         $entry = NULL;
-        if (!empty($params)) {
-            $queryString = http_build_query($params);
-        }
+
+        $params = array_merge_recursive($params, array('px_shopware' => 1));
+        $queryString = http_build_query($params);
 
         $url = rtrim($url, '?') . '?';
         $url = $this->apiUrl . $url . $queryString;
@@ -292,7 +298,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
                     $this->cache->set($cacheIdentifier, $entry, array(), $this->cacheLifeTime);
                 }
 
-            } catch(ShopwareApiClientConfigurationException $exception) {
+            } catch(ShopwareApiClientException $exception) {
                 if (TYPO3_MODE === 'BE') {
                     $this->logException($exception);
                 } else if (TYPO3_MODE === 'FE') {
@@ -313,26 +319,35 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
      * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientResponseException
      */
     protected function prepareResponse($result, $httpCode) {
-        if (NULL === $decodedResult = json_decode($result, true)) {
-            $jsonErrors = array(
-                JSON_ERROR_NONE => 'No error occurred',
-                JSON_ERROR_DEPTH => 'The maximum stack depth has been reached',
-                JSON_ERROR_CTRL_CHAR => 'Control character issue, maybe wrong encoded',
-                JSON_ERROR_SYNTAX => 'Syntaxerror',
-            );
-            throw new ShopwareApiClientJsonException($jsonErrors[json_last_error()], 1458808216);
-        }
+        try {
+            if (NULL === $decodedResult = json_decode($result, TRUE)) {
+                $jsonErrors = array(
+                    JSON_ERROR_NONE => 'No error occurred',
+                    JSON_ERROR_DEPTH => 'The maximum stack depth has been reached',
+                    JSON_ERROR_CTRL_CHAR => 'Control character issue, maybe wrong encoded',
+                    JSON_ERROR_SYNTAX => 'Syntaxerror',
+                );
 
-        if (!isset($decodedResult['success'])) {
-            throw new ShopwareApiClientResponseException('Invalid Response', 1458808324);
-        }
+                throw new ShopwareApiClientJsonException($jsonErrors[json_last_error()], 1458808216);
+            }
 
-        if (!$decodedResult['success']) {
-            throw new ShopwareApiClientResponseException($decodedResult['message'], 1458808501);
-        }
+            if (!isset($decodedResult['success'])) {
+                throw new ShopwareApiClientResponseException('Invalid Response', 1458808324);
+            }
 
-        if (isset($decodedResult['data'])) {
-            return $result;
+            if (!$decodedResult['success']) {
+                throw new ShopwareApiClientResponseException($decodedResult['message'], 1458808501);
+            }
+
+            if (isset($decodedResult['data'])) {
+                return $result;
+            }
+        } catch(ShopwareApiClientException $exception) {
+            if (TYPO3_MODE === 'BE') {
+                $this->logException($exception);
+            } else if (TYPO3_MODE === 'FE') {
+                throw $exception;
+            }
         }
     }
 
@@ -425,7 +440,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
         $result = FALSE;
         $response = NULL;
         try {
-            $response = $this->get('versio1n', array(), FALSE);
+            $response = $this->get('version', array(), FALSE);
             if($response) {
                 $result = ($response->success);
             }
@@ -437,9 +452,39 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
             }
             $result = FALSE;
         } finally {
+            return $result;
+        }
+    }
 
-
-
+    /**
+     * Returns one of the given states
+     * - status_connected_full (TYPO3-Connector is installed on shopware system)
+     * - status_connected_trial (TYPO3-Connector is NOT installed on shopware system - trial version)
+     * - status_disconnected (No connection to shopware system possible)
+     *
+     * @return string
+     * @throws \ShopwareApiClientException
+     */
+    public function getStatus() {
+        $result = self::STATUS_DISCONNECTED;
+        $response = NULL;
+        try {
+            $response = $this->get('version', array(), FALSE);
+            if($response) {
+                if ($response->success && isset($response->pxShopwareTypo3Token) && (boolean)$response->pxShopwareTypo3Token) {
+                    $result = self::STATUS_CONNECTED_FULL;
+                } else if ($response->success && !isset($response->pxShopwareTypo3Token)) {
+                    $result = self::STATUS_CONNECTED_TRIAL;
+                }
+            }
+        } catch (ShopwareApiClientException $exception) {
+            if (TYPO3_MODE === 'BE') {
+                $this->logException($exception);
+            } else if (TYPO3_MODE === 'FE') {
+                throw $exception;
+            }
+            $result = self::STATUS_DISCONNECTED;
+        } finally {
             return $result;
         }
     }
@@ -450,9 +495,10 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     public function find() {
         $result = $this->get($this->getValidEndpoint());
         if ($result) {
+            $token = (isset($result->pxShopwareTypo3Token)) ? (bool)$result->pxShopwareTypo3Token : FALSE;
             if (isset($result->data)) {
                 /** @var \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $shopwareModel */
-                $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $result->data);
+                $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $result->data, $token);
             }
         }
         return $shopwareModel;
@@ -466,9 +512,10 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     public function findById($id) {
         $result = $this->get($this->getValidEndpoint() . $id);
         if ($result) {
+            $token = (isset($result->pxShopwareTypo3Token)) ? (bool)$result->pxShopwareTypo3Token : FALSE;
             if (isset($result->data) && isset($result->data->id)) {
                 /** @var \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $shopwareModel */
-                $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $result->data);
+                $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $result->data, $token);
             }
         }
         return $shopwareModel;
@@ -481,10 +528,11 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
         $shopwareModels = new ObjectStorage();
         $result = $this->get($this->getValidEndpoint());
         if ($result) {
+            $token = (isset($result->pxShopwareTypo3Token)) ? (bool)$result->pxShopwareTypo3Token : FALSE;
             if (isset($result->data) && is_array($result->data)) {
                 foreach ($result->data as $data) {
                     if (isset($data->id)) {
-                        $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $data);
+                        $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $data, $token);
                         if ($shopwareModel != NULL) {
                             $shopwareModels->attach($shopwareModel);
                         }

@@ -25,6 +25,7 @@ namespace Portrino\PxShopware\Backend\ToolbarItems;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Toolbar\Enumeration\InformationStatus;
@@ -73,6 +74,11 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
      * @var IconFactory
      */
     protected $iconFactory;
+
+    /**
+     * @var array
+     */
+    protected $messages = array();
 
     /**
      * @var array
@@ -172,14 +178,23 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
      * @return void
      */
     protected function getShopStatus() {
-        if ($this->versionClient->isConnected()) {
+        $status = $this->versionClient->getStatus();
+
+        if ($status === AbstractShopwareApiClientInterface::STATUS_CONNECTED_FULL) {
             $status = InformationStatus::STATUS_OK;
-            $value = $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information.shop.status.connected', TRUE);
+            $value = $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information.shop.status.connected_full', TRUE);
             $icon = 'px-shopware-shop-connected';
+            $messageText = $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information.shop.status.connected_full.message', FALSE);
+        } else if  ($status === AbstractShopwareApiClientInterface::STATUS_CONNECTED_TRIAL) {
+            $status = InformationStatus::STATUS_WARNING;
+            $value = $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information.shop.status.connected_trial', TRUE);
+            $icon = 'px-shopware-shop-connected';
+            $messageText = $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information.shop.status.connected_trial.message', FALSE);
         } else {
             $status = InformationStatus::STATUS_ERROR;
             $value = $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information.shop.status.disconnected', TRUE);
             $icon = 'px-shopware-shop-disconnected';
+            $messageText = $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information.shop.status.disconnected.message', FALSE);
         }
 
         $this->shopInformation[] = array(
@@ -187,6 +202,11 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
             'value' => $value,
             'status' => $status,
             'icon' => $this->iconFactory->getIcon($icon, Icon::SIZE_SMALL)->render()
+        );
+
+        $this->messages[] = array(
+            'status' => $status,
+            'text' => $messageText
         );
     }
 
@@ -296,13 +316,19 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
         $title = $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information', TRUE);
         $icon = $this->iconFactory->getIcon('px-shopware-toolbar-icon', Icon::SIZE_SMALL)->render('inline');
 
-        if ($this->versionClient->isConnected()) {
-            $badgeClass = 'success';
+        $status = $this->versionClient->getStatus();
+
+        if ($status === AbstractShopwareApiClientInterface::STATUS_CONNECTED_FULL) {
+            $badgeClass = InformationStatus::STATUS_OK;
+            $badgeIcon = $this->iconFactory->getIcon('px-shopware-shop-connected', Icon::SIZE_SMALL)->getMarkup();
+        } else if  ($status === AbstractShopwareApiClientInterface::STATUS_CONNECTED_TRIAL) {
+            $badgeClass = InformationStatus::STATUS_WARNING;
             $badgeIcon = $this->iconFactory->getIcon('px-shopware-shop-connected', Icon::SIZE_SMALL)->getMarkup();
         } else {
-            $badgeClass = 'danger';
+            $badgeClass = InformationStatus::STATUS_ERROR;
             $badgeIcon = $this->iconFactory->getIcon('px-shopware-shop-disconnected', Icon::SIZE_SMALL)->getMarkup();
         }
+
         return '<span title="' . $title . '">' . $icon . '<span style="display: block;" class="badge badge-' . $badgeClass . '">' . $badgeIcon . '</span></span>';
     }
 
@@ -324,6 +350,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
         $this->standaloneView->assignMultiple(array(
             'shopInformation' => $this->shopInformation,
             'cacheInformation' => $this->cacheInformation,
+            'messages' => $this->messages,
             'severityBadgeClass' => $this->severityBadgeClass,
         ));
 
