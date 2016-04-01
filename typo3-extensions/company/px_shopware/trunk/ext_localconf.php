@@ -180,7 +180,7 @@ $boot = function ($_EXTKEY) {
      * if caching was not disabled create one cache for each endpoint
      */
     if ((boolean)$extConf['caching.']['disable'] != TRUE) {
-        $endpoints = array('articles', 'categories', 'media');
+        $endpoints = array('articles', 'categories', 'media', 'shops');
         foreach ($endpoints as $endpoint) {
             if (FALSE === is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_' . $endpoint])) {
                 $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_' . $endpoint] = array(

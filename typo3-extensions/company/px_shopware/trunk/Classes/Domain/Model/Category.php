@@ -38,12 +38,13 @@ class Category extends AbstractShopwareModel {
     protected $name = '';
 
     /**
-     * Article constructor.
+     * Category constructor.
      *
-     * @param mixed $raw
+     * @param $raw
+     * @param $token
      */
-    public function __construct($raw) {
-        parent::__construct($raw);
+    public function __construct($raw, $token) {
+        parent::__construct($raw, $token);
 
         if (isset($this->raw->name)) {
             $this->setName($this->raw->name);

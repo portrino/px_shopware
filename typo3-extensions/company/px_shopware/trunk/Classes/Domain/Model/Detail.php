@@ -40,10 +40,11 @@ class Detail extends AbstractShopwareModel {
     /**
      * Detail constructor.
      *
-     * @param mixed $raw
+     * @param $raw
+     * @param $token
      */
-    public function __construct($raw) {
-        parent::__construct($raw);
+    public function __construct($raw, $token) {
+        parent::__construct($raw, $token);
 
         if (isset($this->raw->mainDetail->number)) {
             $this->setNumber($this->raw->mainDetail->number);

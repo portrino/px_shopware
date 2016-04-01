@@ -45,10 +45,11 @@ class Version extends AbstractShopwareModel {
     /**
      * Version constructor.
      *
-     * @param mixed $raw
+     * @param $raw
+     * @param $token
      */
-    public function __construct($raw) {
-        parent::__construct($raw);
+    public function __construct($raw, $token) {
+        parent::__construct($raw, $token);
 
         if (isset($this->raw->version)) {
             $this->setVersion($this->raw->version);

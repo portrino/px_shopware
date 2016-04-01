@@ -49,7 +49,7 @@ class Ajax {
         /**
          * create one cache for each endpoint
          */
-        $endpoints = array('articles', 'categories', 'media');
+        $endpoints = array('articles', 'categories', 'media', 'shops');
         foreach ($endpoints as $endpoint) {
             if ($cacheManager->hasCache($this->extensionKey . '_' . $endpoint)) {
                 $cacheManager->getCache($this->extensionKey . '_' . $endpoint)->flush();

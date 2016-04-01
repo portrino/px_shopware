@@ -38,12 +38,13 @@ class Shop extends AbstractShopwareModel {
     protected $name = '';
 
     /**
-     * Version constructor.
+     * Shop constructor.
      *
-     * @param mixed $raw
+     * @param $raw
+     * @param $token
      */
-    public function __construct($raw) {
-        parent::__construct($raw);
+    public function __construct($raw, $token) {
+        parent::__construct($raw, $token);
 
         if (isset($this->raw->name)) {
             $this->setName($this->raw->name);
