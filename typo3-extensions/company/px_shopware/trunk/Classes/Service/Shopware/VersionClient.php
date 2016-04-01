@@ -30,7 +30,7 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-class VersionClient extends AbstractShopwareApiClient {
+class VersionClient extends AbstractShopwareApiClient implements VersionClientInterface {
 
     /**
      * @var string

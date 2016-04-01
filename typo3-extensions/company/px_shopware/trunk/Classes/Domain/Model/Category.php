@@ -38,6 +38,12 @@ class Category extends AbstractShopwareModel {
     protected $name = '';
 
     /**
+     * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
+     * @inject
+     */
+    protected $categoryClient;
+
+    /**
      * Category constructor.
      *
      * @param $raw
@@ -65,6 +71,13 @@ class Category extends AbstractShopwareModel {
      *
      */
     public function initializeObject() {
+    }
+
+    /**
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Category>
+     */
+    public function getSubCategories () {
+        return $this->categoryClient->findByParent($this->id);
     }
 
     /**
