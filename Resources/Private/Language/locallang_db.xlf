@@ -41,11 +41,48 @@
             <trans-unit id="toolbar_items.shopware_connector_information.shop.status">
                 <source>Status</source>
             </trans-unit>
-            <trans-unit id="toolbar_items.shopware_connector_information.shop.status.connected">
-                <source>Connected</source>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.status.connected_full">
+                <source>Connected (Full Version)</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.status.connected_full.message">
+                <source>
+                    <![CDATA[
+                        Thank you for purchasing our product: "TYPO3-Connector for Shopware". <br>
+                        If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:info@portrino.de">contact us </a>
+                        or visit our <a style="text-decoration: underline;" href="http://www.portrino.de" target="_blank">website</a>.
+                    ]]>
+                </source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.status.connected_trial">
+                <source>Connected (Trial Version)</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.status.connected_trial.message">
+                <source>
+                    <![CDATA[
+                        You are using the trial version of this extension. <br>
+                        Please download our <a style="text-decoration: underline;" href="http://www.portrino.de" target="_blank">TYPO3-Connector</a> plugin from shopware store
+                        and install it on your shopware system to get the full version.
+                        <br>
+                        <br>
+                        If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:info@portrino.de">contact us </a>
+                        or visit our <a style="text-decoration: underline;" href="http://www.portrino.de" target="_blank">website</a>.
+                    ]]>
+                </source>
             </trans-unit>
             <trans-unit id="toolbar_items.shopware_connector_information.shop.status.disconnected">
                 <source>Disconnected</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.status.disconnected.message">
+                <source>
+                    <![CDATA[
+                        There is a problem with your shop connection <br>
+                        First have a look on our <a style="text-decoration: underline;" href="http://www.portrino.de" target="_blank">documentation</a><br>
+                        If the error still occurs check the TYPO3 "system log".
+                        <br><br>
+                        If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:info@portrino.de">contact us </a>
+                        or visit our <a style="text-decoration: underline;" href="http://www.portrino.de" target="_blank">website</a>.
+                    ]]>
+                </source>
             </trans-unit>
             <trans-unit id="toolbar_items.shopware_connector_information.shop.version">
                 <source>Version</source>

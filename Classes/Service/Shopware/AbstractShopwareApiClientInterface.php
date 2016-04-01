@@ -32,11 +32,26 @@ namespace Portrino\PxShopware\Service\Shopware;
  */
 interface AbstractShopwareApiClientInterface {
 
+    const STATUS_CONNECTED_FULL = 'status_connected_full';
+    const STATUS_CONNECTED_TRIAL = 'status_connected_trial';
+    const STATUS_DISCONNECTED = 'status_disconnected';
+
     /**
      * @return bool
      * @throws \ShopwareApiClientException
      */
     public function isConnected();
+
+    /**
+     * Returns one of the given states
+     * - status_connected_full (TYPO3-Connector is installed on shopware system)
+     * - status_connected_trial (TYPO3-Connector is NOT installed on shopware system - trial version)
+     * - status_disconnected (No connection to shopware system possible)
+     *
+     * @return string
+     * @throws \ShopwareApiClientException
+     */
+    public function getStatus();
 
     /**
      * @return \Portrino\PxShopware\Domain\Model\AbstractShopwareModel
