@@ -12,5 +12,11 @@
 <f:section name="category">
     <div class="category item">
         {category.name}
+        <f:for each="{category.subCategories}" as="subCategory">
+            {subCategory.name}
+            <f:for each="{subCategory.subCategories}" as="subSubCategory">
+                {subSubCategory.name}
+            </f:for>
+        </f:for>
     </div>
 </f:section>

@@ -31,4 +31,9 @@ namespace Portrino\PxShopware\Service\Shopware;
  * @package Portrino\PxShopware\Service\Shopware
  */
 interface CategoryClientInterface extends AbstractShopwareApiClientInterface {
+
+    /**
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Category>
+     */
+    public function findByParent($parentId);
 }

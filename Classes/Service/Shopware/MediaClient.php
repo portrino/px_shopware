@@ -30,7 +30,7 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-class MediaClient extends AbstractShopwareApiClient {
+class MediaClient extends AbstractShopwareApiClient implements MediaClientInterface {
 
     /**
      * @var string

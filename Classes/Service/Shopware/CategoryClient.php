@@ -24,13 +24,14 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class CategoryClient
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-class CategoryClient extends AbstractShopwareApiClient {
+class CategoryClient extends AbstractShopwareApiClient implements CategoryClientInterface {
 
     /**
      * @var string
@@ -54,6 +55,41 @@ class CategoryClient extends AbstractShopwareApiClient {
      */
     public function getEntityClassName() {
         return $this->entityClassName;
+    }
+
+    /**
+     *
+     * Do not use this during initialization, because it could lead to max nesting level exception
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Category>
+     */
+    public function findByParent($parentId) {
+        $result = new ObjectStorage();
+
+        $filterByParentId = array(
+            array(
+                'property' => 'parentId',
+                'expression' => '=',
+                'value'    => $parentId
+            ),
+        );
+
+        $response = $this->get($this->getValidEndpoint(), array('filter' => $filterByParentId));
+
+        if ($response) {
+            $token = (isset($response->pxShopwareTypo3Token)) ? (bool)$response->pxShopwareTypo3Token : FALSE;
+            if (isset($response->data) && is_array($response->data)) {
+                foreach ($response->data as $data) {
+                    if (isset($data->id)) {
+                        $category = $this->objectManager->get($this->getEntityClassName(), $data, $token);
+                        if ($category != NULL) {
+                            $result->attach($category);
+                        }
+                    }
+                }
+            }
+        }
+        return $result;
     }
 
 }
