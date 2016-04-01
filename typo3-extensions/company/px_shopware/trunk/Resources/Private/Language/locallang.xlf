@@ -15,11 +15,11 @@
             <trans-unit id="flash.warning.trial.description">
                 <source>
                     <![CDATA[
-                        You are using the trial version of this extension. <br>
+                        You are using the trial version of this extension! <br><br>
                         Please download our <a style="text-decoration: underline;" href="http://www.portrino.de" target="_blank">TYPO3-Connector</a> plugin from shopware store
-                        and install it on your shopware system to get the full version.
-                        <br>
-                        <br>
+                        and install it on your shopware system to get the full version and enable all features.
+                        To demonstrate the features of this extension we render one item (article, category) here.
+                        <br><br>
                         If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:info@portrino.de">contact us </a>
                         or visit our <a style="text-decoration: underline;" href="http://www.portrino.de" target="_blank">website</a>.
                     ]]>
