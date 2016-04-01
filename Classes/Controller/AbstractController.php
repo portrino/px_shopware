@@ -101,6 +101,12 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     protected $unknownErrorMessage = 'An unknown error occurred. We try to fix this as soon as possible.';
 
     /**
+     * @var \Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface
+     * @inject
+     */
+    protected $shopwareClient;
+
+    /**
      * Initializes the controller before invoking an action method.
      *
      * Override this method to solve tasks which all actions have in
@@ -280,18 +286,12 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     }
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\ArticleClient
-     * @inject
-     */
-    protected $shopwareClient;
-
-    /**
      * action list
      *
      * @return void
      */
     public function listAction() {
-        $itemUidList = isset($this->settings['articles']) ? GeneralUtility::trimExplode(',', $this->settings['articles']) : array();
+        $itemUidList = isset($this->settings['items']) ? GeneralUtility::trimExplode(',', $this->settings['items']) : array();
         $items = new ObjectStorage();
         foreach ($itemUidList as $itemUid) {
             if ($item = $this->shopwareClient->findById($itemUid)) {
