@@ -106,6 +106,11 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
     protected $objectManager;
 
     /**
+     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+     */
+    protected $configurationManager;
+
+    /**
      * @var string Key of the extension
      */
     protected $extensionKey = 'px_shopware';
@@ -119,8 +124,19 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
             return;
         }
         $this->objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
+        $this->configurationManager = $this->objectManager->get(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::class);
+        $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, 'PxShopware');
+
+        if ($this->settings === NULL) {
+            $this->messages[] = array(
+                'status' => InformationStatus::STATUS_WARNING,
+                'text' => $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information.configuration.status.missing', FALSE)
+            );
+        }
+
         $this->versionClient = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\VersionClientInterface::class);
         $this->shopClient = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\ShopClientInterface::class);
+
 
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
 
@@ -143,14 +159,12 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
 
         $this->getCacheStatus();
 
-        $this->emitGetSystemInformation();
-
         $this->severityBadgeClass = InformationStatus::STATUS_OK;
 
     }
 
     /**
-     * Gets the Shop Version and Revision
+     * Gets the connected Shops
      *
      * @return void
      */
@@ -231,7 +245,6 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
                 'value' => $version->getRevision(),
                 'icon' => $this->iconFactory->getIcon('px-shopware-shop-revision', Icon::SIZE_SMALL)->render()
             );
-        } else {
         }
     }
 
@@ -282,19 +295,6 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
             $this->cacheInformation[] = array(
                 'value' => $caches,
             );
-        }
-    }
-
-    /**
-     * Emits the "getSystemInformation" signal
-     *
-     * @return void
-     */
-    protected function emitGetSystemInformation() {
-        // @internal This API is subject to be rebuilt from scratch anytime. Do not use in extensions!
-        list($information) = $this->getSignalSlotDispatcher()->dispatch(__CLASS__, 'getShopwareConnectorInformation', array(array()));
-        if (!empty($information)) {
-            $this->shopInformation[] = $information;
         }
     }
 
