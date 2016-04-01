@@ -40,6 +40,11 @@ class Article extends AbstractShopwareModel {
     /**
      * @var string
      */
+    protected $url = '';
+
+    /**
+     * @var string
+     */
     protected $description = '';
 
     /**
@@ -67,13 +72,18 @@ class Article extends AbstractShopwareModel {
     /**
      * Article constructor.
      *
-     * @param mixed $raw
+     * @param $raw
+     * @param $token
      */
-    public function __construct($raw) {
-        parent::__construct($raw);
+    public function __construct($raw, $token) {
+        parent::__construct($raw, $token);
 
         if (isset($this->raw->name)) {
             $this->setName($this->raw->name);
+        }
+
+        if (isset($this->raw->articleUrl)) {
+            $this->setUrl($this->raw->articleUrl);
         }
 
         /**
@@ -217,4 +227,19 @@ class Article extends AbstractShopwareModel {
     public function getOrdnerNumber() {
         return ($this->getDetail() != NULL) ? $this->getDetail()->getNumber() : '';
     }
+
+    /**
+     * @return string
+     */
+    public function getUrl() {
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function setUrl($url) {
+        $this->url = $url;
+    }
+
 }
