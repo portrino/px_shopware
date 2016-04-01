@@ -83,7 +83,7 @@ class CategoryClient extends AbstractShopwareApiClient implements CategoryClient
             if (isset($response->data) && is_array($response->data)) {
                 foreach ($response->data as $data) {
                     if (isset($data->id)) {
-                        $category = $this->objectManager->get($this->getEntityClassName(), $data, $token);
+                        $category = $this->findById($data->id);
                         if ($category != NULL) {
                             $result->attach($category);
                             if ($isTrialVersion === TRUE) {
