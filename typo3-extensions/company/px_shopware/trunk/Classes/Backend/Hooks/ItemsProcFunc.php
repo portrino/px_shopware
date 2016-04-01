@@ -94,6 +94,7 @@ class ItemsProcFunc {
      */
     public function getCategories(array &$config, $key) {
         $categories = $this->categoryClient->findAll();
+
         /** @var Category $category */
         foreach ($categories as $category) {
             $name = $category->getName() . ' [' . $category->getId() . ']';

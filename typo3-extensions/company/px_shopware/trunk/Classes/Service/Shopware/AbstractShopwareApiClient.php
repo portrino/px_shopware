@@ -204,8 +204,8 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
          * curl initialization
          */
         $this->cURL = curl_init();
-        curl_setopt($this->cURL, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($this->cURL, CURLOPT_FOLLOWLOCATION, false);
+        curl_setopt($this->cURL, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($this->cURL, CURLOPT_FOLLOWLOCATION, FALSE);
         curl_setopt($this->cURL, CURLOPT_USERAGENT, 'Shopware ApiClient');
         curl_setopt($this->cURL, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
         curl_setopt($this->cURL, CURLOPT_USERPWD, $this->username . ':' . $this->apiKey);
@@ -298,6 +298,8 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
                     $this->cache->set($cacheIdentifier, $entry, array(), $this->cacheLifeTime);
                 }
 
+                return json_decode($entry);
+
             } catch(ShopwareApiClientException $exception) {
                 if (TYPO3_MODE === 'BE') {
                     $this->logException($exception);
@@ -306,8 +308,6 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
                 }
             }
         }
-
-        return json_decode($entry);
     }
 
     /**
@@ -319,35 +319,29 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
      * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientResponseException
      */
     protected function prepareResponse($result, $httpCode) {
-        try {
-            if (NULL === $decodedResult = json_decode($result, TRUE)) {
-                $jsonErrors = array(
-                    JSON_ERROR_NONE => 'No error occurred',
-                    JSON_ERROR_DEPTH => 'The maximum stack depth has been reached',
-                    JSON_ERROR_CTRL_CHAR => 'Control character issue, maybe wrong encoded',
-                    JSON_ERROR_SYNTAX => 'Syntaxerror',
-                );
 
-                throw new ShopwareApiClientJsonException($jsonErrors[json_last_error()], 1458808216);
-            }
+         if (NULL === $decodedResult = json_decode($result, TRUE)) {
 
-            if (!isset($decodedResult['success'])) {
-                throw new ShopwareApiClientResponseException('Invalid Response', 1458808324);
-            }
+            $jsonErrors = array(
+                JSON_ERROR_NONE => 'No error occurred',
+                JSON_ERROR_DEPTH => 'The maximum stack depth has been reached',
+                JSON_ERROR_CTRL_CHAR => 'Control character issue, maybe wrong encoded',
+                JSON_ERROR_SYNTAX => 'Syntaxerror',
+            );
 
-            if (!$decodedResult['success']) {
-                throw new ShopwareApiClientResponseException($decodedResult['message'], 1458808501);
-            }
+            throw new ShopwareApiClientJsonException($jsonErrors[json_last_error()], 1458808216);
+        }
 
-            if (isset($decodedResult['data'])) {
-                return $result;
-            }
-        } catch(ShopwareApiClientException $exception) {
-            if (TYPO3_MODE === 'BE') {
-                $this->logException($exception);
-            } else if (TYPO3_MODE === 'FE') {
-                throw $exception;
-            }
+        if (!isset($decodedResult['success'])) {
+            throw new ShopwareApiClientResponseException('Invalid Response', 1458808324);
+        }
+
+        if (!$decodedResult['success']) {
+            throw new ShopwareApiClientResponseException($decodedResult['message'], 1458808501);
+        }
+
+        if (isset($decodedResult['data'])) {
+            return $result;
         }
     }
 
@@ -470,6 +464,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
         $response = NULL;
         try {
             $response = $this->get('version', array(), FALSE);
+
             if($response) {
                 if ($response->success && isset($response->pxShopwareTypo3Token) && (boolean)$response->pxShopwareTypo3Token) {
                     $result = self::STATUS_CONNECTED_FULL;
