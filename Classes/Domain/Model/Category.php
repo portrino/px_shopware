@@ -40,6 +40,11 @@ class Category extends AbstractShopwareModel {
     protected $name = '';
 
     /**
+     * @var \TYPO3\CMS\Core\Http\Uri
+     */
+    protected $uri = '';
+
+    /**
      * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
      * @inject
      */
@@ -56,6 +61,9 @@ class Category extends AbstractShopwareModel {
 
         if (isset($this->raw->name)) {
             $this->setName($this->raw->name);
+        }
+        if (isset($this->raw->categoryUrl)) {
+            $this->setUri($this->raw->categoryUrl);
         }
         $this->initStorageObjects();
     }
@@ -93,6 +101,23 @@ class Category extends AbstractShopwareModel {
      */
     public function setName($name) {
         $this->name = $name;
+    }
+
+    /**
+     * @return \TYPO3\CMS\Core\Http\Uri
+     */
+    public function getUri() {
+        return $this->uri;
+    }
+
+    /**
+     * @param \TYPO3\CMS\Core\Http\Uri|string $uri
+     */
+    public function setUri($uri) {
+        if (is_string($uri)) {
+            $uri = new \TYPO3\CMS\Core\Http\Uri($uri);
+        }
+        $this->uri = $uri;
     }
 
 }

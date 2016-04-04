@@ -1,9 +1,16 @@
 plugin.tx_pxshopware {
     view {
-        templateRootPath = {$plugin.tx_pxshopware.view.templateRootPath}
-        partialRootPath = {$plugin.tx_pxshopware.view.partialRootPath}
-        layoutRootPath = {$plugin.tx_pxshopware.view.layoutRootPath}
+        templateRootPaths {
+            0 = {$plugin.tx_pxshopware.view.templateRootPath}
+        }
+        partialRootPaths {
+            0 = {$plugin.tx_pxshopware.view.partialRootPath}
+        }
+        layoutRootPaths {
+            0 = {$plugin.tx_pxshopware.view.layoutRootPath}
+        }
     }
+
     persistence {
     }
 
