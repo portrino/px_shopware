@@ -62,8 +62,8 @@ class Category extends AbstractShopwareModel {
         if (isset($this->raw->name)) {
             $this->setName($this->raw->name);
         }
-        if (isset($this->raw->categoryUrl)) {
-            $this->setUri($this->raw->categoryUrl);
+        if (isset($this->raw->pxShopwareUrl)) {
+            $this->setUri($this->raw->pxShopwareUrl);
         }
         $this->initStorageObjects();
     }

@@ -38,9 +38,9 @@ class Article extends AbstractShopwareModel {
     protected $name = '';
 
     /**
-     * @var string
+     * @var \TYPO3\CMS\Core\Http\Uri
      */
-    protected $url = '';
+    protected $uri = '';
 
     /**
      * @var string
@@ -82,8 +82,8 @@ class Article extends AbstractShopwareModel {
             $this->setName($this->raw->name);
         }
 
-        if (isset($this->raw->articleUrl)) {
-            $this->setUrl($this->raw->articleUrl);
+        if (isset($this->raw->pxShopwareUrl)) {
+            $this->setUrl($this->raw->pxShopwareUrl);
         }
 
         /**
@@ -229,17 +229,20 @@ class Article extends AbstractShopwareModel {
     }
 
     /**
-     * @return string
+     * @return \TYPO3\CMS\Core\Http\Uri
      */
-    public function getUrl() {
-        return $this->url;
+    public function getUri() {
+        return $this->uri;
     }
 
     /**
-     * @param string $url
+     * @param \TYPO3\CMS\Core\Http\Uri|string $uri
      */
-    public function setUrl($url) {
-        $this->url = $url;
+    public function setUri($uri) {
+        if (is_string($uri)) {
+            $uri = new \TYPO3\CMS\Core\Http\Uri($uri);
+        }
+        $this->uri = $uri;
     }
 
 }
