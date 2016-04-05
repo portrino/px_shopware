@@ -11,31 +11,15 @@
 Users manual
 ============
 
-Configure API Credentials
--------------------------
+::todo
 
-.. figure:: ../Images/UserManual/BackendView.png
-	:width: 500px
-	:alt: Backend view
+    @Andreas: Screeshot
+    Eigene Content Elemente damit besser von Rest abgegrenzt
+    Plugin einbinden was ist zu tun etc.
 
-	Default Backend view (caption of the image)
-
-	The Backend view of TYPO3 after the user has clicked on module "Page". (legend of the image)
-
-
-Link to official documentation
-------------------------------
-
-Sphinx makes it easy to link to official TYPO3 documentation:
-
-- :ref:`TYPO3 Tutorial for Editors <t3editors:start>`
-- :ref:`Getting Started Tutorial <t3start:start>`
-
-and you may even link to a very specific chapter explaining how to :ref:`create a browser condition <t3tsref:condition-browser>` within the TypoScript Reference.
-
-For a complete reference of available cross-link prefixes, please consult file ``_make/conf.py``.
-
-
+    Plugin via TS einbinden (mal vom TG erklären lassen)
+    --> Menügenerierung aus CategoryPlugin
+    
 FAQ
 ^^^
 
