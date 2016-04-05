@@ -15,7 +15,6 @@ $boot = function ($_EXTKEY) {
                 ),
                 // non-cacheable actions
                 array(
-                    'Article' => 'list',
                 )
             );
 
@@ -27,7 +26,6 @@ $boot = function ($_EXTKEY) {
                 ),
                 // non-cacheable actions
                 array(
-                    'Category' => 'list',
                 )
             );
 
