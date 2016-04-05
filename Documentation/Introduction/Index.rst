@@ -6,8 +6,8 @@
 .. include:: ../Includes.txt
 
 
-What does it do?
-================
+Introduction
+============
 
 This extension connects the shopware_ shopsystem with TYPO3 CMS. It retrieves data from shopware REST-API_ and provides
 many frontend plugins to show or list shopware data like articles, categories, etc on your TYPO3 website.
@@ -23,7 +23,7 @@ on your shop instance. Buy and download it from store here_.
 .. _REST-API: https://developers.shopware.com/developers-guide/rest-api/
 .. _here: https://shop.shopware.com/
 
-.. figure:: ../Images/Introduction.png
+.. figure:: ../Images/shopware-add-products-and-categories.png
     :width: 500px
     :alt: Shopware Content Elements
 

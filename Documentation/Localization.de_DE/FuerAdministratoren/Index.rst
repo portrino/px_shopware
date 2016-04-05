@@ -3,13 +3,14 @@
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
 
-.. include:: ../Includes.txt
+.. include:: ../../Includes.txt
 
 
 .. _admin-manual:
 
-Administrator Manual
-====================
+Für Administratoren
+===================
+
 
 Import
 ------
@@ -27,7 +28,7 @@ From TER (Classic Mode)
 Select "*Get Extensions*" in the extension manager and update your extension list. Search for "px_shopware" and click "Import and Install" to get the latest version.
 There are no other dependencies than TYPO3 7.6.
 
-.. figure:: ../Images/AdministratorManual/GetExtensionPxShopware.png
+.. figure:: ../Images/ForAdminstrators/ExtensionManager.png
     :width: 500px
     :align: left
 
@@ -67,12 +68,15 @@ First of all you have to read this article_ about enabling of shopware API for t
 After you have done this you should have your API credentials ready which are neccessary for communcation of "px_shopware"
 extension with your shopware instance.
 
+.. toctree::
+   :maxdepth: 5
+   :titlesonly:
+   :glob:
 
-::todo
+   ExtensionManager/Index
+   TypoScript/Index
 
-    @Andreas:
-    Bitte wie bei PxHybridAuth in 2 Parts hier unterteilen (ExtensionManager und TypoScript)
-    Beide auch in Unterordner packen
+
 
 
 Shopware Connector Status Toolbar
@@ -80,10 +84,26 @@ Shopware Connector Status Toolbar
 
 ::todo
 
-    @Andreas:
     Screenshot, Status beschreiben (Connected Full, Connected Trial und Disconnected)
     Strg + F5 muss gemacht werden damit es sich aktualisiert
     Cache-Status
+
+
+.. figure:: ../../Images/ForAdministrators/topbar-disconnected.png
+   :width: 500px
+   :alt: Shopware-Plugins: Produkte und Kategorien hinzufügen
+
+   Disconnected-Status
+
+
+.. figure:: ../../Images/ForAdministrators/topbar-trial-version.png
+   :width: 500px
+   :alt: TYPO3-Topbar zeigt Connected-Status und Informationen zur Anbindung
+
+   Trial-Version: Connected-Status und Informationen zur Anbindung
+
+
+
 
 Caching
 -------
@@ -117,8 +137,3 @@ Logging
     und in via Logging-API (https://docs.typo3.org/typo3cms/CoreApiReference/ApiOverview/Logging/Index.html) ins px_shopware LogFile welches unter typo3temp liegt
     Logging ist nur im BE aktiv, im Frontend wird Fehler geworfen (ob das so gut ist weiss ich nicht :)
     Logging kann via Extension Manager deaktiviert werden
-
-FAQ
-^^^
-
-Possible subsection: FAQ
