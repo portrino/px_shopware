@@ -9,13 +9,13 @@
 .. _start:
 
 =============================================================
-Shopware Integration for TYPO3 (Deutsch)
+Shopware-Integration für TYPO3
 =============================================================
 
 .. only:: html
 
 	:Klassifikation:
-		extension_key
+		px_shopware
 
 	:Version:
 		|release|
@@ -24,10 +24,11 @@ Shopware Integration for TYPO3 (Deutsch)
 		de
 
 	:Beschreibung:
-		Geben Sie eine Beschreibung ein.
+		Die Extensions verbindet TYPO3 mit Shopware 5 und bietet Frontend-Plugins um Produkte (Shopware-Artikel) und
+		Kategorien mehrere Shopware-Instanzen anzuzeigen.
 
-	:Schlüsselwörter:
-		komma-getrennte,Liste,von,Schlüsselwörtern
+	:Keywords:
+		shopware,typo3,produkte,artikel,kategorien
 
 	:Copyright:
 		2016
@@ -36,7 +37,7 @@ Shopware Integration for TYPO3 (Deutsch)
 		André Wuttig
 
 	:E-Mail:
-		author@example.com
+		wuttig@portrino.de
 
 	:Lizenz:
 		Dieses Dokument wird unter der Open Content License, siehe
@@ -49,12 +50,14 @@ Shopware Integration for TYPO3 (Deutsch)
 	ein GNU/GPL CMS-Framework auf `www.typo3.org <https://typo3.org/>`__.
 
 
-	**Inhaltsverzeichnis**
+
+**Inhaltsverzeichnis**
 
 .. toctree::
 	:maxdepth: 3
 	:titlesonly:
 
-..	Introduction/Index
-..	UsersManual/Index
-..	AdministratorManual/Index
+	Einleitung/Index
+	FuerNutzer/Index
+	FuerAdministratoren/Index
+	Links

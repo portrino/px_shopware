@@ -3,7 +3,7 @@
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
 
-.. include:: Includes.txt
+.. include:: ../Includes.txt
 
 
 .. _links:
@@ -26,3 +26,8 @@ Links
 ::todo
 
     Link zu Shopware Plugin hinzufügen
+
+
+
+.. _Shopware: https://www.shopware.com/
+.. _REST-API: https://developers.shopware.com/developers-guide/rest-api/

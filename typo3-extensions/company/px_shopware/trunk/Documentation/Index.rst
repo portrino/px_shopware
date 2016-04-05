@@ -24,11 +24,11 @@ Shopware Connector for TYPO3
 		en
 
 	:Description:
-		Connects TYPO3 with Shopware 5. Provides frontend plugins to render articles, products from 
-		shopware instances.
+		Connects TYPO3 with Shopware 5. Provides frontend plugins to render products (articles) and catagories from
+		Shopware instances.
 
 	:Keywords:
-		shopware,typo3,article,categories
+		shopware,typo3,products,articles,categories
 
 	:Copyright:
 		2016
@@ -57,6 +57,10 @@ Shopware Connector for TYPO3
 	:titlesonly:
 
 	Introduction/Index
-	UsersManual/Index
-	AdministratorManual/Index
+	ForUsers/Index
+	ForAdministrators/Index
 	Links
+
+	::todo
+
+	    Hinweis und Link zu Shopware Plugin hinzufügen

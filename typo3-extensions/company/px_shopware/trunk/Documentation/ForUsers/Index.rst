@@ -8,8 +8,8 @@
 
 .. _users-manual:
 
-Users manual
-============
+For Users
+=========
 
 ::todo
 
