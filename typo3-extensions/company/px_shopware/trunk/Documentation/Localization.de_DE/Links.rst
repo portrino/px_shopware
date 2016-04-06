@@ -12,22 +12,13 @@ Links
 -----
 
 :TER:
-	https://typo3.org/extensions/repository/view/<extension key>
+	https://typo3.org/extensions/repository/view/px_shopware
 
 :Bug Tracker:
-	https://forge.typo3.org/projects/extension-<extension key>/issues
+	https://forge.typo3.org/projects/extension-px_shopware/issues
 
 :Git Repository:
-	https://github.com/<username>/<extension key>
+	https://github.com/portrino/px_shopware
 
-:Contact:
-	`@<username> <https://twitter.com/your-username>`__
-
-::todo
-
-    Link zu Shopware Plugin hinzufügen
-
-
-
-.. _Shopware: https://www.shopware.com/
-.. _REST-API: https://developers.shopware.com/developers-guide/rest-api/
+:Shopware Plugin:
+	https://store.shopware.com

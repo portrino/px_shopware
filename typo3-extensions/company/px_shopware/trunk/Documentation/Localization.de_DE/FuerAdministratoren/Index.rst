@@ -12,61 +12,65 @@ Für Administratoren
 ===================
 
 
-Import
-------
+Importieren und installieren
+----------------------------
 
-There are two ways of installing the extension. As described `here <https://wiki.typo3.org/Composer#Composer_Mode>`_
+Die px_shopware Extension kann auf zwei Arten auf Ihrem Server importiert werden:
 
-Import the extension to your server from the
+- Aus dem TYPO3 Extension Repository (TER) oder
+- Via Composer
 
-- TYPO3 Extension Repository (TER) or
-- via GIT
+Aus dem TER
+^^^^^^^^^^^
 
-From TER (Classic Mode)
-^^^^^^^^^^^^^^^^^^^^^^^
+**Direkt über den Extension-Manager**
 
-Select "*Get Extensions*" in the extension manager and update your extension list. Search for "px_shopware" and click "Import and Install" to get the latest version.
-There are no other dependencies than TYPO3 7.6.
+Wählen Sie bitte "*Get Extensions*" im TYPO3 Extension-Manager und aktualisieren Sie die Liste der Extensions. Suchen Sie anschließend nach "px_shopware"
+und klicken Sie "Import and Install" um die aktuellste Version zu erhalten.
 
-.. figure:: ../Images/ForAdminstrators/ExtensionManager.png
+(Die px_shopware Extension benötigt keine weiteren Extensions. Die einzige Abhängigkeit ist TYPO3 7.6.)
+
+**Zip-Datei herunter laden**
+
+Die Extension kann auch als Zip-File unter https://typo3.org/extensions/repository/view/px_shopware heruntergeladen und anschließend installiert werden.
+
+.. figure:: ../../Images/ForAdministrators/px_shopware-install-zip-file_2.png
     :width: 500px
     :align: left
 
-::todo
+    Bitte nutzen Sie das das Icon "*Upload Extension .t3x / .zip*" unterhalb des Dropdown-Felds um die Shopware-Extension zu installieren.
 
-    @Andreas: Screeshot
-    Falls vorhanden mal ein normales TYPO3 7.6 nehmen und versuchen die EXT ohne Composer zu installieren
-    Also einfach die ZIP herunterladen und in das Classic TYPO3 hochladen
+.. figure:: ../../Images/ForAdministrators/px_shopware-install-zip-file_4.png
+    :width: 500px
+    :align: left
 
-Via composer
+    Anschließend erscheint die Status-Meldung, dass px_shopware erfolgreich installiert wurde.
+
+
+
+Via Composer
 ^^^^^^^^^^^^
 
-Since TYPO3 7.x you are able to get extension via composer. As described `here <https://wiki.typo3.org/Composer#Composer_Mode>`_ here you just have to user TYPO3 in Composer Mode
-and add this line to your require section within the composer.json file and run composer install / composer update.
+Seit TYPO3 7.x können Extensions via Composer installiert werden. Wenn Sie die px_shopware Extension via Composer installieren wollen,
+müssen Sie TYPO3 entsprechend im Composer-Modus verwenden. Weitere Informationen zum Composer-Modus finden Sie unter: https://wiki.typo3.org/Composer#Composer_Mode
+
+Fügen Sie bitte folgende Zeile in die require Section Ihrer  ``composer.json``-Datei ein:
 
 .. code-block:: json
 
     "typo3-ter/px-shopware": "dev-master",
 
-If you want a specific version than change "dev-master" to the version you need.
+Bitte anschließend ``composer install`` bzw. ``composer update`` durchführen.
+
+Wenn Sie eine spezifische Version der Extension installieren wollen, ändern Sie bitte ``dev-master`` in die entsprechende Versionsnummer (z.B.: ``1.0.*``)
 
 Installation
 ------------
 
-Wether you run your TYPO3 in Classic Mode or Composer Mode you should install the extension via ExtensionManager or via Composer. Click `here <https://wiki.typo3.org/Composer>`_ for more details
-
-After the installation is finished open the Extension Configuration by clicking on the "Configure" gear.
+Nach erfolgreichem Import der Extension erscheint diese im Extension Manager in der Liste der "Installed Extensions". Sofern diese noch nicht aktiviert ist können Sie dies über den Button in der Spalte "A/D" vornehmen.
 
 
-Configuration
--------------
-
-First of all you have to read this article_ about enabling of shopware API for third party usage.
-
-.. _article: https://developers.shopware.com/developers-guide/rest-api/
-
-After you have done this you should have your API credentials ready which are neccessary for communcation of "px_shopware"
-extension with your shopware instance.
+Anschließend muss die Extension *konfiguriert* werden:
 
 .. toctree::
    :maxdepth: 5
@@ -75,65 +79,3 @@ extension with your shopware instance.
 
    ExtensionManager/Index
    TypoScript/Index
-
-
-
-
-Shopware Connector Status Toolbar
----------------------------------
-
-::todo
-
-    Screenshot, Status beschreiben (Connected Full, Connected Trial und Disconnected)
-    Strg + F5 muss gemacht werden damit es sich aktualisiert
-    Cache-Status
-
-
-.. figure:: ../../Images/ForAdministrators/topbar-disconnected.png
-   :width: 500px
-   :alt: Shopware-Plugins: Produkte und Kategorien hinzufügen
-
-   Disconnected-Status
-
-
-.. figure:: ../../Images/ForAdministrators/topbar-trial-version.png
-   :width: 500px
-   :alt: TYPO3-Topbar zeigt Connected-Status und Informationen zur Anbindung
-
-   Trial-Version: Connected-Status und Informationen zur Anbindung
-
-
-
-
-Caching
--------
-
-::todo
-
-    @Andreas:
-    API-Request werden über das interne Caching-Framework gecached
-    (https://docs.typo3.org/typo3cms/CoreApiReference/CachingFramework/Index.html)
-    (http://typo3blog.at/blog/artikel/typo3-caching-grundlagen/)
-    Per Default wird Database Backend (https://docs.typo3.org/typo3cms/CoreApiReference/CachingFramework/FrontendsBackends/Index.html#database-backend)
-    und String Frontend (https://docs.typo3.org/typo3cms/CoreApiReference/CachingFramework/FrontendsBackends/Index.html#string-frontend)
-    für Caching genutzt
-
-    Vorteile vom Caching erklären
-
-    CacheLifeTime kann via Extension Manager geändert werden
-
-    Cache Clear "Blauer Blitz" erklären und Screenshot
-
-    Cache deaktivieren via Extension Manager
-
-
-Logging
--------
-
-::todo
-
-    @Andreas:
-    Geloggt wird in system log (https://docs.typo3.org/typo3cms/CoreApiReference/ApiOverview/SystemLog/Index.html)
-    und in via Logging-API (https://docs.typo3.org/typo3cms/CoreApiReference/ApiOverview/Logging/Index.html) ins px_shopware LogFile welches unter typo3temp liegt
-    Logging ist nur im BE aktiv, im Frontend wird Fehler geworfen (ob das so gut ist weiss ich nicht :)
-    Logging kann via Extension Manager deaktiviert werden

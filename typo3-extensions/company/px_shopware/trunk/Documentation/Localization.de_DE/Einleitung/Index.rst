@@ -20,7 +20,7 @@ anzuzeigen.
 
    Die PxShopware Extension bietet neue Content-Elemente um Produkte, Kategorien, etc. aus Shopware einzubinden.
 
-Die Extension kann als Trial- oder Vollversion benutzt werden.
+Die Extension kann nach Installation als Trial- oder Vollversion benutzt werden.
 
 .. note::
 
@@ -32,4 +32,4 @@ Die Frontend-Plugins wurden mit Extbase und Fluid erstellt. Alle Shopware-Daten 
 gecached um unnötig häufige API-Calls zu vermeiden und das Frontend-Rendering zu beschleunigen.
 
 
-.. _TYPO3-Plugin: https://shop.shopware.com/
+.. _TYPO3-Plugin: https://store.shopware.com/
