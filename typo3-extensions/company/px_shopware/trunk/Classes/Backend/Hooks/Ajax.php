@@ -47,7 +47,6 @@ class Ajax {
     public function clearCache() {
         /** @var CacheManager $cacheManager */
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-
         /**
          * create one cache for each endpoint
          */

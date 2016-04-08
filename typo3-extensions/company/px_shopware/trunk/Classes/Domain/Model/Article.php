@@ -24,13 +24,14 @@ namespace Portrino\PxShopware\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use Portrino\PxShopware\Backend\Form\Wizard\SuggestInterface;
 
 /**
  * Class Article
  *
  * @package Portrino\PxShopware\Domain\Model
  */
-class Article extends AbstractShopwareModel {
+class Article extends AbstractShopwareModel implements SuggestInterface{
 
     /**
      * @var string
@@ -244,5 +245,34 @@ class Article extends AbstractShopwareModel {
         }
         $this->uri = $uri;
     }
+
+    /**
+     * @return int
+     */
+    public function getSuggestId() {
+        return $this->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getSuggestLabel() {
+        return $this->getName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getSuggestDescription() {
+        return $this->getDescription();
+    }
+
+    /**
+     * @return string
+     */
+    public function getSuggestIconIdentifier() {
+        return 'px-shopware-article';
+    }
+
 
 }

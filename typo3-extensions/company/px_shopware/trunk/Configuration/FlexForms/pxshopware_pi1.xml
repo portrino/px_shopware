@@ -22,6 +22,16 @@
                                 <maxitems>10</maxitems>
                                 <size>20</size>
                                 <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
+                                <wizards>
+                                    <userFunc>
+                                        <type>userFunc</type>
+                                        <userFunc>Portrino\PxShopware\Backend\Form\Wizard\SuggestWizard->renderSuggestSelector</userFunc>
+                                        <params>
+                                            <type>Article</type>
+
+                                        </params>
+                                    </userFunc>
+                                </wizards>
                             </config>
                         </TCEforms>
                     </settings.items>

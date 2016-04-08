@@ -30,7 +30,7 @@ namespace Portrino\PxShopware\Domain\Model;
  *
  * @package Portrino\PxShopware\Domain\Model
  */
-abstract class AbstractShopwareModel {
+abstract class AbstractShopwareModel implements ShopwareModelInterface {
 
     /**
      * id
@@ -104,5 +104,4 @@ abstract class AbstractShopwareModel {
     public function setToken($token) {
         $this->token = $token;
     }
-
 }
