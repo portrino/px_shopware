@@ -25,10 +25,14 @@ namespace Portrino\PxShopware\Backend\Hooks;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Portrino\PxShopware\Domain\Model\Article;
 use Portrino\PxShopware\Domain\Model\Category;
-use Portrino\PxShopware\Domain\Model\Shopware\Article;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
+use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Class ItemsProcFunc
@@ -38,22 +42,22 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ItemsProcFunc {
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\ArticleClientInterface
+     * @var ArticleClientInterface
      */
     protected $articleClient;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
+     * @var CategoryClientInterface
      */
     protected $categoryClient;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
+     * @var ObjectManagerInterface
      */
     protected $objectManager;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+     * @var ConfigurationManagerInterface
      */
     protected $configurationManager;
 
@@ -62,9 +66,9 @@ class ItemsProcFunc {
      *
      */
     public function __construct() {
-        $this->objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-        $this->articleClient = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\ArticleClientInterface::class);
-        $this->categoryClient = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\CategoryClientInterface::class);
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->articleClient = $this->objectManager->get(ArticleClientInterface::class);
+        $this->categoryClient = $this->objectManager->get(CategoryClientInterface::class);
     }
 
     /**

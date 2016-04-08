@@ -26,9 +26,10 @@ namespace Portrino\PxShopware\Controller;
  ***************************************************************/
 
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
+use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -123,7 +124,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      */
     protected function initializeAction() {
         parent::initializeAction();
-        $this->applicationContext = \TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext();
+        $this->applicationContext = GeneralUtility::getApplicationContext();
         $this->dateTime = new \DateTime('now', new \DateTimeZone('Europe/Berlin'));
         $this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)]);
         $this->extbaseFrameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -145,6 +146,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * or prepare the view in another way before the action is called.
      *
      * @param \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view
+     *
      * @return void
      */
     protected function initializeView(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view) {
@@ -249,8 +251,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     public function processRequest(\TYPO3\CMS\Extbase\Mvc\RequestInterface $request, \TYPO3\CMS\Extbase\Mvc\ResponseInterface $response) {
         try {
             parent::processRequest($request, $response);
-        }
-        catch(\Exception $exception) {
+        } catch (\Exception $exception) {
 
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog($exception->getMessage(), $this->extensionName, 1);
@@ -283,8 +284,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     protected function callActionMethod() {
         try {
             parent::callActionMethod();
-        }
-        catch(\Exception $exception) {
+        } catch (\Exception $exception) {
 
             if (TYPO3_DLOG) {
                 GeneralUtility::devLog($exception->getMessage(), $this->extensionName, 1);
@@ -292,7 +292,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
             if ($this->applicationContext->isProduction()) {
                 // This enables you to trigger the call of TYPO3s page-not-found handler by throwing \TYPO3\CMS\Core\Error\Http\PageNotFoundException
-                if ($exception instanceof \TYPO3\CMS\Core\Error\Http\PageNotFoundException) {
+                if ($exception instanceof PageNotFoundException) {
                     $GLOBALS['TSFE']->pageNotFoundAndExit($this->entityNotFoundMessage);
                 }
             }
@@ -313,7 +313,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             if ($item = $this->shopwareClient->findById($itemUid)) {
                 $items->attach($item);
                 /**
-                 * only show one item if isTrialVersio
+                 * only show one item if isTrialVersion
                  */
                 if ($this->isTrialVersion === TRUE) {
                     break;

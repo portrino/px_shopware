@@ -24,10 +24,13 @@ namespace Portrino\PxShopware\Backend\Toolbar;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
-
+use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * Class ClearCacheMenu
@@ -65,7 +68,7 @@ class ClearCacheMenu implements \TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHook
     /**
      * Returns the current BE user.
      *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     * @return BackendUserAuthentication
      */
     protected function getBackendUser() {
         return $GLOBALS['BE_USER'];
@@ -74,7 +77,7 @@ class ClearCacheMenu implements \TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHook
     /**
      * Returns LanguageService
      *
-     * @return \TYPO3\CMS\Lang\LanguageService
+     * @return LanguageService
      */
     protected function getLanguageService() {
         return $GLOBALS['LANG'];
@@ -95,8 +98,8 @@ class ClearCacheMenu implements \TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHook
          * For TYPO3 Versions newer than 7.x
          */
         if ($version['version_main'] >= 7) {
-            $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
-            $result = $iconFactory->getIcon('px-shopware-clear-cache', \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
+            $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+            $result = $iconFactory->getIcon('px-shopware-clear-cache', Icon::SIZE_SMALL)->render();
         }
 
         /**

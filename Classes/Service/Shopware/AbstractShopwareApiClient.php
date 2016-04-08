@@ -532,6 +532,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
             if (isset($result->data) && is_array($result->data)) {
                 foreach ($result->data as $data) {
                     if (isset($data->id)) {
+                        /** @var \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $shopwareModel */
                         $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $data, $token);
                         if ($shopwareModel != NULL) {
                             $shopwareModels->attach($shopwareModel);
@@ -558,6 +559,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
             if (isset($result->data) && is_array($result->data)) {
                 foreach ($result->data as $data) {
                     if (isset($data->id)) {
+                        /** @var \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $shopwareModel */
                         $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $data, $token);
                         if ($shopwareModel != NULL) {
                             $shopwareModels->attach($shopwareModel);
