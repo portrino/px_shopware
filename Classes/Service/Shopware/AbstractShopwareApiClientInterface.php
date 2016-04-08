@@ -66,6 +66,13 @@ interface AbstractShopwareApiClientInterface {
     public function findById($id, $doCacheRequest = TRUE);
 
     /**
+     * @param string $term
+     * @param int $limit (-1 == return all)
+     * @param bool $doCacheRequest
+     */
+    public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE);
+
+    /**
      * @param bool $doCacheRequest
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\AbstractShopwareModel>
      */
