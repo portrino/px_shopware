@@ -17,7 +17,7 @@ plugin.tx_pxshopware {
             username =
             key =
         }
-
+        # override global cache lifetime which is configured in extension configuration
         # the duration after which the item is updated via REST-API
         cacheLifeTime = 3600
 
