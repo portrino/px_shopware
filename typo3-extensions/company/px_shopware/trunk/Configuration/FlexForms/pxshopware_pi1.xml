@@ -22,11 +22,6 @@
                                 <maxitems>10</maxitems>
                                 <size>20</size>
                                 <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
-                                <wizards>
-                                    <suggest>
-                                        <type>suggest</type>
-                                    </suggest>
-                                </wizards>
                             </config>
                         </TCEforms>
                     </settings.items>
