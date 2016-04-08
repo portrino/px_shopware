@@ -1,0 +1,52 @@
+plugin.tx_pxshopware {
+    view {
+        templateRootPaths {
+            0 = {$plugin.tx_pxshopware.view.templateRootPath}
+        }
+        partialRootPaths {
+            0 = {$plugin.tx_pxshopware.view.partialRootPath}
+        }
+        layoutRootPaths {
+            0 = {$plugin.tx_pxshopware.view.layoutRootPath}
+        }
+    }
+
+    persistence {
+    }
+
+    settings {
+        api {
+            url = {$plugin.tx_pxshopware.settings.api.url}
+            username = {$plugin.tx_pxshopware.settings.api.username}
+            key = {$plugin.tx_pxshopware.settings.api.key}
+        }
+        # override global cache lifetime which is configured in extension configuration via TS (it also possible to override it within flexform)
+        cacheLifeTime = {$plugin.tx_pxshopware.settings.cacheLifeTime}
+        # fallback image if no image was given for article or other item
+        noImage {
+            path = {$plugin.tx_pxshopware.settings.noImage.path}
+            filename = {$plugin.tx_pxshopware.settings.noImage.filename}
+        }
+    }
+}
+
+plugin.tx_pxshopware_pi1 = USER
+plugin.tx_pxshopware_pi1 {
+    userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+    pluginName = Pi1
+    vendorName = Portrino
+    extensionName = PxShopware
+    controller = Article
+    action = list
+    settings =< plugin.tx_pxshopware.settings
+    persistence =< plugin.tx_pxshopware.persistence
+    view =< plugin.tx_pxshopware.view
+}
+
+plugin.tx_pxshopware_pi2 < plugin.tx_pxshopware_pi1
+plugin.tx_pxshopware_pi2 {
+    pluginName = Pi2
+    controller = Category
+}
+
+module.tx_pxshopware < plugin.tx_pxshopware
