@@ -503,11 +503,12 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
 
     /**
      * @param $id
+     * @param bool $doCacheRequest
      *
      * @return \Portrino\PxShopware\Domain\Model\AbstractShopwareModel
      */
-    public function findById($id) {
-        $result = $this->get($this->getValidEndpoint() . $id);
+    public function findById($id, $doCacheRequest = TRUE) {
+        $result = $this->get($this->getValidEndpoint() . $id, array(), $doCacheRequest);
         if ($result) {
             $token = (isset($result->pxShopwareTypo3Token)) ? (bool)$result->pxShopwareTypo3Token : FALSE;
             if (isset($result->data) && isset($result->data->id)) {
@@ -519,11 +520,39 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     }
 
     /**
+     * @param bool $doCacheRequest
+     *
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\AbstractShopwareModel>
      */
-    public function findAll() {
+    public function findAll($doCacheRequest = TRUE) {
         $shopwareModels = new ObjectStorage();
-        $result = $this->get($this->getValidEndpoint());
+        $result = $this->get($this->getValidEndpoint(), array(), $doCacheRequest);
+        if ($result) {
+            $token = (isset($result->pxShopwareTypo3Token)) ? (bool)$result->pxShopwareTypo3Token : FALSE;
+            if (isset($result->data) && is_array($result->data)) {
+                foreach ($result->data as $data) {
+                    if (isset($data->id)) {
+                        $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $data, $token);
+                        if ($shopwareModel != NULL) {
+                            $shopwareModels->attach($shopwareModel);
+                        }
+                    }
+                }
+            }
+        }
+        return $shopwareModels;
+    }
+
+
+    /**
+     * @param array $params
+     * @param bool $doCacheRequest
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\AbstractShopwareModel>
+     */
+    public function findByParams($params = array(), $doCacheRequest = TRUE) {
+        $shopwareModels = new ObjectStorage();
+        $result = $this->get($this->getValidEndpoint(), $params, $doCacheRequest);
         if ($result) {
             $token = (isset($result->pxShopwareTypo3Token)) ? (bool)$result->pxShopwareTypo3Token : FALSE;
             if (isset($result->data) && is_array($result->data)) {
