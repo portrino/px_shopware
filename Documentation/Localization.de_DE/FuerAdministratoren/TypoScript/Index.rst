@@ -17,7 +17,7 @@ TypoScript ins Root-Template einbinden
 
 Bitte fügen Sie zunächst px_shopware zu Ihrem Root Template hinzu.
 
-Dazu im List-View auf der Root-Page den Default-Template-Record auswählen und im Reiter "Includes" "Shopware Integration (px_shopware)"
+Dazu in der Listenansicht auf der Root-Page den Default-Template-Record auswählen und im Reiter "Includes" "Shopware Integration (px_shopware)"
 zu den "Include static (from extensions)" hinzufügen
 
 .. figure:: ../../../Images/ForAdministrators/px_shopware_ts-root-template-integration.png
@@ -28,7 +28,6 @@ zu den "Include static (from extensions)" hinzufügen
 | Um px_shopware direkt in Ihr Template Setup zu integrieren nutzen Sie bitte folgenden Code:
 | ``<INCLUDE_TYPOSCRIPT: source="FILE:EXT:px_shopware/Configuration/TypoScript/setup.txt">``
 | ``<INCLUDE_TYPOSCRIPT: source="FILE:EXT:px_shopware/Configuration/TypoScript/constants.txt">``
-
 
 
 Sofern das TypoScript nicht richtig konfiguriert wurde, erscheint in der px_shopware-Topbar folgende Fehlermeldung:
@@ -42,7 +41,7 @@ Sofern das TypoScript nicht richtig konfiguriert wurde, erscheint in der px_shop
 TypoScript Werte
 ----------------
 
-Die folgenden Werte können in Ihrem TypoScript definiert werden. Die Optionen können mit FlexForm-Werten des Plugins überschrieben werden.
+Die folgenden Werte können in Ihrem TypoScript definiert werden.
 
 
 ======================================  ==========  ===============================================================================================================================  ====================================================
@@ -58,6 +57,12 @@ view.templateRootPaths                  array       Wird genutzt um verschiedene
 view.partialRootPaths                   array       Wird genutzt um verschiedene Pfade für Partials zu konfigurieren. Diese werden in umgekehrter Reihenfolge überschrieben.         10 = EXT:px_shopware/Resources/Private/Partials/
 view.layoutRootPaths                    array       Wird genutzt um verschiedene Pfade für Layouts zu konfigurieren. Diese werden in umgekehrter Reihenfolge überschrieben.          10 = EXT:px_shopware/Resources/Private/Layouts/
 ======================================  ==========  ===============================================================================================================================  ====================================================
+
+.. important::
+
+   Im der TYPO3-Toolbar wird entweder die API-Konfiguration aus dem Extension Manager oder die von der Rootseite gesehen
+   erste im TypoScript gefundene API-Konfiguration genutzt. Insofern sie in Ihrem TYPO3 CMS mehere Shop-Systeme anbinden
+   wollen ist somit nicht immer im Backend ersichtlich ob alle Shops verbunden sind.
 
 Beispiele
 ---------

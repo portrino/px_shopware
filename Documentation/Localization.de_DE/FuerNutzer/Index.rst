@@ -16,16 +16,20 @@ Produkte einbinden
 
 Zunächst muss im Page-Modus ein neues Content-Element hinzugefügt und das Article(s)-Plugin ausgewählt werden.
 
-.. figure:: ../../Images/shopware-add-products-and-categories.png
-   :width: 500px
-   :alt: Shopware-Plugins: Produkte und Kategorien hinzufügen
+.. figure:: ../../Images/ForUsers/px_shopware_add-plugin.png
+    :width: 500px
+    :alt: Shopware-Plugins: Artikel und Kategorien
 
-Anschließend hat man die Möglichkeit jene Produkte über den Reiter "Plugin" auszuwählen, welche anschließend im
+    TYPO3 Frontend-Plugins zur Anzeige von Shopware Artikeln / Kategorien
+
+Anschließend hat man die Möglichkeit jene Artikel über den Reiter "Plugin" auszuwählen, welche anschließend im
 Frontend angezeigt werden sollen.
 
-.. figure:: ../../Images/px_shopware_add-shopware-products.png
-   :width: 500px
-   :alt: Produkte auswählen
+.. figure:: ../../Images/ForUsers/px_shopware_add-shopware-articles.png
+    :width: 500px
+    :alt: Artikel auswählen im Frontend-Plugin
+
+    Artikel auswählen im Frontend-Plugin
 
 .. important::
 
@@ -35,6 +39,10 @@ Frontend angezeigt werden sollen.
 
     In der Trial Version kann lediglich ein Produkt über das Frontend ausgegeben werden.
 
+.. note::
+
+    Mit ``{article.url}`` kann man auf den jeweilige Artikel im Shopware verlinken. Dieses Feature steht nur in der
+    Full-Version zur Verfügung!
 
 Kategorien einbinden
 --------------------
@@ -42,8 +50,29 @@ Kategorien einbinden
 Ähnlich zu den Produkten kann eine Kategorie-Liste im Frontend angezeigt werden. Dazu wieder im Page-Modus
 ein neues Content-Element hinzugefügen und das Categories(s)-Plugin ausgewählen.
 
-.. figure:: ../../Images/shopware-add-products-and-categories.png
-   :width: 500px
-   :alt: Shopware-Plugins: Produkte und Kategorien hinzufügen
-
 Anschließend im Reiter "Plugin" die anzuzeigenden Kategorien auswählen.
+
+.. figure:: ../../Images/ForUsers/px_shopware_add-plugin.png
+    :width: 500px
+    :alt: Shopware-Plugins: Artikel und Kategorien
+
+    TYPO3 Frontend-Plugins zur Anzeige von Shopware Artikeln / Kategorien
+
+Anschließend hat man die Möglichkeit jene Kategorien über den Reiter "Plugin" auszuwählen, welche anschließend im
+Frontend angezeigt werden sollen.
+
+.. figure:: ../../Images/ForUsers/px_shopware_add-shopware-categories.png
+    :width: 500px
+    :alt: Kategorien auswählen im Frontend-Plugin
+
+    Kategorien auswählen im Frontend-Plugin
+
+.. note::
+
+    Mit Hilfe des Aufrufs von ``{category.subCategories}`` kann man im Fluid-Template Menüstrukturen aus Shopware
+    Kategorien auf Seiten von TYPO3 generieren.
+
+.. note::
+
+    Mit ``{category.url}`` kann man auf die jeweilige Kategorie im Shopware verlinken. Dieses Feature steht nur in der
+    Full-Version zur Verfügung.

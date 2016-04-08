@@ -15,7 +15,7 @@ Für Administratoren
 Importieren und installieren
 ----------------------------
 
-Die px_shopware Extension kann auf zwei Arten auf Ihrem Server importiert werden:
+Die px_shopware Erweiterung kann auf zwei Arten auf Ihrem Server importiert werden:
 
 - Aus dem TYPO3 Extension Repository (TER) oder
 - Via Composer
@@ -28,7 +28,9 @@ Aus dem TER
 Wählen Sie bitte "*Get Extensions*" im TYPO3 Extension-Manager und aktualisieren Sie die Liste der Extensions. Suchen Sie anschließend nach "px_shopware"
 und klicken Sie "Import and Install" um die aktuellste Version zu erhalten.
 
-(Die px_shopware Extension benötigt keine weiteren Extensions. Die einzige Abhängigkeit ist TYPO3 7.6.)
+.. note::
+
+    Die Erweiterung benötigt keine weiteren Extensions. Die einzige Abhängigkeit ist TYPO3 7.6.
 
 **Zip-Datei herunter laden**
 
@@ -51,10 +53,10 @@ Die Extension kann auch als Zip-File unter https://typo3.org/extensions/reposito
 Via Composer
 ^^^^^^^^^^^^
 
-Seit TYPO3 7.x können Extensions via Composer installiert werden. Wenn Sie die px_shopware Extension via Composer installieren wollen,
-müssen Sie TYPO3 entsprechend im Composer-Modus verwenden. Weitere Informationen zum Composer-Modus finden Sie unter: https://wiki.typo3.org/Composer#Composer_Mode
+Seit TYPO3 7.x können Erweiterungen via composer_ installiert werden. Wenn Sie die px_shopware Erweiterungen via composer installieren möchten,
+müssen Sie TYPO3 entsprechend im COMPOSER MODE verwenden. Weitere Informationen hierzu finden Sie unter: https://wiki.typo3.org/Composer#Composer_Mode
 
-Fügen Sie bitte folgende Zeile in die require Section Ihrer  ``composer.json``-Datei ein:
+Fügen Sie bitte folgende Zeile in den ``require`` Abschnitt Ihrer  ``composer.json`` hinzu:
 
 .. code-block:: json
 
@@ -62,12 +64,12 @@ Fügen Sie bitte folgende Zeile in die require Section Ihrer  ``composer.json``-
 
 Bitte anschließend ``composer install`` bzw. ``composer update`` durchführen.
 
-Wenn Sie eine spezifische Version der Extension installieren wollen, ändern Sie bitte ``dev-master`` in die entsprechende Versionsnummer (z.B.: ``1.0.*``)
+Wenn Sie eine spezifische Version der Erweiterung installieren wollen, ändern Sie bitte ``dev-master`` in die entsprechende Versionsnummer (z.B.: ``^1.0``)
 
 Installation
 ------------
 
-Nach erfolgreichem Import der Extension erscheint diese im Extension Manager in der Liste der "Installed Extensions". Sofern diese noch nicht aktiviert ist können Sie dies über den Button in der Spalte "A/D" vornehmen.
+Nach erfolgreichem Import der Erweiterung erscheint diese im Extension Manager in der Liste der "Installed Extensions". Sofern diese noch nicht aktiviert ist können Sie dies über den Button in der Spalte "A/D" vornehmen.
 
 
 Anschließend muss die Extension *konfiguriert* werden:
@@ -79,3 +81,5 @@ Anschließend muss die Extension *konfiguriert* werden:
 
    ExtensionManager/Index
    TypoScript/Index
+
+.. _composer: https://getcomposer.org/
