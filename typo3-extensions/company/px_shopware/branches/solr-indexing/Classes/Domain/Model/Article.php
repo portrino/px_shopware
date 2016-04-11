@@ -24,13 +24,15 @@ namespace Portrino\PxShopware\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use Portrino\PxShopware\Backend\Form\Wizard\SuggestEntryInterface;
+use Portrino\PxShopware\Backend\Hooks\ItemEntryInterface;
 
 /**
  * Class Article
  *
  * @package Portrino\PxShopware\Domain\Model
  */
-class Article extends AbstractShopwareModel {
+class Article extends AbstractShopwareModel implements SuggestEntryInterface, ItemEntryInterface{
 
     /**
      * @var string
@@ -55,12 +57,23 @@ class Article extends AbstractShopwareModel {
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<Portrino\PxShopware\Domain\Model\Media>
      */
-    protected $images = array();
+    protected $images;
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<Portrino\PxShopware\Domain\Model\Category>
+     */
+    protected $categories;
 
     /**
      * @var \Portrino\PxShopware\Domain\Model\Detail
      */
     protected $detail = array();
+
+    /**
+     * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
+     * @inject
+     */
+    protected $categoryClient;
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\MediaClientInterface
@@ -114,6 +127,7 @@ class Article extends AbstractShopwareModel {
      */
     protected function initStorageObjects() {
         $this->images = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        $this->categories = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
     }
 
     /**
@@ -123,18 +137,33 @@ class Article extends AbstractShopwareModel {
         if (isset($this->getRaw()->images) && is_array($this->getRaw()->images)) {
             foreach ($this->raw->images as $image) {
                 if (isset($image->mediaId)) {
+                    /** @var Media $media */
                     $media = $this->mediaClient->findById($image->mediaId);
                     $this->addImage($media);
                 }
             }
         }
 
-        if (isset($this->getRaw()->mainDetailId)) {
-            if (!isset($this->getRaw()->mainDetail)) {
-                $detail = $this->detailClient->findById($this->getId());
-                $this->setDetail($detail);
+        if (isset($this->getRaw()->categories)) {
+            /**
+             * we have to cast it to array, because the response is not of type array (maybe this is a bug in the shopware API)
+             */
+            $categories = (array)$this->raw->categories;
+            foreach ($categories as $category) {
+                if (isset($category->id)) {
+                    /** @var Category $detailedCategory */
+                    $detailedCategory = $this->categoryClient->findById($category->id);
+                    $this->addCategory($detailedCategory);
+                }
             }
         }
+
+        if (isset($this->getRaw()->mainDetailId)) {
+            /** @var Detail $detail */
+            $detail = $this->detailClient->findById($this->getRaw()->mainDetailId);
+            $this->setDetail($detail);
+        }
+
     }
 
     /**
@@ -166,6 +195,23 @@ class Article extends AbstractShopwareModel {
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getChanged() {
+        return $this->changed;
+    }
+
+    /**
+     * @param \DateTime|string $changed
+     */
+    public function setChanged($changed) {
+        if (is_string($changed)) {
+            $changed = new \DateTime($changed);
+        }
+        $this->changed = $changed;
+    }
+
+    /**
      * Adds a image
      *
      * @param \Portrino\PxShopware\Domain\Model\Media $image
@@ -183,7 +229,7 @@ class Article extends AbstractShopwareModel {
      *
      * @return void
      */
-    public function removeMedia(\Portrino\PxShopware\Domain\Model\Media $imageToRemove) {
+    public function removeImage(\Portrino\PxShopware\Domain\Model\Media $imageToRemove) {
         $this->images->detach($imageToRemove);
     }
 
@@ -233,7 +279,7 @@ class Article extends AbstractShopwareModel {
     /**
      * @return string
      */
-    public function getOrdnerNumber() {
+    public function getOrderNumber() {
         return ($this->getDetail() != NULL) ? $this->getDetail()->getNumber() : '';
     }
 
@@ -255,19 +301,94 @@ class Article extends AbstractShopwareModel {
     }
 
     /**
-     * @return \DateTime
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
      */
-    public function getChanged() {
-        return $this->changed;
+    public function getCategories() {
+        return $this->categories;
     }
 
     /**
-     * @param \DateTime|string $changed
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $categories
      */
-    public function setChanged($changed) {
-        if (is_string($changed)) {
-            $changed = new \DateTime($changed);
-        }
-        $this->changed = $changed;
+    public function setCategories($categories) {
+        $this->categories = $categories;
     }
+
+    /**
+     * Adds a category
+     *
+     * @param \Portrino\PxShopware\Domain\Model\Category $category
+     *
+     * @return void
+     */
+    public function addCategory(\Portrino\PxShopware\Domain\Model\Category $category) {
+        $this->categories->attach($category);
+    }
+
+    /**
+     * Removes a category
+     *
+     * @param \Portrino\PxShopware\Domain\Model\Category $categoryToRemove The category to be removed
+     *
+     * @return void
+     */
+    public function removeCategory(\Portrino\PxShopware\Domain\Model\Category $categoryToRemove) {
+        $this->categories->detach($categoryToRemove);
+    }
+
+    /**
+     * @return int
+     */
+    public function getSuggestId() {
+        return $this->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getSuggestLabel() {
+        $result = $this->getName() . ' [' . $this->getId() . ']';
+        $orderNumber = !empty($this->getOrderNumber()) ? ' (' . $this->getOrderNumber() . ')' : '';
+        $result .= $orderNumber;
+        return $result;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSuggestDescription() {
+        /** @var Category $firstCategory */
+        $firstCategory = $this->getCategories()->toArray()[0];
+        if ($firstCategory) {
+            $result = $firstCategory->getBreadCrumbPath();
+        } else {
+            $result = $this->getDescription();
+        }
+        return $result;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSuggestIconIdentifier() {
+        return 'px-shopware-article';
+    }
+
+    /**
+     * @return int
+     */
+    public function getSelectItemId() {
+        return (int)$this->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getSelectItemLabel() {
+        $result = $this->getName() . ' [' . $this->getId() . ']';
+        $orderNumber = !empty($this->getOrderNumber()) ? ' (' . $this->getOrderNumber() . ')' : '';
+        $result .= $orderNumber;
+        return $result;
+    }
+
 }

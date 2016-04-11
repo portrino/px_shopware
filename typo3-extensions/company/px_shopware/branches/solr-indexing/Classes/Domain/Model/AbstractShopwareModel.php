@@ -30,12 +30,12 @@ namespace Portrino\PxShopware\Domain\Model;
  *
  * @package Portrino\PxShopware\Domain\Model
  */
-abstract class AbstractShopwareModel {
+abstract class AbstractShopwareModel implements ShopwareModelInterface {
 
     /**
      * id
      *
-     * @var string
+     * @var int
      */
     protected $id = '';
 
@@ -64,14 +64,14 @@ abstract class AbstractShopwareModel {
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getId() {
-        return $this->id;
+        return (int)$this->id;
     }
 
     /**
-     * @param string $id
+     * @param int $id
      */
     public function setId($id) {
         $this->id = $id;
@@ -104,5 +104,4 @@ abstract class AbstractShopwareModel {
     public function setToken($token) {
         $this->token = $token;
     }
-
 }

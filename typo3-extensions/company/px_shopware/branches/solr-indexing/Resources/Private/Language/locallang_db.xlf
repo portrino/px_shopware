@@ -20,13 +20,22 @@
                 <source>API-Key: e.g.: "0NeOU2Ovs1MMuDkv89a9J7ep1oeoGiQSDdrPeZ2y"</source>
             </trans-unit>
             <trans-unit id="ext_conf_template.caching.disable">
-                <source>Disable Caching: Warning! This may slow down your system!</source>
+                <source>
+                    Disable Caching:
+                    WARNING! This may slow down your system!
+                </source>
             </trans-unit>
             <trans-unit id="ext_conf_template.caching.lifetime">
                 <source>Cache Lifetime: The cache lifetime in seconds (e.g.: 3600 means 1 hour)</source>
             </trans-unit>
             <trans-unit id="ext_conf_template.logging.disable">
                 <source>Disable Logging: Disables logging for backend. Logging in frontend is disabled per default.</source>
+            </trans-unit>
+            <trans-unit id="ext_conf_template.plugin.fetchAllItems">
+                <source>
+                    Fetch all Items: Fetch all possible items from API and render the select list as selectMultipleSideBySide form field.
+                    WARNING: If you have many products in your shop this option may decrease your performance! Use default "Autosuggest Wizard" instead!
+                </source>
             </trans-unit>
 
             <trans-unit id="toolbar_items.shopware_connector_information">
@@ -142,7 +151,7 @@
             <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings">
                 <source>Settings</source>
             </trans-unit>
-            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.articles">
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.items">
                 <source>Articles</source>
             </trans-unit>
 
@@ -159,7 +168,7 @@
             <trans-unit id="tt_content.pi_flexform.pxshopware_pi2.settings">
                 <source>Settings</source>
             </trans-unit>
-            <trans-unit id="tt_content.pi_flexform.pxshopware_pi2.settings.categories">
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi2.settings.items">
                 <source>Categories</source>
             </trans-unit>
 

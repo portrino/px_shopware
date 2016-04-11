@@ -24,7 +24,10 @@ namespace Portrino\PxShopware\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use Portrino\PxShopware\Backend\Form\Wizard\SuggestEntryInterface;
+use Portrino\PxShopware\Backend\Hooks\ItemEntryInterface;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -32,7 +35,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *
  * @package Portrino\PxShopware\Domain\Model
  */
-class Category extends AbstractShopwareModel {
+class Category extends AbstractShopwareModel implements SuggestEntryInterface, ItemEntryInterface {
 
     /**
      * @var string
@@ -54,6 +57,11 @@ class Category extends AbstractShopwareModel {
      * @inject
      */
     protected $categoryClient;
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Category>
+     */
+    protected $path;
 
     /**
      * Category constructor.
@@ -82,12 +90,23 @@ class Category extends AbstractShopwareModel {
      * @return void
      */
     protected function initStorageObjects() {
+        $this->path = new ObjectStorage();
     }
 
     /**
      *
      */
     public function initializeObject() {
+        if (isset($this->getRaw()->path) && $this->getRaw()->path != '') {
+            $pathArray = array_reverse(GeneralUtility::trimExplode('|', $this->getRaw()->path, TRUE));
+            foreach ($pathArray as $pathItem) {
+                /** @var Category|NULL $pathElement */
+                $pathElement = $this->categoryClient->findById($pathItem);
+                if ($pathElement) {
+                    $this->addPathElement($pathElement);
+                }
+            }
+        }
     }
 
     /**
@@ -144,4 +163,99 @@ class Category extends AbstractShopwareModel {
         }
         $this->changed = $changed;
     }
+
+    /**
+     * @return ObjectStorage
+     */
+    public function getPath() {
+        return $this->path;
+    }
+
+    /**
+     * @param ObjectStorage $path
+     */
+    public function setPath($path) {
+        $this->path = $path;
+    }
+
+    /**
+     * Adds a path element
+     *
+     * @param \Portrino\PxShopware\Domain\Model\Category $pathElement
+     *
+     * @return void
+     */
+    public function addPathElement(\Portrino\PxShopware\Domain\Model\Category $pathElement) {
+        $this->path->attach($pathElement);
+    }
+
+    /**
+     * Removes a path
+     *
+     * @param \Portrino\PxShopware\Domain\Model\Path $pathElementToRemove The path element to be removed
+     *
+     * @return void
+     */
+    public function removePathElement(\Portrino\PxShopware\Domain\Model\Category $pathElementToRemove) {
+        $this->path->detach($pathElementToRemove);
+    }
+
+    /**
+     * @param bool $includeSelf TRUE if this element should be included in bread crumb path, FALSE if not
+     *
+     * @return mixed
+     */
+    public function getBreadCrumbPath($includeSelf = TRUE) {
+        /** @var array $path */
+        $path = array_map(function($item) {
+            return $item->getName();
+        }, $this->getPath()->toArray());
+        if ($includeSelf === TRUE) {
+            array_push($path, $this->getName());
+        }
+        return implode('/', $path);
+    }
+
+    /**
+     * @return int
+     */
+    public function getSelectItemId() {
+        return $this->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getSelectItemLabel() {
+        return $this->getName() . ' [' . $this->getId() . ']';
+    }
+
+    /**
+     * @return int
+     */
+    public function getSuggestId() {
+        return $this->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getSuggestLabel() {
+        return $this->getName() . ' [' . $this->getId() . ']';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSuggestDescription() {
+        return $this->getBreadCrumbPath(FALSE);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSuggestIconIdentifier() {
+        return 'px-shopware-category';
+    }
+
 }

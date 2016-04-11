@@ -1,0 +1,21 @@
+.px-shopware.autocomplete {
+    width: 500px;
+}
+
+.px-shopware.autocomplete .autocomplete-suggestion {
+    width: 500px;
+}
+
+.px-shopware .autocomplete-suggestion-link {
+    padding: 5px 13px 5px 13px;
+}
+
+@media (max-width: 768px) {
+    .px-shopware.autocomplete {
+        width: auto;
+    }
+
+    .px-shopware.autocomplete .autocomplete-suggestion {
+        width: 100%;
+    }
+}

@@ -125,6 +125,22 @@ $boot = function ($_EXTKEY) {
                     )
                 );
 
+                $iconRegistry->registerIcon(
+                    'px-shopware-article',
+                    \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+                    array(
+                        'source' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/article.svg'
+                    )
+                );
+
+                $iconRegistry->registerIcon(
+                    'px-shopware-category',
+                    \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+                    array(
+                        'source' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/category.svg'
+                    )
+                );
+
                 /**
                  * register icons for each plugin
                  */
@@ -143,13 +159,6 @@ $boot = function ($_EXTKEY) {
                 }
 
             }
-
-            // Hooks
-            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler (
-                'tx_pxshopware::clearCache',
-                'Portrino\\PxShopware\\Backend\\Hooks\\Ajax->clearCache',
-                FALSE
-            );
 
             $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][] =
                 \Portrino\PxShopware\Backend\Toolbar\ClearCacheMenu::class;
@@ -181,6 +190,12 @@ $boot = function ($_EXTKEY) {
                     )
                 )
             );
+//
+//            $GLOBALS['TBE_MODULES']['_configuration'][$_EXTKEY] = array (
+//                'jsFiles' => array (
+//                    'EXT:' . $_EXTKEY . '/Resources/Public/Javascript/Backend/FormEngineSuggest.js',
+//                ),
+//            );
 
             break;
     }

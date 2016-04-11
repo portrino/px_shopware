@@ -23,13 +23,21 @@ $boot = function () {
         1 => str_replace('_', '', $extKey) . '_pi2'
     );
     foreach ($pluginSignatures as $pluginSignature) {
-
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-            '*',
-            'FILE:EXT:' . $extKey . '/Configuration/FlexForms/'. $pluginSignature .'.xml',
-            $pluginSignature
-        );
-
+        
+        if (\Portrino\PxShopware\Backend\Utility\ExtensionConfigurationMatcher::isFeatureEnabled(array(0 => 'plugin.', 1 => 'fetchAllItems'))) {
+            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+                '*',
+                'FILE:EXT:' . $extKey . '/Configuration/FlexForms/FetchAllItems/'. $pluginSignature .'.xml',
+                $pluginSignature
+            );
+        } else {
+            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+                '*',
+                'FILE:EXT:' . $extKey . '/Configuration/FlexForms/'. $pluginSignature .'.xml',
+                $pluginSignature
+            );
+        }
+        
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTcaSelectItem(
             'tt_content',
             'CType',
