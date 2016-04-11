@@ -46,8 +46,8 @@ class Detail extends AbstractShopwareModel {
     public function __construct($raw, $token) {
         parent::__construct($raw, $token);
 
-        if (isset($this->raw->mainDetail->number)) {
-            $this->setNumber($this->raw->mainDetail->number);
+        if (isset($this->raw->number)) {
+            $this->setNumber($this->raw->number);
         }
     }
 

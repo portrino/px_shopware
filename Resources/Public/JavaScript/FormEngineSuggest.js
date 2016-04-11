@@ -32,6 +32,7 @@ define(['jquery', 'jquery/autocomplete', 'TYPO3/CMS/Backend/FormEngine'], functi
         $('.t3js-formengine-select-itemstoselect').parent('.form-multigroup-item').hide();
 
         var $containerElement = $searchField.closest('.t3-form-suggest-container');
+        var $loader = $('#loader');
         var type = $searchField.data('type'),
             minimumCharacters = $searchField.data('minchars'),
             url = TYPO3.settings.ajaxUrls['tx_pxshopware::searchAction'],
@@ -74,7 +75,11 @@ define(['jquery', 'jquery/autocomplete', 'TYPO3/CMS/Backend/FormEngine'], functi
                         'data-uid': suggestion.data.uid
                     })).html();
             },
+            onSearchStart: function() {
+                $loader.show();
+            },
             onSearchComplete: function() {
+                $loader.hide();
                 $containerElement.addClass('open');
             },
             beforeRender: function(container) {
