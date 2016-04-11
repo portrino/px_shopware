@@ -14,7 +14,6 @@ namespace Portrino\PxShopware\Backend\Form\Wizard;
  * The TYPO3 project - inspiring people to share!
  */
 
-use Portrino\PxShopware\Domain\Model\ShopwareModelInterface;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurationException;
 use Psr\Http\Message\ResponseInterface;
@@ -23,6 +22,7 @@ use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
@@ -69,6 +69,10 @@ class SuggestWizard {
      */
     public function renderSuggestSelector($params, $pObj) {
         $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/PxShopware/FormEngineSuggest');
+        $this->pageRenderer->addCssFile(
+            ExtensionManagementUtility::extRelPath('px_shopware') . 'Resources/Public/Css/backend.css'
+        );
+
         /**
          * get the specific endpoint from type
          */
@@ -90,7 +94,8 @@ class SuggestWizard {
         }
 
         $selector = '
-        <div class="autocomplete t3-form-suggest-container">
+        <label>&nbsp;</label>
+        <div class="px-shopware autocomplete t3-form-suggest-container">
             <div class="input-group">
                 <span class="input-group-addon">' . $this->iconFactory->getIcon('actions-search', Icon::SIZE_SMALL)->render() . '</span>
                 <input type="search" class="t3-form-suggest-px-shopware form-control" 
@@ -135,15 +140,18 @@ class SuggestWizard {
         /** @var AbstractShopwareApiClientInterface $shopwareApiClient */
         $shopwareApiClient = $this->objectManager->get($shopwareApiClientClass);
 
-        $results = $shopwareApiClient->findByTerm($search, 10, FALSE);
-        /** @var SuggestInterface $result */
+        $results = $shopwareApiClient->findByTerm($search, 8);
+        /** @var SuggestEntryInterface $result */
         foreach ($results as $result) {
+            /** @var SuggestEntryInterface $detailedResult */
+            $detailedResult = $shopwareApiClient->findById($result->getSuggestId());
+
             $entry = array(
-                'text' => '<span class="suggest-label">' . htmlspecialchars($result->getSuggestLabel()) . '</span><span class="suggest-uid">[' . $result->getId() . ']</span><br />
-                                <span class="suggest-path">' . substr($result->getSuggestDescription(), 0, 20) . '</span>',
-                'label' => $result->getSuggestLabel(),
-                'uid' => $result->getId(),
-                'sprite' => $this->iconFactory->getIcon($result->getSuggestIconIdentifier(), Icon::SIZE_SMALL)->render()
+                'text' => '<span class="suggest-label">&nbsp;' . $this->highlight($detailedResult->getSuggestLabel(), $search) . '</span><br />
+                                <span class="suggest-path"><i>' . $this->crop($detailedResult->getSuggestDescription(), 80) . '</i></span>',
+                'label' => $detailedResult->getSuggestLabel(),
+                'uid' => $detailedResult->getSuggestId(),
+                'sprite' => $this->iconFactory->getIcon($detailedResult->getSuggestIconIdentifier(), Icon::SIZE_SMALL)->render()
             );
             $rows[$result->getId()] = $entry;
         }
@@ -158,5 +166,33 @@ class SuggestWizard {
      */
     protected function getLanguageService() {
         return $GLOBALS['LANG'];
+    }
+
+    /**
+     * @param string $text
+     * @param string $words
+     *
+     * @return mixed
+     */
+    protected function highlight($text, $words) {
+        $highlighted = preg_filter('/' . preg_quote($words) . '/i', '<b><span class="search-highlight">$0</span></b>', $text);
+        if (!empty($highlighted)) {
+            $text = $highlighted;
+        }
+        return $text;
+    }
+
+    /**
+     * @param string $string
+     * @param int $limit
+     *
+     * @return string
+     */
+    private function crop($string, $limit) {
+        if (strlen($string) > $limit) {
+            return substr($string, 0, $limit) . '...';
+        } else {
+            return $string;
+        }
     }
 }

@@ -16,24 +16,14 @@
                             <config>
                                 <type>select</type>
                                 <renderType>selectMultipleSideBySide</renderType>
-                                <items>
-                                </items>
-                                <itemsProcFunc>Portrino\PxShopware\Backend\Hooks\ItemsProcFunc->getItemsSelected</itemsProcFunc>
+                                <items></items>
+                                <itemsProcFunc>Portrino\PxShopware\Backend\Hooks\ItemsProcFunc->getAllItems</itemsProcFunc>
                                 <itemsProcFunc_params>
                                     <type>Category</type>
                                 </itemsProcFunc_params>
                                 <maxitems>100</maxitems>
-                                <size>5</size>
-                                <itemListStyle>display: none;</itemListStyle>
-                                <wizards>
-                                    <userFunc>
-                                        <type>userFunc</type>
-                                        <userFunc>Portrino\PxShopware\Backend\Form\Wizard\SuggestWizard->renderSuggestSelector</userFunc>
-                                        <params>
-                                            <type>Category</type>
-                                        </params>
-                                    </userFunc>
-                                </wizards>
+                                <size>20</size>
+                                <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
                     </settings.items>

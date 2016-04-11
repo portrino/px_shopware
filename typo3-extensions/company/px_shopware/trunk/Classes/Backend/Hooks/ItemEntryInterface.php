@@ -1,5 +1,5 @@
 <?php
-namespace Portrino\PxShopware\Backend\Form\Wizard;
+namespace Portrino\PxShopware\Backend\Hooks;
 
 /***************************************************************
  *  Copyright notice
@@ -26,29 +26,20 @@ namespace Portrino\PxShopware\Backend\Form\Wizard;
  ***************************************************************/
 
 /**
- * Interface SuggestInterface
+ * Interface ItemEntryInterface
  *
- * @package Portrino\PxShopware\Backend\Form\Wizard
+ * @package Portrino\PxShopware\Backend\Hooks
  */
-interface SuggestInterface {
+interface ItemEntryInterface {
 
     /**
      * @return int
      */
-    public function getSuggestId();
+    public function getSelectItemId();
 
     /**
      * @return string
      */
-    public function getSuggestLabel();
+    public function getSelectItemLabel();
 
-    /**
-     * @return string
-     */
-    public function getSuggestDescription();
-
-    /**
-     * @return string
-     */
-    public function getSuggestIconIdentifier();
 }

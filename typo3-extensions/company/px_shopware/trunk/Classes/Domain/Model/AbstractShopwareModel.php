@@ -35,7 +35,7 @@ abstract class AbstractShopwareModel implements ShopwareModelInterface {
     /**
      * id
      *
-     * @var string
+     * @var int
      */
     protected $id = '';
 
@@ -64,14 +64,14 @@ abstract class AbstractShopwareModel implements ShopwareModelInterface {
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getId() {
-        return $this->id;
+        return (int)$this->id;
     }
 
     /**
-     * @param string $id
+     * @param int $id
      */
     public function setId($id) {
         $this->id = $id;
