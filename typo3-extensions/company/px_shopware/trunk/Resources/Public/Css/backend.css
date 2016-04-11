@@ -6,8 +6,30 @@
     width: 500px;
 }
 
-.px-shopware .autocomplete-suggestion-link {
+.px-shopware.autocomplete .autocomplete-suggestion-link {
     padding: 5px 13px 5px 13px;
+}
+
+.px-shopware.autocomplete .form-control {
+    border-right: 0px solid #fefefe !important;
+}
+
+.px-shopware.autocomplete .form-control:focus {
+    border-right: 0px solid #fefefe !important;
+}
+
+.px-shopware.autocomplete .loading.input-group-addon {
+    background-color: #fefefe !important;
+    border-left: 0px solid #fefefe !important;
+}
+
+.px-shopware.autocomplete .loading.input-group-addon:focus {
+    background-color: #fefefe !important;
+    border-left: 0px solid #fefefe !important;
+}
+
+.px-shopware.autocomplete .loading.input-group-addon .fa {
+    background-color: #fefefe !important;
 }
 
 @media (max-width: 768px) {

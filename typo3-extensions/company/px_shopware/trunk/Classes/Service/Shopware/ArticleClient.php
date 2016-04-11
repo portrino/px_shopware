@@ -51,6 +51,36 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
     public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE) {
         $shopwareModels = new ObjectStorage();
 
+        /**
+         * only search for id if term is integer
+         */
+        if (is_numeric($term)) {
+
+            $filter = array(
+                array(
+                    'property' => 'id',
+                    'expression' => '=',
+                    'value' => $term
+                ),
+            );
+
+        } else {
+
+            $filter = array(
+                array(
+                    'property' => 'name',
+                    'expression' => 'LIKE',
+                    'value' => '%' . $term . '%'
+                ),
+                array(
+                    'operator' => 'OR',
+                    'property' => 'mainDetail.number',
+                    'expression' => 'LIKE',
+                    'value' => '%' . $term . '%'
+                )
+            );
+        }
+
         $params = array(
             'limit' => $limit,
             'sort' => array(
@@ -59,18 +89,7 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
                     'direction' => 'ASC'
                 )
             ),
-            'filter' => array(
-                array(
-                    'property' => 'name',
-                    'expression' => 'LIKE',
-                    'value' => '%' . $term . '%'
-                ),
-//                array(
-//                    'property' => 'descriptionLong',
-//                    'expression' => 'LIKE',
-//                    'value' => '%' . $term . '%'
-//                )
-            )
+            'filter' => $filter
         );
         
         $result = $this->get($this->getValidEndpoint(), $params, $doCacheRequest);

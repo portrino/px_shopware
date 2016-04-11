@@ -172,6 +172,14 @@
                 <source>Categories</source>
             </trans-unit>
 
+            <trans-unit id="suggest_wizard.placeholder.article">
+                <source>Article Number or Name</source>
+            </trans-unit>
+
+            <trans-unit id="suggest_wizard.placeholder.category">
+                <source>Category Name</source>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
