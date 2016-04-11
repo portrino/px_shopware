@@ -25,6 +25,12 @@ define(['jquery', 'jquery/autocomplete', 'TYPO3/CMS/Backend/FormEngine'], functi
     });
 
     var initialize = function($searchField) {
+        /**
+         * we have to hide the item to select wrapper div manually via JS, because there is no chance to
+         * hide the selector wrapper div via CSS
+         */
+        $('.t3js-formengine-select-itemstoselect').parent('.form-multigroup-item').hide();
+
         var $containerElement = $searchField.closest('.t3-form-suggest-container');
         var type = $searchField.data('type'),
             minimumCharacters = $searchField.data('minchars'),
@@ -90,9 +96,6 @@ define(['jquery', 'jquery/autocomplete', 'TYPO3/CMS/Backend/FormEngine'], functi
 
 
             var formEl = $searchField.data('fieldname');
-
-            console.debug(formEl);
-
             var labelEl = $('<div>').html($(this).data('label'));
             var label = labelEl.text();
             var title = labelEl.find('span').attr('title') || label;

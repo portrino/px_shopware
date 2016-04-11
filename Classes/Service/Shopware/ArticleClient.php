@@ -64,7 +64,12 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
                     'property' => 'name',
                     'expression' => 'LIKE',
                     'value' => '%' . $term . '%'
-                )
+                ),
+//                array(
+//                    'property' => 'descriptionLong',
+//                    'expression' => 'LIKE',
+//                    'value' => '%' . $term . '%'
+//                )
             )
         );
         
