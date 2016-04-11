@@ -68,8 +68,9 @@ class CategoryIndexer extends AbstractShopwareIndexer {
             $itemDocument->setField('description', $category->getRaw()->metaDescription);
         }
 
-        \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($category);
-        exit;
+        if ($category->getImage()) {
+            $itemDocument->setField('image_stringS', $category->getImage()->getUrl());
+        }
 
         return $itemDocument;
     }

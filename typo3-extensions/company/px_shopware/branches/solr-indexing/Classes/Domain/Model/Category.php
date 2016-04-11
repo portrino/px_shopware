@@ -53,10 +53,21 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     protected $uri = '';
 
     /**
+     * @var \Portrino\PxShopware\Domain\Model\Media
+     */
+    protected $image;
+
+    /**
      * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
      * @inject
      */
     protected $categoryClient;
+
+    /**
+     * @var \Portrino\PxShopware\Service\Shopware\MediaClientInterface
+     * @inject
+     */
+    protected $mediaClient;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Category>
@@ -106,6 +117,11 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
                     $this->addPathElement($pathElement);
                 }
             }
+        }
+
+        if (isset($this->getRaw()->media) && is_object($this->getRaw()->media) && isset($this->getRaw()->media->id)) {
+            $media = $this->mediaClient->findById($this->getRaw()->media->id);
+            $this->setImage($media);
         }
     }
 
@@ -162,6 +178,20 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
             $changed = new \DateTime($changed);
         }
         $this->changed = $changed;
+    }
+
+    /**
+     * @return \Portrino\PxShopware\Domain\Model\Media
+     */
+    public function getImage() {
+        return $this->image;
+    }
+
+    /**
+     * @param \Portrino\PxShopware\Domain\Model\Media $image
+     */
+    public function setImage(\Portrino\PxShopware\Domain\Model\Media $image) {
+        $this->image = $image;
     }
 
     /**

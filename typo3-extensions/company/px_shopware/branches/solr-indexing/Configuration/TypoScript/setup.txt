@@ -52,3 +52,37 @@ plugin.tx_pxshopware_pi2 {
 }
 
 module.tx_pxshopware < plugin.tx_pxshopware
+
+
+    # add article and category indexing if ext:solr is loaded
+[userFunc = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded(solr)]
+    plugin.tx_solr {
+        index {
+            queue {
+                Portrino\PxShopware\Domain\Model\Article = 1
+                Portrino\PxShopware\Domain\Model\Article {
+                    skipPreFetchFromDb = 1
+                    indexer = Portrino\PxShopware\Service\Solr\Indexer\ArticleIndexer
+                    indexer {
+#                        option = value
+                    }
+                    fields {
+                        url = pxShopwareUrl
+                    }
+                }
+
+                Portrino\PxShopware\Domain\Model\Category = 1
+                Portrino\PxShopware\Domain\Model\Category {
+                    skipPreFetchFromDb = 1
+                    indexer = Portrino\PxShopware\Service\Solr\Indexer\CategoryIndexer
+                    indexer {
+                        ignoredIds = 1,3,4,51
+                    }
+                    fields {
+                        url = pxShopwareUrl
+                    }
+                }
+            }
+        }
+    }
+[global]
