@@ -38,6 +38,11 @@ class Article extends AbstractShopwareModel {
     protected $name = '';
 
     /**
+     * @var \DateTime $changed
+     */
+    protected $changed;
+
+    /**
      * @var \TYPO3\CMS\Core\Http\Uri
      */
     protected $uri = '';
@@ -83,7 +88,11 @@ class Article extends AbstractShopwareModel {
         }
 
         if (isset($this->raw->pxShopwareUrl)) {
-            $this->setUrl($this->raw->pxShopwareUrl);
+            $this->setUri($this->raw->pxShopwareUrl);
+        }
+
+        if (isset($this->raw->changed)) {
+            $this->setChanged($this->raw->changed);
         }
 
         /**
@@ -245,4 +254,20 @@ class Article extends AbstractShopwareModel {
         $this->uri = $uri;
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getChanged() {
+        return $this->changed;
+    }
+
+    /**
+     * @param \DateTime|string $changed
+     */
+    public function setChanged($changed) {
+        if (is_string($changed)) {
+            $changed = new \DateTime($changed);
+        }
+        $this->changed = $changed;
+    }
 }
