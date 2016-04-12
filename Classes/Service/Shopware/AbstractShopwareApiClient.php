@@ -237,13 +237,13 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
      * @param string $method
      * @param array $data
      * @param array $params
-     * @param boolean $doCacheRequest
+     * @param bool $doCacheRequest
      *
-     * @return string
+     * @return mixed
      * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Core\Cache\Exception\InvalidDataException
      */
-    protected function call($url, $method = self::METHOD_GET, $data = array(), $params = array(), $doCacheRequest = TRUE) {
+    public function call($url, $method = self::METHOD_GET, $data = array(), $params = array(), $doCacheRequest = TRUE) {
         $queryString = '';
         $entry = NULL;
 
@@ -352,7 +352,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
      * @param array $params
      * @param bool $doCacheRequest
      *
-     * @return string
+     * @return mixed
      * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
      */
     public function get($url, $params = array(), $doCacheRequest = TRUE) {
@@ -414,7 +414,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     /**
      * @return string
      */
-    protected function getValidEndpoint() {
+    public function getValidEndpoint() {
         return rtrim($this->getEndpoint(), '/') . '/';
     }
 
@@ -502,10 +502,10 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @param bool $doCacheRequest
      *
-     * @return \Portrino\PxShopware\Domain\Model\AbstractShopwareModel
+     * @return \Portrino\PxShopware\Domain\Model\ShopwareModelInterface
      */
     public function findById($id, $doCacheRequest = TRUE) {
         $result = $this->get($this->getValidEndpoint() . $id, array(), $doCacheRequest);
@@ -520,9 +520,11 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     }
 
     /**
-     * @param string $term
+     * @param $term
      * @param int $limit
      * @param bool $doCacheRequest
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
     public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE) {
         $shopwareModels = new ObjectStorage();
@@ -565,7 +567,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     /**
      * @param bool $doCacheRequest
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\AbstractShopwareModel>
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
     public function findAll($doCacheRequest = TRUE) {
         $shopwareModels = new ObjectStorage();
@@ -592,7 +594,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
      * @param array $params
      * @param bool $doCacheRequest
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\AbstractShopwareModel>
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
     public function findByParams($params = array(), $doCacheRequest = TRUE) {
         $shopwareModels = new ObjectStorage();
