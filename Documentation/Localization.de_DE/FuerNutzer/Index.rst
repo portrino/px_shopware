@@ -11,8 +11,8 @@
 Für Nutzer
 ==========
 
-Produkte einbinden
-------------------
+Artikel anzeigen
+----------------
 
 Zunächst muss im Page-Modus ein neues Content-Element hinzugefügt und das Article(s)-Plugin ausgewählt werden.
 
@@ -25,15 +25,28 @@ Zunächst muss im Page-Modus ein neues Content-Element hinzugefügt und das Arti
 Anschließend hat man die Möglichkeit jene Artikel über den Reiter "Plugin" auszuwählen, welche anschließend im
 Frontend angezeigt werden sollen.
 
-.. figure:: ../../Images/ForUsers/px_shopware_add-shopware-articles.png
+.. figure:: ../../Images/ForUsers/px_shopware_add-shopware-articles-fetch-all-items.png
     :width: 500px
     :alt: Artikel auswählen im Frontend-Plugin
 
-    Artikel auswählen im Frontend-Plugin
+    Shopware-Artikel aus Liste aller Artikel des Shops auswählen
+
+.. figure:: ../Images/ForUsers/px_shopware_add-shopware-articles-autocomplete-wizard.png
+    :width: 800px
+    :alt: Artikel via Autocomplete-Wizard auswählen
+
+    Shopware-Artikel via Autocomplete-Wizard auswählen
+
+
+.. note::
+
+    Standardmäßig wird der Autocomplete-Wizard für die Auswahl von Artikeln und Kategorien im Frontend-Plugin verwendet.
+    Sie können alle Artikel des Shops anzeigen, indem sie dies entsprechend im Extension Manager in der Extension
+    Konfiguration aktivieren.
 
 .. important::
 
-   Bitte beachten Sie, dass für eine optimale Ausgabe im Frontend zunächst ein Produkt-Partial angelegt werden sollte. (:ref:`typoscript-configuration`)
+   Bitte beachten Sie, dass für eine optimale Ausgabe im Frontend zunächst ein Artikel-Partial angelegt werden sollte. (:ref:`typoscript-configuration`)
 
 .. important::
 
@@ -41,13 +54,14 @@ Frontend angezeigt werden sollen.
 
 .. note::
 
-    Mit ``{article.url}`` kann man auf den jeweilige Artikel im Shopware verlinken. Dieses Feature steht nur in der
+    Mit ``{article.url}`` kann man im Fluid-Template auf den jeweilige Artikel im Shopware verlinken. Dieses Feature steht nur in der
     Full-Version zur Verfügung!
+
 
 Kategorien einbinden
 --------------------
 
-Ähnlich zu den Produkten kann eine Kategorie-Liste im Frontend angezeigt werden. Dazu wieder im Page-Modus
+Ähnlich zu den Artikel(n) kann eine Kategorie-Liste im Frontend angezeigt werden. Dazu wieder im Page-Modus
 ein neues Content-Element hinzugefügen und das Categories(s)-Plugin ausgewählen.
 
 Anschließend im Reiter "Plugin" die anzuzeigenden Kategorien auswählen.
@@ -61,7 +75,7 @@ Anschließend im Reiter "Plugin" die anzuzeigenden Kategorien auswählen.
 Anschließend hat man die Möglichkeit jene Kategorien über den Reiter "Plugin" auszuwählen, welche anschließend im
 Frontend angezeigt werden sollen.
 
-.. figure:: ../../Images/ForUsers/px_shopware_add-shopware-categories.png
+.. figure:: ../../Images/ForUsers/px_shopware_add-shopware-categories-fetch-all-items.png
     :width: 500px
     :alt: Kategorien auswählen im Frontend-Plugin
 
@@ -69,10 +83,10 @@ Frontend angezeigt werden sollen.
 
 .. note::
 
-    Mit Hilfe des Aufrufs von ``{category.subCategories}`` kann man im Fluid-Template Menüstrukturen aus Shopware
+    Mit Hilfe des Ausdrucks von ``{category.subCategories}`` kann man im Fluid-Template Menüstrukturen aus Shopware
     Kategorien auf Seiten von TYPO3 generieren.
 
 .. note::
 
-    Mit ``{category.url}`` kann man auf die jeweilige Kategorie im Shopware verlinken. Dieses Feature steht nur in der
+    Mit ``{category.url}`` kann man im Fluid-Template auf die jeweilige Kategorie im Shopware verlinken. Dieses Feature steht nur in der
     Full-Version zur Verfügung.

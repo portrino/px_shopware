@@ -35,7 +35,7 @@ Sofern das TypoScript nicht richtig konfiguriert wurde, erscheint in der px_shop
 .. figure:: ../../../Images/ForAdministrators/px_shopware_ts-error.png
    :width: 300px
    :align: left
-   :alt: Caching für px_shopware konfigurieren
+   :alt: Warning wenn TypoScript Konfiguration fehlt
 
 
 TypoScript Werte
@@ -47,27 +47,27 @@ Die folgenden Werte können in Ihrem TypoScript definiert werden.
 ======================================  ==========  ===============================================================================================================================  ====================================================
 TypoScript value                        Data type   Description                                                                                                                      Default
 ======================================  ==========  ===============================================================================================================================  ====================================================
-settings.api.url                        string      Die URL Ihrer Shopware API (z.B. http://www.my-online-shop.com/api/)
+settings.api.url                        string      Die URL Ihrer Shopware-API (z.B. http://www.my-online-shop.com/api/)
 settings.api.username                   string      Der Shopware API-Nutzer
 settings.api.key                        string      Der API-Key des API-Nutzers
-settings.cacheLifeTime                  int         Die Lebensdauer des Caches                                                                                                       3600
-settings.noImage.path                   string      Pfad zum Default-Bild (Wenn kein Bild dem Produkt übergeben wird, dann wird ein Default-Bild angezeigt.)                         EXT:px_shopware/Resources/Public/Images/
+settings.cacheLifeTime                  int         Die Lebensdauer des Caches in Sekunden                                                                                                     3600
+settings.noImage.path                   string      Pfad zum Default-Bild (Wenn kein Bild dem Artikel übergeben wird, dann wird ein Default-Bild angezeigt.)                         EXT:px_shopware/Resources/Public/Images/
 settings.noImage.filename               string      Name des Default-Bildes                                                                                                          no_image_available.jpg
-view.templateRootPaths                  array       Wird genutzt um verschiedene Pfade für Templates zu konfigurieren. Diese werden in umgekehrter Reihenfolge überschrieben.        10 = EXT:px_shopware/Resources/Private/Templates/
-view.partialRootPaths                   array       Wird genutzt um verschiedene Pfade für Partials zu konfigurieren. Diese werden in umgekehrter Reihenfolge überschrieben.         10 = EXT:px_shopware/Resources/Private/Partials/
-view.layoutRootPaths                    array       Wird genutzt um verschiedene Pfade für Layouts zu konfigurieren. Diese werden in umgekehrter Reihenfolge überschrieben.          10 = EXT:px_shopware/Resources/Private/Layouts/
+view.templateRootPaths                  array       Wird genutzt um verschiedene Pfade für Templates zu konfigurieren. Diese werden in umgekehrter Reihenfolge überschrieben.        0 = EXT:px_shopware/Resources/Private/Templates/
+view.partialRootPaths                   array       Wird genutzt um verschiedene Pfade für Partials zu konfigurieren. Diese werden in umgekehrter Reihenfolge überschrieben.         0 = EXT:px_shopware/Resources/Private/Partials/
+view.layoutRootPaths                    array       Wird genutzt um verschiedene Pfade für Layouts zu konfigurieren. Diese werden in umgekehrter Reihenfolge überschrieben.          0 = EXT:px_shopware/Resources/Private/Layouts/
 ======================================  ==========  ===============================================================================================================================  ====================================================
 
 .. important::
 
    Im der TYPO3-Toolbar wird entweder die API-Konfiguration aus dem Extension Manager oder die von der Rootseite gesehen
    erste im TypoScript gefundene API-Konfiguration genutzt. Insofern sie in Ihrem TYPO3 CMS mehere Shop-Systeme anbinden
-   wollen ist somit nicht immer im Backend ersichtlich ob alle Shops verbunden sind.
+   wollen ist somit nicht immer im Backend (Toolbar) ersichtlich ob alle Shops verbunden sind.
 
 Beispiele
 ---------
 
-**Partial für Produkte (Shopware-Artikel) überschreiben**
+**Partial für Artikel überschreiben**
 
 ::
 
