@@ -93,7 +93,6 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
         );
         
         $result = $this->get($this->getValidEndpoint(), $params, $doCacheRequest);
-
         if ($result) {
             $token = (isset($result->pxShopwareTypo3Token)) ? (bool)$result->pxShopwareTypo3Token : FALSE;
             if (isset($result->data) && is_array($result->data)) {
