@@ -24,8 +24,8 @@ Shopware-Integration für TYPO3
 		de
 
 	:Beschreibung:
-		Die Extensions verbindet TYPO3 mit Shopware 5 und bietet Frontend-Plugins um Produkte (Shopware-Artikel) und
-		Kategorien mehrere Shopware-Instanzen anzuzeigen.
+		Die Erweiterung verbindet TYPO3 mit Shopware 5 und bietet Frontend-Plugins um Shopware-Artikel und
+		Kategorien anzuzeigen.
 
 	:Keywords:
 		shopware,typo3,produkte,artikel,kategorien
