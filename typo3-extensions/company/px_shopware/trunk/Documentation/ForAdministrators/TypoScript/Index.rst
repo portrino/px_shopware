@@ -37,8 +37,8 @@ If the TypoScript configuration is missing the px_shopware toolbar will display 
     :alt: Configuration error in toolbar
 
 
-TypoScript Werte
-----------------
+TypoScript Values
+-----------------
 
 The following settings could be done via TypoScript.
 

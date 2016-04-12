@@ -27,7 +27,8 @@
     },
     "require": {
         "typo3/cms-core": ">=7.6.0,<8.0",
-        "php": ">=5.5.0"
+        "php": ">=5.5.0",
+        "lib-curl": ">=7.35.0"
     },
     "autoload": {
         "psr-4": {
