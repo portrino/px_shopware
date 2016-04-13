@@ -24,11 +24,11 @@ Shopware Connector for TYPO3
         en
 
     :Description:
-        Connects TYPO3 with Shopware 5. Provides frontend plugins to render products (articles) and catagories from
-        Shopware instances.
+        Connects TYPO3 with Shopware 5. Provides frontend plugins to render articles and catagories from
+        shopware instances.
 
     :Keywords:
-        shopware,typo3,products,articles,categories
+        shopware,typo3,products,articles,categories,portrino
 
     :Copyright:
         2016

@@ -28,7 +28,7 @@ Shopware-Integration für TYPO3
 		Kategorien anzuzeigen.
 
 	:Keywords:
-		shopware,typo3,produkte,artikel,kategorien
+		shopware,typo3,produkte,artikel,kategorien,portrino
 
 	:Copyright:
 		2016
