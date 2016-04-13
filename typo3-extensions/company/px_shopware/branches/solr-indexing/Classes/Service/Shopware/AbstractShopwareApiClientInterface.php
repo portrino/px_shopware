@@ -24,6 +24,7 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use Portrino\PxShopware\Domain\Model\ShopwareModelInterface;
 
 /**
  * Class AbstractShopwareApiClient
@@ -54,34 +55,36 @@ interface AbstractShopwareApiClientInterface {
     public function getStatus();
 
     /**
-     * @return \Portrino\PxShopware\Domain\Model\AbstractShopwareModel
+     * @return \Portrino\PxShopware\Domain\Model\ShopwareModelInterface
      */
     public function find();
 
     /**
      * @param $id
      * @param bool $doCacheRequest
-     * @return \Portrino\PxShopware\Domain\Model\AbstractShopwareModel
+     * @return \Portrino\PxShopware\Domain\Model\ShopwareModelInterface
      */
     public function findById($id, $doCacheRequest = TRUE);
 
     /**
-     * @param string $term
-     * @param int $limit (-1 == return all)
+     * @param $term
+     * @param int $limit
      * @param bool $doCacheRequest
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
     public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE);
 
     /**
      * @param bool $doCacheRequest
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\AbstractShopwareModel>
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
     public function findAll($doCacheRequest = TRUE);
 
     /**
      * @param array $params
      * @param bool $doCacheRequest
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\AbstractShopwareModel>
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
     public function findByParams($params = array(), $doCacheRequest = TRUE);
 

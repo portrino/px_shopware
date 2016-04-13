@@ -31,6 +31,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Class AbstractController
@@ -162,8 +163,16 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
         if ($this->isTrialVersion === TRUE) {
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('flash.warning.trial.description', $this->extensionName),
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('flash.warning.trial.title', $this->extensionName),
+                LocalizationUtility::translate(
+                    'flash.warning.trial.description',
+                    $this->extensionName,
+                    array(
+                        1 => $this->settings['urls']['shopware_store'],
+                        2 => $this->settings['emails']['portrino_support'],
+                        3 => $this->settings['urls']['portrino_website']
+                    )
+                ),
+                LocalizationUtility::translate('flash.warning.trial.title', $this->extensionName),
                 FlashMessage::WARNING
             );
         }

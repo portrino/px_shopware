@@ -51,6 +51,11 @@ class SuggestWizard {
     protected $objectManager;
 
     /**
+     * @var string
+     */
+    protected $languagePrefix = 'LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:';
+
+    /**
      * SuggestWizard constructor.
      */
     public function __construct() {
@@ -96,12 +101,16 @@ class SuggestWizard {
         $selector = '
         <label>&nbsp;</label>
         <div class="px-shopware autocomplete t3-form-suggest-container">
-            <div class="input-group">
+            <div class="input-group has-feedback">
                 <span class="input-group-addon">' . $this->iconFactory->getIcon('actions-search', Icon::SIZE_SMALL)->render() . '</span>
                 <input type="search" class="t3-form-suggest-px-shopware form-control" 
+                        placeholder="' . $this->getLanguageService()->sL($this->languagePrefix . 'suggest_wizard.placeholder.' . strtolower($endpoint), FALSE) . '"
                         data-type="' . htmlspecialchars($endpoint) . '"
-                        data-fieldname="' . htmlspecialchars($fieldname) . '"
+                        data-fieldname="' . htmlspecialchars($fieldname) . '" 
                 />
+                <span class="loading input-group-addon">
+                    <i style="display: none;" id="loader" class="fa fa-circle-o-notch fa-spin"></i>
+                </span>
             </div>
         </div>';
         return $selector;

@@ -82,10 +82,16 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     protected $mediaClient;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\DetailClientInterface
+     * @var \Portrino\PxShopware\Service\Shopware\ArticleClientInterface
      * @inject
      */
-    protected $detailClient;
+    protected $articleClient;
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
+     * @inject
+     */
+    protected $objectManager;
 
     /**
      * Article constructor.
@@ -158,12 +164,17 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
             }
         }
 
-        if (isset($this->getRaw()->mainDetailId)) {
+        if (!isset($this->getRaw()->mainDetail)) {
+            /** @var Article $detail */
+            $detailedArticle = $this->articleClient->findById($this->getId(), FALSE);
             /** @var Detail $detail */
-            $detail = $this->detailClient->findById($this->getRaw()->mainDetailId);
+            $detail = $this->objectManager->get(Detail::class, $detailedArticle->raw->mainDetail, $this->token);
+            $this->setDetail($detail);
+        } else if (isset($this->getRaw()->mainDetail)) {
+            /** @var Detail $detail */
+            $detail = $this->objectManager->get(Detail::class, $this->getRaw()->mainDetail, $this->token);
             $this->setDetail($detail);
         }
-
     }
 
     /**

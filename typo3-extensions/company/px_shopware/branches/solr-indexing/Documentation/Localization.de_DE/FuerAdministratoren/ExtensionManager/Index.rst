@@ -39,7 +39,7 @@ Nach dem Ändern der API-Konfiguration muss das TYPO3-Backend mit ``Strg + F5`` 
 Verbindungsstatus korrekt wieder gibt.
 
 Shopware-Connector: Status-Anzeige in der Toolbar
-------------------------------------------------
+-------------------------------------------------
 
 In der TYPO3-Toolbar wird nach erfolgreicher Installation der Extension das px_shopware Icon angezeigt. Direkt im Icon
 wird der Verbindungsstatus farblich wieder gegeben.
@@ -47,7 +47,7 @@ wird der Verbindungsstatus farblich wieder gegeben.
 .. figure:: ../../../Images/ForAdministrators/toolbar-disconnected.png
    :width: 500px
    :align: left
-   :alt: Shopware-Plugins: Produkte und Kategorien hinzufügen
+   :alt: TYPO3-Toolbar Disconnected-Status
 
    TYPO3-Toolbar zeigt Disconnected-Status in rot für px_shopware
 
@@ -59,9 +59,9 @@ Shopware aufzeigt.
    :align: left
    :alt: TYPO3-Toolbar zeigt Connected-Status und Informationen zur Anbindung
 
-   Nachdem die Shopware-Daten korrekt eingegeben wurden, zeigt sich der Vergbindungsstatus für die Trial-Version in gelb.
+   Nachdem die Shopware-Daten korrekt eingegeben wurden, zeigt sich der Verbindungsstatus für die Trial-Version in gelb.
 
-Folgende Informationen werden in der Toolbar angezeigt:
+**Informationen:**
 
 * Verbindungsstatus: disconnected (rot), connected trial version (gelb), connected full version (grün)
 * Shops: Anbindung zu einer oder mehreren Shopware-Instanzen
@@ -71,9 +71,7 @@ Folgende Informationen werden in der Toolbar angezeigt:
 .. important::
 
    Im der TYPO3-Toolbar wird entweder die API-Konfiguration aus dem Extension Manager oder die von der Rootseite gesehen
-   erste im TypoScript (:ref:`typoscript-configuration`) gefundene API-Konfiguration genutzt. Insofern sie in Ihrem TYPO3 CMS mehere Shop-Systeme anbinden
-   wollen ist somit nicht immer im Backend ersichtlich ob alle Shops verbunden sind.
-
+   erste im TypoScript (:ref:`typoscript-configuration`) gefundene API-Konfiguration genutzt.
 
 Caching
 -------
@@ -87,7 +85,7 @@ Die Konfiguration des Caching kann ebenfalls im Extension Manager vorgenommen we
    :align: left
    :alt: Caching für px_shopware konfigurieren
 
-Folgende Einstellungen können vorgenommen werden:
+**Einstellungen:**
 
 * Cache Lifetime: Die Gültigkeitsdauer von Cacheeinträgen kann hier in Sekunden angegeben werden
 * Cache deaktivieren (nicht empfohlen)
@@ -108,15 +106,13 @@ Weitere Informationen zum TYPO3-Caching finden Sie hier:
 
 Logging
 -------
-
+Geloggt wird in den TYPO3 Systemlog_ und via Logging-API_ in das Logfile der px_shopware (dieses wird standardmäßig im Ordner ``typo3temp/logs/`` abgelegt).
 Das Logging von Backend-Fehlern kann ebenfalls über den Extension Manager deaktiviert (oder aktiviert) werden.
 
 .. figure:: ../../../Images/ForAdministrators/px_shopware-configure-logging.png
    :width: 600px
    :align: left
    :alt: Logging für px_shopware konfigurieren
-
-Geloggt wird in den TYPO3 Systemlog_ und via Logging-API_ in das Logfile der px_shopware (dieses wird standardmäßig im Ordner ``typo3temp/logs/`` abgelegt).
 
 .. _Systemlog: https://docs.typo3.org/typo3cms/CoreApiReference/ApiOverview/SystemLog/Index.html
 .. _Logging-API: https://docs.typo3.org/typo3cms/CoreApiReference/ApiOverview/Logging/Index.html

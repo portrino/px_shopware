@@ -42,6 +42,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Lang\LanguageService;
 
@@ -114,7 +115,14 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
      */
     protected $extensionKey = 'px_shopware';
 
+    /**
+     * @var string Name of the extension
+     */
+    protected $extensionName = 'PxShopware';
 
+    /**
+     * @var string language prefix to prevent long expressions
+     */
     protected $languagePrefix = 'LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:';
 
     /**
@@ -198,18 +206,41 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
             $status = InformationStatus::STATUS_OK;
             $value = $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.status.connected_full', TRUE);
             $icon = 'px-shopware-shop-connected';
-            $messageText = $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.status.connected_full.message', FALSE);
+            $messageText = LocalizationUtility::translate(
+                $this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.status.connected_full.message',
+                $this->extensionName,
+                array(
+                    1 => $this->settings['emails']['portrino_support'],
+                    2 => $this->settings['urls']['portrino_website']
+                )
+            );
         } else {
             if ($status === AbstractShopwareApiClientInterface::STATUS_CONNECTED_TRIAL) {
                 $status = InformationStatus::STATUS_WARNING;
                 $value = $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.status.connected_trial', TRUE);
                 $icon = 'px-shopware-shop-connected';
-                $messageText = $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.status.connected_trial.message', FALSE);
+                $messageText = LocalizationUtility::translate(
+                    $this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.status.connected_trial.message',
+                    $this->extensionName,
+                    array(
+                        1 => $this->settings['urls']['shopware_store'],
+                        2 => $this->settings['emails']['portrino_support'],
+                        3 => $this->settings['urls']['portrino_website']
+                    )
+                );
             } else {
                 $status = InformationStatus::STATUS_ERROR;
                 $value = $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.status.disconnected', TRUE);
                 $icon = 'px-shopware-shop-disconnected';
-                $messageText = $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.status.disconnected.message', FALSE);
+                $messageText = LocalizationUtility::translate(
+                    $this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.status.disconnected.message',
+                    $this->extensionName,
+                    array(
+                        1 => $this->settings['urls']['typo3_documentation'],
+                        2 => $this->settings['emails']['portrino_support'],
+                        3 => $this->settings['urls']['portrino_website']
+                    )
+                );
             }
         }
 
