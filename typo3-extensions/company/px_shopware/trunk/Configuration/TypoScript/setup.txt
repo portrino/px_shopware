@@ -29,6 +29,18 @@ plugin.tx_pxshopware {
             path = {$plugin.tx_pxshopware.settings.noImage.path}
             filename = {$plugin.tx_pxshopware.settings.noImage.filename}
         }
+
+        #
+        # only for internal use -> do not override it!
+        #
+        urls {
+            portrino_website = http://www.portrino.de
+            typo3_documentation = https://docs.typo3.org/typo3cms/extensions/px_shopware/
+            shopware_store = http://store.shopware.com/portrino/portrino-typo3connector.html
+        }
+        emails {
+            portrino_support = support@portrino.de
+        }
     }
 }
 

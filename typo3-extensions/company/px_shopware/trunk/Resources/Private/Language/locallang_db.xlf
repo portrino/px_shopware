@@ -57,8 +57,8 @@
                 <source>
                     <![CDATA[
                         Thank you for purchasing our product: "TYPO3-Connector for Shopware". <br>
-                        If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:info@portrino.de">contact us </a>
-                        or visit our <a style="text-decoration: underline;" href="http://www.portrino.de" target="_blank">website</a>.
+                        If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:%1$s">contact us </a>
+                        or visit our <a style="text-decoration: underline;" href="%2$s" target="_blank">website</a>.
                     ]]>
                 </source>
             </trans-unit>
@@ -69,12 +69,12 @@
                 <source>
                     <![CDATA[
                         You are using the trial version of this extension. <br>
-                        Please download our <a style="text-decoration: underline;" href="http://www.portrino.de" target="_blank">TYPO3-Connector</a> plugin from shopware store
+                        Please download our <a style="text-decoration: underline;" href="%1$s" target="_blank">TYPO3-Connector</a> plugin from shopware store
                         and install it on your shopware system to get the full version.
                         <br>
                         <br>
-                        If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:info@portrino.de">contact us </a>
-                        or visit our <a style="text-decoration: underline;" href="http://www.portrino.de" target="_blank">website</a>.
+                        If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:%2$s">contact us </a>
+                        or visit our <a style="text-decoration: underline;" href="%3$s" target="_blank">website</a>.
                     ]]>
                 </source>
             </trans-unit>
@@ -85,11 +85,11 @@
                 <source>
                     <![CDATA[
                         There is a problem with your shop connection <br>
-                        First have a look on our <a style="text-decoration: underline;" href="http://www.portrino.de" target="_blank">documentation</a><br>
+                        First have a look on our <a style="text-decoration: underline;" href="%1$s" target="_blank">documentation</a><br>
                         If the error still occurs check the TYPO3 "system log".
                         <br><br>
-                        If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:info@portrino.de">contact us </a>
-                        or visit our <a style="text-decoration: underline;" href="http://www.portrino.de" target="_blank">website</a>.
+                        If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:%2$s">contact us </a>
+                        or visit our <a style="text-decoration: underline;" href="%3$s" target="_blank">website</a>.
                     ]]>
                 </source>
             </trans-unit>

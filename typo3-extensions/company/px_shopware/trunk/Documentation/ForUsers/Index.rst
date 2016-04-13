@@ -48,8 +48,8 @@ After that you are able to choose the articles you want to display in frontend.
 
 .. important::
 
-    The trial version allows to display only one article. If you want to render more please get our
-    "portrino TYPO3-Connector" from shopware store.
+    The trial version allows to display only one article. If you want to render more please get our "TYPO3-Connector"
+    from shopware store.
 
 .. note::
 
