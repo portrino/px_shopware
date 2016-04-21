@@ -31,7 +31,7 @@ Frontend angezeigt werden sollen.
 
     Shopware-Artikel aus Liste aller Artikel des Shops auswählen
 
-.. figure:: ../Images/ForUsers/px_shopware_add-shopware-articles-autocomplete-wizard.png
+.. figure:: ../../Images/ForUsers/px_shopware_add-shopware-categories-autocomplete-wizard.png
     :width: 800px
     :alt: Artikel via Autocomplete-Wizard auswählen
 
