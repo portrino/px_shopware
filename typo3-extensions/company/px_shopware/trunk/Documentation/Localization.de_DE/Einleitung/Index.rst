@@ -51,6 +51,6 @@ gecached um unnötig häufige API-Aufrufe zu vermeiden und dadurch das Frontend-
 
 .. _shopware: https://www.shopware.com/
 .. _REST-API: https://developers.shopware.com/developers-guide/rest-api/
-.. _hier: https://store.shopware.com/portrino/portrino-typo3connector.html
+.. _hier: https://store.shopware.com/port116496663052/typo3-connector.html
 .. _typo3-solr: https://typo3.org/extensions/repository/view/solr
-.. _TYPO3-Plugin: https://store.shopware.com/portrino/portrino-typo3connector.html
+.. _TYPO3-Plugin: https://store.shopware.com/port116496663052/typo3-connector.html
