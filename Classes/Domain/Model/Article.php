@@ -102,7 +102,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
         }
 
         if (isset($this->raw->pxShopwareUrl)) {
-            $this->setUrl($this->raw->pxShopwareUrl);
+            $this->setUri($this->raw->pxShopwareUrl);
         }
 
         /**

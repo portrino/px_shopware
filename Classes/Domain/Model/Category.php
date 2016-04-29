@@ -89,16 +89,7 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
      *
      */
     public function initializeObject() {
-        if (isset($this->getRaw()->path) && $this->getRaw()->path != '') {
-            $pathArray = array_reverse(GeneralUtility::trimExplode('|', $this->getRaw()->path, TRUE));
-            foreach ($pathArray as $pathItem) {
-                /** @var Category|NULL $pathElement */
-                $pathElement = $this->categoryClient->findById($pathItem);
-                if ($pathElement) {
-                    $this->addPathElement($pathElement);
-                }
-            }
-        }
+
     }
 
     /**
@@ -181,6 +172,18 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
      * @return mixed
      */
     public function getBreadCrumbPath($includeSelf = TRUE) {
+
+        if (isset($this->getRaw()->path) && $this->getRaw()->path != '') {
+            $pathArray = array_reverse(GeneralUtility::trimExplode('|', $this->getRaw()->path, TRUE));
+            foreach ($pathArray as $pathItem) {
+                /** @var Category|NULL $pathElement */
+                $pathElement = $this->categoryClient->findById($pathItem);
+                if ($pathElement) {
+                    $this->addPathElement($pathElement);
+                }
+            }
+        }
+
         /** @var array $path */
         $path = array_map(function($item) {
             return $item->getName();
