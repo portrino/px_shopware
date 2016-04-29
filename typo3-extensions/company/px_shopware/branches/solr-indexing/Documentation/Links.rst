@@ -12,20 +12,13 @@ Links
 -----
 
 :TER:
-		https://typo3.org/extensions/repository/view/px_shopware
+    https://typo3.org/extensions/repository/view/px_shopware
 
 :Bug Tracker:
-		https://forge.typo3.org/projects/extension-px_shopware/issues
-
-:Git Repository:
-		https://github.com/<username>/<extension key>
-
-:Contact:
-		`@<username> <https://twitter.com/your-username>`__
+    https://forge.typo3.org/projects/extension-px_shopware/issues
 
 :Shopware Plugin:
-		https://store.shopware.com/
-
+    https://store.shopware.com/port116496663052/typo3-connector.html
 
 
 .. _Shopware: https://www.shopware.com/

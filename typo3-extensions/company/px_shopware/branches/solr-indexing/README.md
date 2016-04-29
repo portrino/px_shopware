@@ -10,7 +10,7 @@ the implementation of the frontend plugins. Shopware data will be cached via TYP
 uneccessary API-Calls and also boost up the frontend rendering.
 
 To get access to all features you have to install our shopware plugin "TYPO3-Connector" on your shop instance. Buy and 
-download it from store here_. Otherwise your extension will work as a trial version and some features are not available 
+download it from store [here](https://store.shopware.com/port116496663052/typo3-connector.html). Otherwise your extension will work as a trial version and some features are not available 
 or limited.
 
 The complete documentation could be found [here](https://docs.typo3.org/typo3cms/extensions/px_shopware/ "PxShopware Documentation")

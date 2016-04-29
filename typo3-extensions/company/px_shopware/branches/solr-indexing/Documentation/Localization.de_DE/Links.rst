@@ -17,8 +17,5 @@ Links
 :Bug Tracker:
 	https://forge.typo3.org/projects/extension-px_shopware/issues
 
-:Git Repository:
-	https://github.com/portrino/px_shopware
-
 :Shopware Plugin:
-	https://store.shopware.com
+	https://store.shopware.com/port116496663052/typo3-connector.html

@@ -36,7 +36,7 @@ plugin.tx_pxshopware {
         urls {
             portrino_website = http://www.portrino.de
             typo3_documentation = https://docs.typo3.org/typo3cms/extensions/px_shopware/
-            shopware_store = http://store.shopware.com/portrino/portrino-typo3connector.html
+            shopware_store = https://store.shopware.com/port116496663052/typo3-connector.html
         }
         emails {
             portrino_support = support@portrino.de
