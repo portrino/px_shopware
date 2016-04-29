@@ -6,10 +6,10 @@
 .. include:: ../Includes.txt
 
 
-Introduction
-============
+Introduction to Shopware connector
+==================================
 
-This extension connects the shopware_ shopsystem with TYPO3 CMS. It retrieves data from shopware REST-API_ and provides
+This extension connects the shopware shopsystem with TYPO3 CMS. It retrieves data from shopware REST-API and provides
 many frontend plugins to show or list shopware data like articles, categories, etc on your TYPO3 website.
 
 The extension was build from scratch and is based on a clean extensible architecture. Extbase and Fluid were used for
@@ -39,11 +39,11 @@ uneccessary API-Calls and also boost up the frontend rendering.
 
 **Coming-Soon**
 
-* solr-indexer to index and display shopware articles and categories with typo3-solr_
+* solr-indexer to index and display shopware articles and categories with typo3-solr
 * list and show more shopware resources like manufacturers
 * adding more unit tests to increase quality
 
 .. _shopware: https://www.shopware.com/
 .. _REST-API: https://developers.shopware.com/developers-guide/rest-api/
-.. _here: https://store.shopware.com/port116496663052/typo3-connector.html
+.. _here: https://store.shopware.com/en/port116496663052/typo3-connector.html
 .. _typo3-solr: https://typo3.org/extensions/repository/view/solr
