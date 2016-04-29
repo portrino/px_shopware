@@ -18,7 +18,7 @@ Links
     https://forge.typo3.org/projects/extension-px_shopware/issues
 
 :Shopware Plugin:
-    https://store.shopware.com/port116496663052/typo3-connector.html
+    https://store.shopware.com/en/port116496663052/typo3-connector.html
 
 
 .. _Shopware: https://www.shopware.com/

@@ -6,8 +6,8 @@
 .. include:: ../../Includes.txt
 
 
-Einleitung
-==========
+Einleitung zum Shopware Connector
+=================================
 
 Die Extension verbindet das Shopware-Shopsystem mit dem TYPO3 CMS. Sie erhält ihre Daten von der Shopware REST-API und
 bietet verschiedene Frontend-Plugins um Shopware-Daten wie Artikel, Kategorien, etc. als Listen oder Detail-Ansichten
