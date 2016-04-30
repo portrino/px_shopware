@@ -120,6 +120,9 @@
             <trans-unit id="toolbar_items.shopware_connector_information.cache.status.inactive">
                 <source>Inactive</source>
             </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache.type">
+                <source>Type</source>
+            </trans-unit>
             <trans-unit id="toolbar_items.shopware_connector_information.configuration.status.missing">
                 <source> It seems you have missed to include the static TS template! Please insert it!</source>
             </trans-unit>
