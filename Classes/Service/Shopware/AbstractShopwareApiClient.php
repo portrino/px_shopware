@@ -321,10 +321,8 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
                 if ($method == self::METHOD_GET && $doCacheRequest && $this->cacheChain) {
                     /** @var FrontendInterface $cache */
                     foreach ($this->cacheChain as $cache) {
-                        \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($cache);
                         $cache->set($cacheIdentifier, $entry, array(), $this->cacheLifeTime);
                     }
-                    exit;
                 }
 
                 return json_decode($entry);
