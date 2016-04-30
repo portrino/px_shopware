@@ -286,12 +286,6 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
                         $cacheLevel1->set($cacheIdentifier, $entry, array(), $this->cacheLifeTime);
                     }
 
-                    if ($priority == 0) {
-                        $this->logger->log(
-                            \TYPO3\CMS\Core\Log\LogLevel::INFO,
-                            $url
-                        );
-                    }
                     break;
                 }
             }
