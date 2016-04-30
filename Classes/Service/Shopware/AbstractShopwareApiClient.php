@@ -24,6 +24,8 @@ namespace Portrino\PxShopware\Service\Shopware;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Cache\Backend\BackendInterface;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
 use \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException;
 use \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurationException;
@@ -129,9 +131,9 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     protected $applicationContext;
 
     /**
-     * @var \TYPO3\CMS\Core\Cache\Frontend\StringFrontend
+     * @var array|NULL
      */
-    protected $cache;
+    protected $cacheChain;
 
     /**
      * @var \TYPO3\CMS\Core\Log\Logger
@@ -221,14 +223,23 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
          */
         if ((boolean)$cacheConfiguration['disable'] != TRUE) {
             $cacheManager = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
-            $this->cache = ($cacheManager->hasCache($this->extensionKey . '_' .$this->getEndpoint())) ? $cacheManager->getCache($this->extensionKey . '_' .$this->getEndpoint()) : NULL;
+
+            $cacheLevel1 = ($cacheManager->hasCache($this->extensionKey . '_' .$this->getEndpoint() .'_level1')) ? $cacheManager->getCache($this->extensionKey . '_' .$this->getEndpoint() . '_level1') : NULL;
+            if ($cacheLevel1 != NULL && $cacheLevel1->getBackend() instanceof BackendInterface) {
+                $this->cacheChain[0] = $cacheLevel1;
+            }
+
+            $cacheLevel2 = ($cacheManager->hasCache($this->extensionKey . '_' .$this->getEndpoint() .'_level2')) ? $cacheManager->getCache($this->extensionKey . '_' .$this->getEndpoint() . '_level2') : NULL;
+            if ($cacheLevel2 != NULL && $cacheLevel2->getBackend() instanceof BackendInterface) {
+                $this->cacheChain[1] = $cacheLevel2;
+            }
             $this->cacheLifeTime = isset($settings['caching']['lifetime']) ? (int)$settings['caching']['lifetime'] : (isset($cacheConfiguration['lifetime']) ? (int)$cacheConfiguration['lifetime'] : 3600);
             //reset lifetime to 3600sec if 0 is set
             if ($this->cacheLifeTime == 0) {
                 $this->cacheLifeTime = 3600;
             }
         } else {
-            $this->cache = NULL;
+            $this->cacheChain = NULL;
         }
     }
 
@@ -259,12 +270,31 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
          *  - doCacheRequest is TRUE
          *  - cache is available
          */
-        if ($method == self::METHOD_GET && $doCacheRequest && $this->cache) {
+        if ($method == self::METHOD_GET && $doCacheRequest && $this->cacheChain) {
             /**
              * try to get entry from cache
              */
             $cacheIdentifier = sha1((string)$url);
-            $entry = $this->cache->get($cacheIdentifier);
+            foreach ($this->cacheChain as $priority => $cache) {
+                $entry = $cache->get($cacheIdentifier);
+                if ($entry != FALSE && $entry != NULL) {
+                    /**
+                     * store last entry into level 1 cache which should be transient
+                     */
+                    if ($priority == 1 && $this->cacheChain[0]) {
+                        $cacheLevel1 = $this->cacheChain[0];
+                        $cacheLevel1->set($cacheIdentifier, $entry, array(), $this->cacheLifeTime);
+                    }
+
+                    if ($priority == 0) {
+                        $this->logger->log(
+                            \TYPO3\CMS\Core\Log\LogLevel::INFO,
+                            $url
+                        );
+                    }
+                    break;
+                }
+            }
         }
 
         /**
@@ -294,8 +324,13 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
                  *  - doCacheRequest is TRUE
                  *  - cache is available
                  */
-                if ($method == self::METHOD_GET && $doCacheRequest && $this->cache) {
-                    $this->cache->set($cacheIdentifier, $entry, array(), $this->cacheLifeTime);
+                if ($method == self::METHOD_GET && $doCacheRequest && $this->cacheChain) {
+                    /** @var FrontendInterface $cache */
+                    foreach ($this->cacheChain as $cache) {
+                        \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($cache);
+                        $cache->set($cacheIdentifier, $entry, array(), $this->cacheLifeTime);
+                    }
+                    exit;
                 }
 
                 return json_decode($entry);

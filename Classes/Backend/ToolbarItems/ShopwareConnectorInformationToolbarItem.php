@@ -290,7 +290,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
 
         /** @var CacheManager $cacheManager */
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-        $caches = '';
+        $cacheTables = '';
 
         $status = InformationStatus::STATUS_WARNING;
 
@@ -302,10 +302,8 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
             if ($cacheManager->hasCache($this->extensionKey . '_' . $endpoint)) {
                 $cache = $cacheManager->getCache($this->extensionKey . '_' . $endpoint);
                 $backend = $cache->getBackend();
-
                 if ($backend instanceof Typo3DatabaseBackend) {
-
-                    $caches .= $backend->getCacheTable() . '<br>(' . (string)$this->getDatabaseConnection()->exec_SELECTcountRows('*', $backend->getCacheTable()) . ' ' . $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.caches.entries', TRUE) . ') <br>';
+                    $cacheTables .= $backend->getCacheTable() . '<br>(' . (string)$this->getDatabaseConnection()->exec_SELECTcountRows('*', $backend->getCacheTable()) . ' ' . $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.caches.entries', TRUE) . ') <br>';
                 }
                 $status = InformationStatus::STATUS_OK;
                 $value = $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.status.active', TRUE);
@@ -323,10 +321,21 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
             'icon' => $this->iconFactory->getIcon('sysinfo-database', Icon::SIZE_SMALL)->render()
         );
 
-        if ($status === InformationStatus::STATUS_OK) {
+        if ($status === InformationStatus::STATUS_OK && $backend) {
+
+            $backendReflection = new \ReflectionClass($backend);
+
             $this->cacheInformation[] = array(
-                'value' => $caches,
+                'title' => $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.type', TRUE),
+                'value' => $backendReflection->getShortName(),
+                'icon' => $this->iconFactory->getIcon('px-shopware-shop-version', Icon::SIZE_SMALL)->render()
             );
+
+            if ($cacheTables != '') {
+                $this->cacheInformation[] = array(
+                    'value' => $cacheTables,
+                );
+            }
         }
     }
 
