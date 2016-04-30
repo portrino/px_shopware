@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2016-03-15T14:04:30Z">
+        <header>
+            <type>module</type>
+            <description>Language labels for the PxShopware extension in the FRONTEND</description>
+            <authorName>Andre Wuttig</authorName>
+            <authorEmail>wuttig@portrino.de</authorEmail>
+            <generator>LFEditor</generator>
+        </header>
+        <body>
+            <trans-unit id="flash.warning.trial.title">
+                <source>Trial Version!</source>
+            </trans-unit>
+            <trans-unit id="flash.warning.trial.description">
+                <source>
+                    <![CDATA[
+                        You are using the trial version of this extension! <br><br>
+                        Please download our <a style="text-decoration: underline;" href="%1$s" target="_blank">TYPO3-Connector</a> plugin from shopware store
+                        and install it on your shopware system to get the full version and enable all features.
+                        To demonstrate the features of this extension we render one item (article, category) here.
+                        <br><br>
+                        If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:%2$s">contact us </a>
+                        or visit our <a style="text-decoration: underline;" href="%3$s" target="_blank">website</a>.
+                    ]]>
+                </source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
