@@ -110,6 +110,14 @@ $boot = function ($_EXTKEY) {
                 );
 
                 $iconRegistry->registerIcon(
+                    'px-shopware-cache-level',
+                    \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
+                    array(
+                        'name' => 'arrow-circle-right'
+                    )
+                );
+
+                $iconRegistry->registerIcon(
                     'px-shopware-shop-shop',
                     \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
                     array(
@@ -193,31 +201,29 @@ $boot = function ($_EXTKEY) {
      * if caching was not disabled create one cache for each endpoint
      */
     if ((boolean)$extConf['caching.']['disable'] != TRUE) {
-        $endpoints = array('articles', 'categories', 'media', 'shops');
-
-        foreach ($endpoints as $endpoint) {
-            if (FALSE === is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_' . $endpoint . '_level1'])) {
-                $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_' . $endpoint . '_level1'] = array(
-                    'backend' => \TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend::class,
-                    'frontend' => \TYPO3\CMS\Core\Cache\Frontend\StringFrontend::class,
-                    'groups' => array('px_shopware')
-                );
-            }
-
-            if (FALSE === is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_' . $endpoint . '_level2'])) {
-                $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_' . $endpoint. '_level2'] = array(
-                    'backend' => \TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend::class,
-                    'frontend' => \TYPO3\CMS\Core\Cache\Frontend\StringFrontend::class,
-                    'options' => array(
-                        'defaultLifetime' => (int)$extConf['caching.']['lifetime'] > 0 ? (int)$extConf['caching.']['lifetime'] : 3600
-                    ),
-                    'groups' => array('px_shopware')
-                );
-            }
-
+        if (FALSE === is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_level1'])) {
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_level1'] = array(
+                'backend' => \TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend::class,
+                'frontend' => \TYPO3\CMS\Core\Cache\Frontend\StringFrontend::class,
+                'groups' => array('px_shopware')
+            );
         }
 
+        if (FALSE === is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware'])) {
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware'] = array(
+                'backend' => \TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend::class,
+                'frontend' => \TYPO3\CMS\Core\Cache\Frontend\StringFrontend::class,
+                'options' => array(
+                    'defaultLifetime' => (int)$extConf['caching.']['lifetime'] > 0 ? (int)$extConf['caching.']['lifetime'] : 3600
+                ),
+                'groups' => array('px_shopware')
+            );
+        }
 
+        $GLOBALS['TYPO3_CONF_VARS']['EXT']['px_shopware']['cache_chain'] = array(
+            0 => 'px_shopware_level1',
+            1 => 'px_shopware',
+        );
     }
 
 
