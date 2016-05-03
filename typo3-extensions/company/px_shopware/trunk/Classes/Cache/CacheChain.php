@@ -41,7 +41,7 @@ class CacheChain implements FrontendInterface, SingletonInterface {
     /**
      * @var array
      */
-    protected $chain;
+    protected $chain = array();
 
     /**
      * @var FrontendInterface
@@ -113,6 +113,9 @@ class CacheChain implements FrontendInterface, SingletonInterface {
      */
     public function get($entryIdentifier) {
         $result = FALSE;
+
+        ksort($this->chain);
+
         /**
          * @var int $priority
          * @var FrontendInterface $cache
