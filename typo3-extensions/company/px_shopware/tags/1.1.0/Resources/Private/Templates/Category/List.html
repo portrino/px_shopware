@@ -1,0 +1,9 @@
+<f:layout name="Default" />
+
+<f:section name="main">
+    <div class="category list">
+        <f:for each="{items}" as="category">
+            <f:render partial="Category/Item" arguments="{_all}" />
+        </f:for>
+    </div>
+</f:section>
