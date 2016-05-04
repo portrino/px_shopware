@@ -84,6 +84,11 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
     /**
      * @var array
      */
+    protected $extensionInformation = array();
+
+    /**
+     * @var array
+     */
     protected $shopInformation = array();
 
     /**
@@ -160,6 +165,8 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
      */
     protected function collectInformation() {
 
+        $this->getExtensionInformation();
+
         $this->getShopStatus();
 
         $this->getShops();
@@ -170,6 +177,15 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
 
         $this->severityBadgeClass = InformationStatus::STATUS_OK;
 
+    }
+
+    /**
+     * Gets the connected Shops
+     *
+     * @return void
+     */
+    protected function getExtensionInformation() {
+        $this->extensionInformation['version'] = ExtensionManagementUtility::getExtensionVersion($this->extensionKey);
     }
 
     /**
@@ -391,6 +407,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
         $request->setControllerExtensionName('px_shopware');
 
         $this->standaloneView->assignMultiple(array(
+                                                  'extensionInformation' => $this->extensionInformation,
                                                   'shopInformation' => $this->shopInformation,
                                                   'cacheInformation' => $this->cacheInformation,
                                                   'messages' => $this->messages,

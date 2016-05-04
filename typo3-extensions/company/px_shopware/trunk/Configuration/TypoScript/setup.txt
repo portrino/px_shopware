@@ -20,6 +20,8 @@ plugin.tx_pxshopware {
             url = {$plugin.tx_pxshopware.settings.api.url}
             username = {$plugin.tx_pxshopware.settings.api.username}
             key = {$plugin.tx_pxshopware.settings.api.key}
+            # this value will be used if no config.locale_all was set
+            locale_all = de_DE
         }
         # override global cache lifetime which is configured in extension configuration
         # the duration after which the item is updated via REST-API
