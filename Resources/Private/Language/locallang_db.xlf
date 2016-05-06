@@ -160,7 +160,12 @@
             <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.items">
                 <source>Articles</source>
             </trans-unit>
-
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.template">
+                <source>Template</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.template.default">
+                <source>Default</source>
+            </trans-unit>
 
             <trans-unit id="tt_content.CType.pxshopware_pi2">
                 <source>Category(s)</source>
@@ -176,6 +181,12 @@
             </trans-unit>
             <trans-unit id="tt_content.pi_flexform.pxshopware_pi2.settings.items">
                 <source>Categories</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi2.settings.template">
+                <source>Template</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi2.settings.template.default">
+                <source>Default</source>
             </trans-unit>
 
             <trans-unit id="suggest_wizard.placeholder.article">

@@ -161,17 +161,15 @@ class SuggestWizard {
         $shopwareApiClient = $this->objectManager->get($shopwareApiClientClass);
 
         $results = $shopwareApiClient->findByTerm($search, 8);
+
         /** @var SuggestEntryInterface $result */
         foreach ($results as $result) {
-            /** @var SuggestEntryInterface $detailedResult */
-            $detailedResult = $shopwareApiClient->findById($result->getSuggestId());
-
             $entry = array(
-                'text' => '<span class="suggest-label">&nbsp;' . $this->highlight($detailedResult->getSuggestLabel(), $search) . '</span><br />
-                                <span class="suggest-path"><i>' . $this->crop($detailedResult->getSuggestDescription(), 80) . '</i></span>',
-                'label' => $detailedResult->getSuggestLabel(),
-                'uid' => $detailedResult->getSuggestId(),
-                'sprite' => $this->iconFactory->getIcon($detailedResult->getSuggestIconIdentifier(), Icon::SIZE_SMALL)->render()
+                'text' => '<span class="suggest-label">&nbsp;' . $this->highlight($result->getSuggestLabel(), $search) . '</span><br />
+                                <span class="suggest-path"><i>' . $this->crop($result->getSuggestDescription(), 80) . '</i></span>',
+                'label' => $result->getSuggestLabel(),
+                'uid' => $result->getSuggestId(),
+                'sprite' => $this->iconFactory->getIcon($result->getSuggestIconIdentifier(), Icon::SIZE_SMALL)->render()
             );
             $rows[$result->getId()] = $entry;
         }

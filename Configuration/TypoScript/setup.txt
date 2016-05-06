@@ -43,6 +43,7 @@ plugin.tx_pxshopware {
         emails {
             portrino_support = support@portrino.de
         }
+        template = default
     }
 }
 
