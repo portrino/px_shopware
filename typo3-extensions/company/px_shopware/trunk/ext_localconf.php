@@ -166,6 +166,9 @@ $boot = function ($_EXTKEY) {
                     );
                 }
 
+                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:px_shopware/Configuration/PageTSconfig/pxshopware_pi1.ts">');
+                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:px_shopware/Configuration/PageTSconfig/pxshopware_pi2.ts">');
+
             }
 
             $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][] =
