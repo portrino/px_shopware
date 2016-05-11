@@ -120,6 +120,12 @@
             <trans-unit id="toolbar_items.shopware_connector_information.cache.status.inactive">
                 <source>Inactive</source>
             </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache.level.0">
+                <source>Level 1</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache.level.1">
+                <source>Level 2</source>
+            </trans-unit>
             <trans-unit id="toolbar_items.shopware_connector_information.configuration.status.missing">
                 <source> It seems you have missed to include the static TS template! Please insert it!</source>
             </trans-unit>
@@ -154,7 +160,12 @@
             <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.items">
                 <source>Articles</source>
             </trans-unit>
-
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.template">
+                <source>Template</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.template.default">
+                <source>Default</source>
+            </trans-unit>
 
             <trans-unit id="tt_content.CType.pxshopware_pi2">
                 <source>Category(s)</source>
@@ -170,6 +181,12 @@
             </trans-unit>
             <trans-unit id="tt_content.pi_flexform.pxshopware_pi2.settings.items">
                 <source>Categories</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi2.settings.template">
+                <source>Template</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi2.settings.template.default">
+                <source>Default</source>
             </trans-unit>
 
             <trans-unit id="suggest_wizard.placeholder.article">

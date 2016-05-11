@@ -25,6 +25,7 @@ namespace Portrino\PxShopware\Backend\ToolbarItems;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Portrino\PxShopware\Cache\CacheChainFactory;
 use Portrino\PxShopware\Domain\Model\Version;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\ShopClientInterface;
@@ -79,6 +80,11 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
      * @var array
      */
     protected $messages = array();
+
+    /**
+     * @var array
+     */
+    protected $extensionInformation = array();
 
     /**
      * @var array
@@ -159,6 +165,8 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
      */
     protected function collectInformation() {
 
+        $this->getExtensionInformation();
+
         $this->getShopStatus();
 
         $this->getShops();
@@ -169,6 +177,15 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
 
         $this->severityBadgeClass = InformationStatus::STATUS_OK;
 
+    }
+
+    /**
+     * Gets the connected Shops
+     *
+     * @return void
+     */
+    protected function getExtensionInformation() {
+        $this->extensionInformation['version'] = ExtensionManagementUtility::getExtensionVersion($this->extensionKey);
     }
 
     /**
@@ -287,34 +304,18 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
      * @return void
      */
     protected function getCacheStatus() {
-
-        /** @var CacheManager $cacheManager */
-        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-        $caches = '';
-
         $status = InformationStatus::STATUS_WARNING;
+        /** @var CacheChainFactory $cacheChainFactory */
+        $cacheChainFactory = GeneralUtility::makeInstance(CacheChainFactory::class);
+        $cache = $cacheChainFactory->create();
 
-        /**
-         * create one cache for each endpoint
-         */
-        $endpoints = array('articles', 'categories', 'media', 'shops');
-        foreach ($endpoints as $endpoint) {
-            if ($cacheManager->hasCache($this->extensionKey . '_' . $endpoint)) {
-                $cache = $cacheManager->getCache($this->extensionKey . '_' . $endpoint);
-                $backend = $cache->getBackend();
-
-                if ($backend instanceof Typo3DatabaseBackend) {
-
-                    $caches .= $backend->getCacheTable() . '<br>(' . (string)$this->getDatabaseConnection()->exec_SELECTcountRows('*', $backend->getCacheTable()) . ' ' . $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.caches.entries', TRUE) . ') <br>';
-                }
-                $status = InformationStatus::STATUS_OK;
-                $value = $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.status.active', TRUE);
-            } else {
-                $status = InformationStatus::STATUS_WARNING;
-                $value = $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.status.inactive', TRUE);
-            }
+        if ($cache->isActive()) {
+            $status = InformationStatus::STATUS_OK;
+            $value = $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.status.active', TRUE);
+        } else {
+            $status = InformationStatus::STATUS_WARNING;
+            $value = $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.status.inactive', TRUE);
         }
-
 
         $this->cacheInformation[] = array(
             'title' => $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.status', TRUE),
@@ -323,11 +324,35 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
             'icon' => $this->iconFactory->getIcon('sysinfo-database', Icon::SIZE_SMALL)->render()
         );
 
-        if ($status === InformationStatus::STATUS_OK) {
-            $this->cacheInformation[] = array(
-                'value' => $caches,
-            );
+        /**
+         * detailed cache information retrieval
+         */
+        if ($cache->isActive()) {
+            foreach ($cache->getBackends() as $priority => $backend) {
+                $backendReflection = new \ReflectionClass($backend);
+                $this->cacheInformation[] = array(
+                    'title' => $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.level.' . $priority , TRUE),
+                    'value' => $backendReflection->getShortName(),
+                    'icon' => $this->iconFactory->getIcon('px-shopware-cache-level', Icon::SIZE_SMALL)->render()
+                );
+
+                if ($backend instanceof Typo3DatabaseBackend) {
+                    $cacheTables = '';
+                    foreach ($cache->getCacheTables() as $cacheTable) {
+                        $cacheTables .= $cacheTable . '<br>(' . (string)$this->getDatabaseConnection()->exec_SELECTcountRows('*', $cacheTable) . ' ' . $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.caches.entries', TRUE) . ') <br>';
+
+                        if ($cacheTables != '') {
+                            $this->cacheInformation[] = array(
+                                'value' => $cacheTables,
+                            );
+                        }
+                    }
+                }
+            }
+
         }
+
+
     }
 
     /**
@@ -382,6 +407,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface {
         $request->setControllerExtensionName('px_shopware');
 
         $this->standaloneView->assignMultiple(array(
+                                                  'extensionInformation' => $this->extensionInformation,
                                                   'shopInformation' => $this->shopInformation,
                                                   'cacheInformation' => $this->cacheInformation,
                                                   'messages' => $this->messages,

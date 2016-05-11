@@ -6,8 +6,8 @@
 conf.py:
   copyright: 2016
   project: Shopware Integration for TYPO3
-  version: 1.0
-  release: 1.0.0
+  version: 1.3
+  release: 1.3.0
   latex_documents:
   - - Index
     - px_shopware.tex

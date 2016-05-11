@@ -1,5 +1,5 @@
 <?php
-namespace Portrino\PxShopware\Backend\Hooks;
+namespace Portrino\PxShopware\Cache;
 
 /***************************************************************
  *  Copyright notice
@@ -24,32 +24,30 @@ namespace Portrino\PxShopware\Backend\Hooks;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
-use Portrino\PxShopware\Cache\CacheChainFactory;
 use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class Ajax
+ * Class CacheChainFactory
  *
- * @package Portrino\PxShopware\Backend\Hooks
+ * @package Portrino\PxShopware\Backend\Form\Wizard
  */
-class Ajax {
+class CacheChainFactory implements SingletonInterface {
 
     /**
-     * @var string Key of the extension
+     * @return CacheChain
      */
-    protected $extensionKey = 'px_shopware';
-
-    /**
-     * @throws NoSuchCacheException
-     */
-    public function clearCache() {
-        /** @var CacheChainFactory $cacheChainFactory */
-        $cacheChainFactory = GeneralUtility::makeInstance(CacheChainFactory::class);
-        $cache = $cacheChainFactory->create();
-        $cache->flush();
+    public function create() {
+        /** @var CacheManager $cacheManager */
+        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
+        $cacheChain = new CacheChain();
+        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXT']['px_shopware']['cache_chain'] as $cachePriority => $cacheIdentifier) {
+            $cache = ($cacheManager->hasCache($cacheIdentifier)) ? $cacheManager->getCache($cacheIdentifier) : NULL;
+            if ($cache) {
+                $cacheChain->addCache($cache, $cachePriority);
+            }
+        }
+        return $cacheChain;
     }
-
 }

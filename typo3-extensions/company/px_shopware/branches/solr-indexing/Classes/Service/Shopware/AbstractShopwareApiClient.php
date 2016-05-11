@@ -24,6 +24,11 @@ namespace Portrino\PxShopware\Service\Shopware;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Portrino\PxShopware\Backend\Form\Wizard\CacheChain;
+use Portrino\PxShopware\Backend\Form\Wizard\CacheChainManager;
+use Portrino\PxShopware\Cache\CacheChainFactory;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
 use \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException;
 use \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurationException;
@@ -108,6 +113,12 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     protected $persistenceManager;
 
     /**
+     * @var \Portrino\PxShopware\Service\Shopware\LocaleMappingService
+     * @inject
+     */
+    protected $localeMappingService;
+
+    /**
      * the extConf array of PxShopware extension
      *
      * @var array
@@ -129,7 +140,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     protected $applicationContext;
 
     /**
-     * @var \TYPO3\CMS\Core\Cache\Frontend\StringFrontend
+     * @var FrontendInterface
      */
     protected $cache;
 
@@ -139,11 +150,19 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     protected $logger;
 
     /**
+     * the language id we should send to shopware API
+     *
+     * @var int
+     */
+    protected $language;
+
+    /**
      * The user-object the script uses in backend mode
      *
      * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
      */
     public $BE_USER;
+
 
     /**
      *
@@ -216,12 +235,13 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
         /**
          * cache initialization (if caching is not disabled!)
          *
-         * @var \TYPO3\CMS\Core\Cache\CacheManager $cacheManager
+         * @var CacheChainManager $cacheChainManager
          *
          */
         if ((boolean)$cacheConfiguration['disable'] != TRUE) {
-            $cacheManager = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
-            $this->cache = ($cacheManager->hasCache($this->extensionKey . '_' .$this->getEndpoint())) ? $cacheManager->getCache($this->extensionKey . '_' .$this->getEndpoint()) : NULL;
+            /** @var CacheChainFactory $cacheChainFactory */
+            $cacheChainFactory = GeneralUtility::makeInstance(CacheChainFactory::class);
+            $this->cache = $cacheChainFactory->create();
             $this->cacheLifeTime = isset($settings['caching']['lifetime']) ? (int)$settings['caching']['lifetime'] : (isset($cacheConfiguration['lifetime']) ? (int)$cacheConfiguration['lifetime'] : 3600);
             //reset lifetime to 3600sec if 0 is set
             if ($this->cacheLifeTime == 0) {
@@ -229,6 +249,21 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
             }
         } else {
             $this->cache = NULL;
+        }
+
+        /**
+         * Get the current language
+         * -> depends on the TYPO3_MODE
+         */
+        if (TYPO3_MODE === 'FE') {
+            /**
+             * retrieve the language id from localeMappingService
+             */
+            $locale = GeneralUtility::trimExplode('.', $GLOBALS['TSFE']->config['config']['locale_all'], TRUE);
+            $locale = ($locale && isset($locale[0])) ? $locale[0] : $this->settings['api']['locale_all'];
+            $this->language = $this->localeMappingService->getLanguageId($locale);
+        } else {
+            $this->language = NULL;
         }
     }
 
@@ -247,7 +282,12 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
         $queryString = '';
         $entry = NULL;
 
-        $params = array_merge_recursive($params, array('px_shopware' => 1));
+        ArrayUtility::mergeRecursiveWithOverrule($params, array('px_shopware' => 1));
+
+        if ($this->language) {
+            ArrayUtility::mergeRecursiveWithOverrule($params, array('language' => $this->language));
+        }
+
         $queryString = http_build_query($params);
 
         $url = rtrim($url, '?') . '?';
