@@ -83,6 +83,17 @@ module.tx_pxshopware < plugin.tx_pxshopware
                     }
                     fields {
                         url = pxShopwareUrl
+                        price_doubleS = price
+                        pseudoPrice_doubleS = pseudoPrice
+                        tax_doubleS = tax
+                        taxName_stringS = taxName
+                        supplier_stringS = supplier
+                        category_stringM = SOLR_MULTIVALUE
+                        category_stringM {
+                            field = category
+                            separator = ,
+                            removeEmptyValues = 1
+                        }
                     }
                 }
 
@@ -99,5 +110,6 @@ module.tx_pxshopware < plugin.tx_pxshopware
                 }
             }
         }
+        search.trustedFields := addToList(description)
     }
 [global]

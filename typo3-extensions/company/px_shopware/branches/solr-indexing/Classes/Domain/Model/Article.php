@@ -270,7 +270,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      * @return NULL|\Portrino\PxShopware\Domain\Model\Media
      */
     public function getFirstImage() {
-        return ($this->getImages() != NULL) ? array_values($this->getImages()->toArray())[0] : NULL;
+        return ($this->getImages() != NULL && $this->getImages()->count() > 0) ? array_values($this->getImages()->toArray())[0] : NULL;
     }
 
     /**

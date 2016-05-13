@@ -46,7 +46,7 @@ class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexe
      */
     protected function indexItem(Item $item, $language = 0) {
 
-        if ($this->options['ignoredIds']) {
+        if ($this->options['ignoredIds'] != '') {
             $ignoredIds = GeneralUtility::trimExplode(',', $this->options['ignoredIds'], TRUE);
             if (in_array($item->getRecordUid(), $ignoredIds)) {
                 return TRUE;

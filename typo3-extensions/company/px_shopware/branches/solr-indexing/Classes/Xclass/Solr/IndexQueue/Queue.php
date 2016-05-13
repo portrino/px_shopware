@@ -62,6 +62,7 @@ class Queue extends \ApacheSolrForTypo3\Solr\IndexQueue\Queue {
         return $initializerClass;
     }
 
+
     /**
      * Gets $limit number of items to index for a particular $site.
      *
@@ -98,10 +99,12 @@ class Queue extends \ApacheSolrForTypo3\Solr\IndexQueue\Queue {
      * index queue records.
      *
      * @param array $indexQueueItemRecords Array of plain index queue records
-     * @param Site $site
      * @return array Array of ApacheSolrForTypo3\Solr\IndexQueue\Item objects
      */
-    protected function getIndexQueueItemObjectsFromRecords(array $indexQueueItemRecords, Site $site) {
+    protected function getIndexQueueItemObjectsFromRecords(array $indexQueueItemRecords) {
+
+
+        $site = Site::getFirstAvailableSite();
 
         $solrConfiguration = $site->getSolrConfiguration();
 
@@ -121,7 +124,7 @@ class Queue extends \ApacheSolrForTypo3\Solr\IndexQueue\Queue {
             if ($skipPreFetchFromDb) {
                 $tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']] = array('uid' => $indexQueueItemRecord['item_uid']);
             } else {
-                $tableUids[$indexQueueItemRecord['item_type']][] = $indexQueueItemRecord['item_uid'];
+                $tableUids[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']] = $indexQueueItemRecord['item_uid'];
             }
         }
 

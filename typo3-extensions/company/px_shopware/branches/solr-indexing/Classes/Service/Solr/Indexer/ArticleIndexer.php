@@ -64,14 +64,38 @@ class ArticleIndexer extends AbstractShopwareIndexer {
     protected function overwriteSpecialFields(\Apache_Solr_Document $itemDocument, \Portrino\PxShopware\Domain\Model\Article $article) {
 
         $itemDocument->setField('title', $article->getName());
-        $itemDocument->setField('description', $article->getDescription());
+        $itemDocument->setField('description', trim(strip_tags($article->getDescription())));
 
         if ($article->getFirstImage()) {
             $itemDocument->setField('image_stringS', $article->getFirstImage()->getUrl());
         }
 
-        if (is_object($article->getRaw()) && is_object($article->getRaw()->mainDetail) && $article->getRaw()->mainDetail->number) {
-            $itemDocument->setField('detailNumber_stringS', $article->getRaw()->mainDetail->number);
+        if ($article->getCategories()->count() > 0) {
+            $categoryNames = array();
+            /** @var \Portrino\PxShopware\Domain\Model\Category $category */
+            foreach ($article->getCategories() as $category) {
+                $categoryNames[] = $category->getName();
+            }
+            $itemDocument->setField('category_stringM', implode(',', $categoryNames));
+        }
+
+        if (is_object($article->getRaw()) && is_object($article->getRaw()->tax)) {
+            $itemDocument->setField('tax_doubleS', $article->getRaw()->tax->tax);
+            $itemDocument->setField('taxName_stringS', $article->getRaw()->tax->name);
+        }
+
+
+        if (is_object($article->getRaw()) && is_object($article->getRaw()->mainDetail)) {
+            if ($article->getRaw()->mainDetail->number) {
+                $itemDocument->setField('detailNumber_stringS', $article->getRaw()->mainDetail->number);
+            }
+            if (is_array($article->getRaw()->mainDetail->prices) && count($article->getRaw()->mainDetail->prices) > 0) {
+                $itemDocument->setField('price_tDoubleS', $article->getRaw()->mainDetail->prices[0]->price);
+                $itemDocument->setField('pseudoPrice_tDoubleS', $article->getRaw()->mainDetail->prices[0]->pseudoPrice);
+            }
+        }
+        if (is_object($article->getRaw()->supplier)) {
+            $itemDocument->setField('supplier_stringS', $article->getRaw()->supplier->name);
         }
 
         return $itemDocument;

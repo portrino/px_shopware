@@ -88,7 +88,12 @@ abstract class AbstractIndexQueue implements \TYPO3\CMS\Core\SingletonInterface,
         /** @var \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $item */
         foreach ($items as $item) {
 
-            // do not check for active flag here but in item indexer
+                // check for active flag here and delete inactive items from queue AND index!
+            if (isset($item->getRaw()->active) && $item->getRaw()->active === FALSE) {
+                $garbageCollector = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\GarbageCollector');
+                $garbageCollector->collectGarbage($this->itemType, $item->getId());
+                continue;
+            }
 
             if ($this->solrIndexQueue->containsItem($this->itemType, $item->getId())) {
                 // existing Item: update!
