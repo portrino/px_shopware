@@ -137,11 +137,11 @@ class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexe
      * @return \Apache_Solr_Document A basic Solr document
      */
     protected function getBaseDocument(Item $item, \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $itemRecord) {
-        $site = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site',
+        $site = GeneralUtility::makeInstance(\ApacheSolrForTypo3\Solr\Site::class,
             $item->getRootPageUid());
 
         /** @var $document \Apache_Solr_Document */
-        $document = GeneralUtility::makeInstance('Apache_Solr_Document');
+        $document = GeneralUtility::makeInstance(\Apache_Solr_Document::class);
 
         // required fields
         $document->setField('id', Util::getDocumentId(

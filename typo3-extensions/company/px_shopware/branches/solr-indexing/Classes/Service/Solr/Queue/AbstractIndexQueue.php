@@ -43,10 +43,22 @@ abstract class AbstractIndexQueue implements \TYPO3\CMS\Core\SingletonInterface,
     protected $rootPageId;
 
     /**
+     * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected $db;
+
+    /**
      * @var \ApacheSolrForTypo3\Solr\IndexQueue\Queue
      * @inject
      */
     protected $solrIndexQueue;
+
+    /**
+     * AbstractIndexQueue constructor.
+     */
+    public function __construct() {
+        $this->db = $this->getDatabaseConnection();
+    }
 
 
     /**
@@ -90,16 +102,16 @@ abstract class AbstractIndexQueue implements \TYPO3\CMS\Core\SingletonInterface,
 
                 // check for active flag here and delete inactive items from queue AND index!
             if (isset($item->getRaw()->active) && $item->getRaw()->active === FALSE) {
-                $garbageCollector = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\GarbageCollector');
+                $garbageCollector = GeneralUtility::makeInstance(\ApacheSolrForTypo3\Solr\GarbageCollector::class);
                 $garbageCollector->collectGarbage($this->itemType, $item->getId());
                 continue;
             }
 
             if ($this->solrIndexQueue->containsItem($this->itemType, $item->getId())) {
                 // existing Item: update!
-                $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+                $this->db->exec_UPDATEquery(
                     'tx_solr_indexqueue_item',
-                    'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($this->itemType, 'tx_solr_indexqueue_item') .
+                    'item_type = ' . $this->db->fullQuoteStr($this->itemType, 'tx_solr_indexqueue_item') .
                     ' AND item_uid = ' . (int)$item->getId(),
                     array('changed' => $item->getChanged()->getTimestamp())
                 );
@@ -113,7 +125,7 @@ abstract class AbstractIndexQueue implements \TYPO3\CMS\Core\SingletonInterface,
                     'indexing_configuration' => $this->itemType,
                     'errors' => ''
                 );
-                $GLOBALS['TYPO3_DB']->exec_INSERTquery(
+                $this->db->exec_INSERTquery(
                     'tx_solr_indexqueue_item',
                     $item
                 );
@@ -134,17 +146,26 @@ abstract class AbstractIndexQueue implements \TYPO3\CMS\Core\SingletonInterface,
      */
     protected function getLastChangedTime($rootPageId, $itemType) {
         $lastChangedTime = 0;
-        $lastChangedRow = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+        $lastChangedRow = $this->db->exec_SELECTgetRows(
             'changed',
             'tx_solr_indexqueue_item',
-            'root = ' . (int)$rootPageId . ' AND item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item'),
+            'root = ' . (int)$rootPageId . ' AND item_type = ' . $this->db->fullQuoteStr($itemType, 'tx_solr_indexqueue_item'),
             '',
             'changed DESC',
             1
         );
-        if ($lastChangedRow[0]['changed']) {
+        if (isset($lastChangedRow[0]['changed'])) {
             $lastChangedTime = $lastChangedRow[0]['changed'];
         }
         return $lastChangedTime;
+    }
+
+    /**
+     * Get global database connection
+     *
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection;
+     */
+    protected function getDatabaseConnection() {
+        return $GLOBALS['TYPO3_DB'];
     }
 }

@@ -38,7 +38,7 @@ class ArticleIndexQueue extends AbstractIndexQueue implements ArticleIndexQueueI
     protected $itemType = \Portrino\PxShopware\Domain\Model\Article::class;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\ArticleClient
+     * @var \Portrino\PxShopware\Service\Shopware\ArticleClientInterface
      * @inject
      */
     protected $shopwareClient;
