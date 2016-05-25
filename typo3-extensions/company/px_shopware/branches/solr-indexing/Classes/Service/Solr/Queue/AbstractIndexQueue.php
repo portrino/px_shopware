@@ -25,6 +25,8 @@ namespace Portrino\PxShopware\Service\Solr\Queue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Class AbstractIndexQueue
  *
@@ -70,13 +72,11 @@ abstract class AbstractIndexQueue implements \TYPO3\CMS\Core\SingletonInterface,
     public function populateIndexQueue($rootPageId, $documentsToIndexLimit = 0) {
         $this->rootPageId = $rootPageId;
 
-        $result = TRUE;
+        $result = FALSE;
 
         $items = $this->getItemsFromApi($documentsToIndexLimit);
         if ($items) {
             $result = $this->writeToQueue($items);
-        } else {
-            $result = FALSE;
         }
 
         return $result;
@@ -117,7 +117,7 @@ abstract class AbstractIndexQueue implements \TYPO3\CMS\Core\SingletonInterface,
                 );
             } else {
                 // new Item: insert!
-                $item = array(
+                $insertFields = array(
                     'root' => $this->rootPageId,
                     'item_type' => $this->itemType,
                     'item_uid' => (int)$item->getId(),
@@ -127,7 +127,7 @@ abstract class AbstractIndexQueue implements \TYPO3\CMS\Core\SingletonInterface,
                 );
                 $this->db->exec_INSERTquery(
                     'tx_solr_indexqueue_item',
-                    $item
+                    $insertFields
                 );
             }
         }

@@ -34,7 +34,8 @@ class IndexQueueCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comm
 
     protected $itemTypes = array(
         \Portrino\PxShopware\Domain\Model\Article::class,
-        \Portrino\PxShopware\Domain\Model\Category::class
+        // deactivate for now
+        // \Portrino\PxShopware\Domain\Model\Category::class
     );
 
     /**

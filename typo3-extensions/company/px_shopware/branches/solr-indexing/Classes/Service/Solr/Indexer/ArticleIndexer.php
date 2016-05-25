@@ -76,7 +76,7 @@ class ArticleIndexer extends AbstractShopwareIndexer {
             foreach ($article->getCategories() as $category) {
                 $categoryNames[] = $category->getName();
             }
-            $itemDocument->setField('category_stringM', implode(',', $categoryNames));
+            $itemDocument->setField('category_stringM', array_unique($categoryNames));
         }
 
         if (is_object($article->getRaw()) && is_object($article->getRaw()->tax)) {

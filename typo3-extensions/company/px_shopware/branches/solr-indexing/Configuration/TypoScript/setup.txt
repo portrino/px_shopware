@@ -97,7 +97,8 @@ module.tx_pxshopware < plugin.tx_pxshopware
                     }
                 }
 
-                Portrino\PxShopware\Domain\Model\Category = 1
+                    # deactivate for now
+                Portrino\PxShopware\Domain\Model\Category = 0
                 Portrino\PxShopware\Domain\Model\Category {
                     skipPreFetchFromDb = 1
                     indexer = Portrino\PxShopware\Service\Solr\Indexer\CategoryIndexer
