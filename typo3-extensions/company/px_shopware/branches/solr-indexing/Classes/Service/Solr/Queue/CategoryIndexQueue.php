@@ -35,7 +35,7 @@ class CategoryIndexQueue extends AbstractIndexQueue implements CategoryIndexQueu
     /**
      * @var string
      */
-    protected $itemType = \Portrino\PxShopware\Domain\Model\Category::class;
+    protected $itemType = 'Portrino_PxShopware_Domain_Model_Category';
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\CategoryClient

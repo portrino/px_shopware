@@ -26,6 +26,7 @@ namespace Portrino\PxShopware\Service\Solr\Indexer;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use Portrino\PxShopware\Domain\Model\Category;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use ApacheSolrForTypo3\Solr\Util;
 
@@ -41,11 +42,11 @@ class CategoryIndexer extends AbstractShopwareIndexer {
      * get Article Data from shopware API
      *
      * @param Item $item The item to index
-     * @return \Portrino\PxShopware\Domain\Model\Category The record to use to build the base document
+     * @return Category The record to use to build the base document
      */
     protected function getShopwareRecord(Item $item) {
 
-        // get Data from shopware API
+            // get Data from shopware API
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
         $shopwareClient = $objectManager->get(\Portrino\PxShopware\Service\Shopware\CategoryClient::class);
@@ -55,13 +56,13 @@ class CategoryIndexer extends AbstractShopwareIndexer {
 
 
     /**
-     * overwrite special fields for articles
+     * overwrite special fields for categories
      *
      * @param \Apache_Solr_Document $itemDocument
-     * @param \Portrino\PxShopware\Domain\Model\Category $category
+     * @param Category $category
      * @return \Apache_Solr_Document $itemDocument
      */
-    protected function overwriteSpecialFields(\Apache_Solr_Document $itemDocument, \Portrino\PxShopware\Domain\Model\Category $category) {
+    protected function overwriteSpecialFields(\Apache_Solr_Document $itemDocument, Category $category) {
 
         $itemDocument->setField('title', $category->getName());
         if (is_object($category->getRaw()) && is_string($category->getRaw()->metaDescription) && $category->getRaw()->metaDescription != '') {

@@ -45,17 +45,8 @@ class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexe
      * @return boolean TRUE if item was indexed successfully, FALSE on failure
      */
     protected function indexItem(Item $item, $language = 0) {
-
-        if ($this->options['ignoredIds'] != '') {
-            $ignoredIds = GeneralUtility::trimExplode(',', $this->options['ignoredIds'], TRUE);
-            if (in_array($item->getRecordUid(), $ignoredIds)) {
-                return TRUE;
-            }
-        }
-
         $documents = array();
 
-        // TODO: how to add different languages
         /** @var \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $itemRecord */
         $itemRecord = $this->getShopwareRecord($item);
 
@@ -74,26 +65,35 @@ class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexe
             // overwrite fields for specific item type
         $itemDocument = $this->overwriteSpecialFields($itemDocument, $itemRecord);
 
-        $documents[] = $itemDocument;
+            // check if item should be indexed
+        if ($this->itemIsValid($itemRecord)) {
 
-            // allow indexItemAddDocuments Hooks
-        $documents = array_merge($documents, $this->getAdditionalDocuments(
-            $item,
-            $language,
-            $itemDocument
-        ));
+            $documents[] = $itemDocument;
 
-            // apply fieldProcessingInstructions from TS
-        $documents = $this->processDocuments($item, $documents);
+                // allow indexItemAddDocuments Hooks
+            $documents = array_merge($documents, $this->getAdditionalDocuments(
+                $item,
+                $language,
+                $itemDocument
+            ));
 
-            // allow preAddModifyDocuments Hooks
-        $documents = $this->preAddModifyDocuments(
-            $item,
-            $language,
-            $documents
-        );
+                // apply fieldProcessingInstructions from TS
+            $documents = $this->processDocuments($item, $documents);
 
-            // add to solr index core
+                // allow preAddModifyDocuments Hooks
+            $documents = $this->preAddModifyDocuments(
+                $item,
+                $language,
+                $documents
+            );
+        } else {
+                // item is not valid, delete from index!
+            /** @var \ApacheSolrForTypo3\Solr\GarbageCollector $garbageCollector */
+            $garbageCollector = GeneralUtility::makeInstance(\ApacheSolrForTypo3\Solr\GarbageCollector::class);
+            $garbageCollector->collectGarbage(addslashes($item->getType()), $itemRecord->getId());
+        }
+
+            // add clean documents to solr index core
         $response = $this->solr->addDocuments($documents);
         if ($response->getHttpStatus() == 200) {
             $itemIndexed = TRUE;
@@ -105,6 +105,29 @@ class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexe
 
     }
 
+
+    /**
+     * check if record should be added/updated or deleted from index
+     *
+     * @param \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $itemRecord The item to index
+     * @return bool valid or not
+     */
+    protected function itemIsValid(\Portrino\PxShopware\Domain\Model\AbstractShopwareModel $itemRecord) {
+        $result = TRUE;
+
+            // check for active flag here
+        if (isset($itemRecord->getRaw()->active) && $itemRecord->getRaw()->active === FALSE) {
+            $result = FALSE;
+        }
+            // check if item should be ignored
+        if ($this->options['ignoredIds'] != '') {
+            $ignoredIds = GeneralUtility::trimExplode(',', $this->options['ignoredIds'], TRUE);
+            if (in_array($itemRecord->getId(), $ignoredIds)) {
+                $result = FALSE;
+            }
+        }
+        return $result;
+    }
 
     /**
      * get Data from shopware API

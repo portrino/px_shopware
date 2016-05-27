@@ -74,19 +74,25 @@ module.tx_pxshopware < plugin.tx_pxshopware
     plugin.tx_solr {
         index {
             queue {
-                Portrino\PxShopware\Domain\Model\Article = 1
-                Portrino\PxShopware\Domain\Model\Article {
+                Portrino_PxShopware_Domain_Model_Article = 1
+                Portrino_PxShopware_Domain_Model_Article {
                     skipPreFetchFromDb = 1
                     indexer = Portrino\PxShopware\Service\Solr\Indexer\ArticleIndexer
                     indexer {
 #                        option = value
                     }
                     fields {
+                        changed = changed
                         url = pxShopwareUrl
-                        price_doubleS = price
-                        pseudoPrice_doubleS = pseudoPrice
+                        price_tdoubleS = price
+                        pseudoPrice_tdoubleS = pseudoPrice
                         tax_doubleS = tax
                         taxName_stringS = taxName
+                        unitId_stringS = unitId
+                        packUnit_stringS = packUnit
+                        purchaseUnit_tdoubleS = purchaseUnit
+                        referenceUnit_tdoubleS = referenceUnit
+                        productNumber_stringS = number
                         supplier_stringS = supplier
                         category_stringM = SOLR_MULTIVALUE
                         category_stringM {
@@ -94,12 +100,19 @@ module.tx_pxshopware < plugin.tx_pxshopware
                             separator = ,
                             removeEmptyValues = 1
                         }
+
+                        keywords = SOLR_MULTIVALUE
+                        keywords {
+                            field = keywords
+                            separator = ,
+                            removeEmptyValues = 1
+                        }
                     }
                 }
 
                     # deactivate for now
-                Portrino\PxShopware\Domain\Model\Category = 0
-                Portrino\PxShopware\Domain\Model\Category {
+                Portrino_PxShopware_Domain_Model_Category = 0
+                Portrino_PxShopware_Domain_Model_Category {
                     skipPreFetchFromDb = 1
                     indexer = Portrino\PxShopware\Service\Solr\Indexer\CategoryIndexer
                     indexer {
