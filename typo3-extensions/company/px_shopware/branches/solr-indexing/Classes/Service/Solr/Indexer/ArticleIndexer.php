@@ -106,6 +106,7 @@ class ArticleIndexer extends AbstractShopwareIndexer {
                 $categoryNames[] = $category->getName();
             }
             $itemDocument->setField('category_stringM', array_unique($categoryNames));
+            $itemDocument->setField('category_textM', array_unique($categoryNames));
         }
 
         if (is_object($article->getRaw()) && is_object($article->getRaw()->tax)) {
@@ -117,6 +118,7 @@ class ArticleIndexer extends AbstractShopwareIndexer {
         if (is_object($article->getRaw()) && is_object($article->getRaw()->mainDetail)) {
             if ($article->getRaw()->mainDetail->number) {
                 $itemDocument->setField('productNumber_stringS', $article->getRaw()->mainDetail->number);
+                $itemDocument->setField('productNumber_textS', $article->getRaw()->mainDetail->number);
             }
             if ($article->getRaw()->mainDetail->unitId) {
                 $itemDocument->setField('unitId_stringS', $article->getRaw()->mainDetail->unitId);
@@ -138,6 +140,7 @@ class ArticleIndexer extends AbstractShopwareIndexer {
         }
         if (is_object($article->getRaw()->supplier)) {
             $itemDocument->setField('supplier_stringS', $article->getRaw()->supplier->name);
+            $itemDocument->setField('supplier_textS', $article->getRaw()->supplier->name);
         }
 
         return $itemDocument;

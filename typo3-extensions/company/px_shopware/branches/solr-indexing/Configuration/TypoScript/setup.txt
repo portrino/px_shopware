@@ -92,10 +92,10 @@ module.tx_pxshopware < plugin.tx_pxshopware
                         packUnit_stringS = packUnit
                         purchaseUnit_tdoubleS = purchaseUnit
                         referenceUnit_tdoubleS = referenceUnit
-                        productNumber_stringS = number
-                        supplier_stringS = supplier
-                        category_stringM = SOLR_MULTIVALUE
-                        category_stringM {
+                        productNumber_textS = number
+                        supplier_textS = supplier
+                        category_textM = SOLR_MULTIVALUE
+                        category_textM {
                             field = category
                             separator = ,
                             removeEmptyValues = 1

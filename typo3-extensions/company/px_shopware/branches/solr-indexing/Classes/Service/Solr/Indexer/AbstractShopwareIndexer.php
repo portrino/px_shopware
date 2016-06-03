@@ -90,7 +90,7 @@ class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexe
                 // item is not valid, delete from index!
             /** @var \ApacheSolrForTypo3\Solr\GarbageCollector $garbageCollector */
             $garbageCollector = GeneralUtility::makeInstance(\ApacheSolrForTypo3\Solr\GarbageCollector::class);
-            $garbageCollector->collectGarbage(addslashes($item->getType()), $itemRecord->getId());
+            $garbageCollector->collectGarbage($item->getType(), $itemRecord->getId());
         }
 
             // add clean documents to solr index core
