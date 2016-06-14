@@ -1,5 +1,10 @@
 # PxShopware Change log
 
+1.3.1 - 2016-05-06
+------------------
+* fixes performance problem in SuggestWizard
+    * we do not display breadcrumb path anymore, because this leads to many requests during suggest call
+
 1.3.0 - 2016-05-06
 ------------------
 * adds possibility to set specific template for plugins via typoscript or flexform
