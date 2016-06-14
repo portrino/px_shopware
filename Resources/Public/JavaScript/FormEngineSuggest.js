@@ -58,11 +58,17 @@ define(['jquery', 'jquery/autocomplete', 'TYPO3/CMS/Backend/FormEngine'], functi
             minLength: minimumCharacters,
             // put the AJAX results in the right format
             transformResult: function(response) {
-                return {
-                    suggestions: $.map(response, function(dataItem) {
-                        return { value: dataItem.text, data: dataItem };
-                    })
-                };
+                if (response != null){
+                    return {
+                        suggestions: $.map(response, function(dataItem) {
+                            return { value: dataItem.text, data: dataItem };
+                        })
+                    };
+                } else {
+                    return {
+                        suggestions: []
+                    };
+                }
             },
             // Rendering of each item
             formatResult: function(suggestion, value) {
