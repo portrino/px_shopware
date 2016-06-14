@@ -1,0 +1,12 @@
+<f:layout name="Default" />
+
+<f:section name="main">
+    <f:if condition="{settings.template}">
+        <f:then>
+            <f:render partial="Article/List/{settings.template}" arguments="{_all}" />
+        </f:then>
+        <f:else>
+            <f:render partial="Article/List/Default" arguments="{_all}" />
+        </f:else>
+    </f:if>
+</f:section>
