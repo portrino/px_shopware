@@ -40,6 +40,11 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     protected $name = '';
 
     /**
+     * @var \DateTime $changed
+     */
+    protected $changed;
+
+    /**
      * @var \TYPO3\CMS\Core\Http\Uri
      */
     protected $uri = '';
@@ -105,6 +110,10 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
             $this->setUri($this->raw->pxShopwareUrl);
         }
 
+        if (isset($this->raw->changed)) {
+            $this->setChanged($this->raw->changed);
+        }
+
         /**
          * set description in dependence of the description or descriptionLong attribute
          */
@@ -159,6 +168,23 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      */
     public function setDescription($description) {
         $this->description = $description;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getChanged() {
+        return $this->changed;
+    }
+
+    /**
+     * @param \DateTime|string $changed
+     */
+    public function setChanged($changed) {
+        if (is_string($changed)) {
+            $changed = new \DateTime($changed);
+        }
+        $this->changed = $changed;
     }
 
     /**
@@ -222,7 +248,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      * @return NULL|\Portrino\PxShopware\Domain\Model\Media
      */
     public function getFirstImage() {
-        return ($this->getImages() != NULL) ? array_values($this->getImages()->toArray())[0] : NULL;
+        return ($this->getImages() != NULL && $this->getImages()->count() > 0) ? array_values($this->getImages()->toArray())[0] : NULL;
     }
 
     /**

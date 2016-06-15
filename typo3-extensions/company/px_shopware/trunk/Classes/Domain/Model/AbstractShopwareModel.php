@@ -40,7 +40,7 @@ abstract class AbstractShopwareModel implements ShopwareModelInterface {
     protected $id = '';
 
     /**
-     * @var string
+     * @var object
      */
     protected $raw;
 
@@ -78,7 +78,7 @@ abstract class AbstractShopwareModel implements ShopwareModelInterface {
     }
 
     /**
-     * @return string
+     * @return object|NULL
      */
     public function getRaw() {
         return $this->raw;
