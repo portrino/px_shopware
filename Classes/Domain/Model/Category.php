@@ -43,15 +43,31 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     protected $name = '';
 
     /**
+     * @var \DateTime $changed
+     */
+    protected $changed;
+
+    /**
      * @var \TYPO3\CMS\Core\Http\Uri
      */
     protected $uri = '';
+
+    /**
+     * @var \Portrino\PxShopware\Domain\Model\Media
+     */
+    protected $image;
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
      * @inject
      */
     protected $categoryClient;
+
+    /**
+     * @var \Portrino\PxShopware\Service\Shopware\MediaClientInterface
+     * @inject
+     */
+    protected $mediaClient;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Category>
@@ -73,6 +89,9 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
         if (isset($this->raw->pxShopwareUrl)) {
             $this->setUri($this->raw->pxShopwareUrl);
         }
+        if (isset($this->raw->changed)) {
+            $this->setChanged($this->raw->changed);
+        }
         $this->initStorageObjects();
     }
 
@@ -90,6 +109,11 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
      */
     public function initializeObject() {
 
+
+        if (isset($this->getRaw()->media) && is_object($this->getRaw()->media) && isset($this->getRaw()->media->id)) {
+            $media = $this->mediaClient->findById($this->getRaw()->media->id);
+            $this->setImage($media);
+        }
     }
 
     /**
@@ -128,6 +152,37 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
             $uri = new \TYPO3\CMS\Core\Http\Uri($uri);
         }
         $this->uri = $uri;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getChanged() {
+        return $this->changed;
+    }
+
+    /**
+     * @param \DateTime|string $changed
+     */
+    public function setChanged($changed) {
+        if (is_string($changed)) {
+            $changed = new \DateTime($changed);
+        }
+        $this->changed = $changed;
+    }
+
+    /**
+     * @return \Portrino\PxShopware\Domain\Model\Media
+     */
+    public function getImage() {
+        return $this->image;
+    }
+
+    /**
+     * @param \Portrino\PxShopware\Domain\Model\Media $image
+     */
+    public function setImage(\Portrino\PxShopware\Domain\Model\Media $image) {
+        $this->image = $image;
     }
 
     /**
