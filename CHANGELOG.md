@@ -1,6 +1,11 @@
 # PxShopware Change log
-
-1.3.1 - 2016-05-06
+1.4.0 - 2016-06-15
+------------------
+* enables solr indexing for shopware articles
+  * adds `IndexQueueCommandController` to populate Solr IndexQueue
+  * adds different `SolrIndexer` to index specific shopware resources
+      
+1.3.1 - 2016-06-14
 ------------------
 * fixes performance problem in SuggestWizard
     * we do not display breadcrumb path anymore, because this leads to many requests during suggest call
