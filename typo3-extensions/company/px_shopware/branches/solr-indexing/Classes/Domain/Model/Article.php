@@ -140,41 +140,6 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      *
      */
     public function initializeObject() {
-        if (isset($this->getRaw()->images) && is_array($this->getRaw()->images)) {
-            foreach ($this->raw->images as $image) {
-                if (isset($image->mediaId)) {
-                    /** @var Media $media */
-                    $media = $this->mediaClient->findById($image->mediaId);
-                    $this->addImage($media);
-                }
-            }
-        }
-
-        if (isset($this->getRaw()->categories)) {
-            /**
-             * we have to cast it to array, because the response is not of type array (maybe this is a bug in the shopware API)
-             */
-            $categories = (array)$this->raw->categories;
-            foreach ($categories as $category) {
-                if (isset($category->id)) {
-                    /** @var Category $detailedCategory */
-                    $detailedCategory = $this->categoryClient->findById($category->id);
-                    $this->addCategory($detailedCategory);
-                }
-            }
-        }
-
-        if (!isset($this->getRaw()->mainDetail)) {
-            /** @var Article $detail */
-            $detailedArticle = $this->articleClient->findById($this->getId(), FALSE);
-            /** @var Detail $detail */
-            $detail = $this->objectManager->get(Detail::class, $detailedArticle->raw->mainDetail, $this->token);
-            $this->setDetail($detail);
-        } else if (isset($this->getRaw()->mainDetail)) {
-            /** @var Detail $detail */
-            $detail = $this->objectManager->get(Detail::class, $this->getRaw()->mainDetail, $this->token);
-            $this->setDetail($detail);
-        }
     }
 
     /**
@@ -250,6 +215,19 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Media> $images
      */
     public function getImages() {
+        if ($this->images->count() === 0){
+            if (isset($this->getRaw()->images) && is_array($this->getRaw()->images)) {
+                foreach ($this->raw->images as $image) {
+                    if (isset($image->mediaId)) {
+                        /** @var Media $media */
+                        $media = $this->mediaClient->findById($image->mediaId);
+                        $this->addImage($media);
+                    }
+                }
+            }
+        }
+
+
         return $this->images;
     }
 
@@ -277,6 +255,24 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      * @return Detail
      */
     public function getDetail() {
+        if (!$this->detail) {
+
+            /**
+             * try to get the detail object from raw
+             */
+            if (!isset($this->getRaw()->mainDetail)) {
+                /** @var Article $detail */
+                $detailedArticle = $this->articleClient->findById($this->getId(), FALSE);
+                /** @var Detail $detail */
+                $detail = $this->objectManager->get(Detail::class, $detailedArticle->raw->mainDetail, $this->token);
+                $this->setDetail($detail);
+            } else if (isset($this->getRaw()->mainDetail)) {
+                /** @var Detail $detail */
+                $detail = $this->objectManager->get(Detail::class, $this->getRaw()->mainDetail, $this->token);
+                $this->setDetail($detail);
+            }
+        }
+
         return $this->detail;
     }
 
@@ -315,6 +311,23 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
      */
     public function getCategories() {
+
+        if ($this->categories->count() === 0) {
+            if (isset($this->getRaw()->categories)) {
+                /**
+                 * we have to cast it to array, because the response is not of type array (maybe this is a bug in the shopware API)
+                 */
+                $categories = (array)$this->raw->categories;
+                foreach ($categories as $category) {
+                    if (isset($category->id)) {
+                        /** @var Category $detailedCategory */
+                        $detailedCategory = $this->categoryClient->findById($category->id);
+                        $this->addCategory($detailedCategory);
+                    }
+                }
+            }
+        }
+
         return $this->categories;
     }
 
@@ -368,14 +381,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      * @return string
      */
     public function getSuggestDescription() {
-        /** @var Category $firstCategory */
-        $firstCategory = $this->getCategories()->toArray()[0];
-        if ($firstCategory) {
-            $result = $firstCategory->getBreadCrumbPath();
-        } else {
-            $result = $this->getDescription();
-        }
-        return $result;
+        return $this->getDescription();
     }
 
     /**
