@@ -62,18 +62,20 @@ interface AbstractShopwareApiClientInterface {
     /**
      * @param $id
      * @param bool $doCacheRequest
+     * @param array $params
      * @return \Portrino\PxShopware\Domain\Model\ShopwareModelInterface
      */
-    public function findById($id, $doCacheRequest = TRUE);
+    public function findById($id, $doCacheRequest = TRUE, $params = array());
 
     /**
      * @param $term
      * @param int $limit
      * @param bool $doCacheRequest
+     * @param array $params
      *
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
-    public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE);
+    public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE, $params = array());
 
     /**
      * @param bool $doCacheRequest

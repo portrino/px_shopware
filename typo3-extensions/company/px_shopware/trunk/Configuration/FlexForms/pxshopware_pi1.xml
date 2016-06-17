@@ -30,6 +30,7 @@
                                         <userFunc>Portrino\PxShopware\Backend\Form\Wizard\SuggestWizard->renderSuggestSelector</userFunc>
                                         <params>
                                             <type>Article</type>
+                                            <minchars>3</minchars>
                                         </params>
                                     </userFunc>
                                 </wizards>

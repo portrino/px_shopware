@@ -27,6 +27,7 @@ namespace Portrino\PxShopware\Backend\Form\Wizard;
 
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurationException;
+use Portrino\PxShopware\Service\Shopware\LocaleToShopMappingService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
@@ -57,6 +58,11 @@ class SuggestWizard {
     protected $pageRenderer;
 
     /**
+     * @var LocaleToShopMappingService
+     */
+    protected $localeToShopMappingService;
+
+    /**
      * @var ObjectManagerInterface
      */
     protected $objectManager;
@@ -73,6 +79,7 @@ class SuggestWizard {
         $this->pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        $this->localeToShopMappingService = $this->objectManager->get(LocaleToShopMappingService::class);
     }
 
     /**
@@ -94,6 +101,11 @@ class SuggestWizard {
          */
         $endpoint = $params['params']['type'];
 
+        /*
+         * get the minimal characters to trigger autosuggest from params
+         */
+        $minchars = isset($params['params']['minchars']) ? (int)$params['params']['minchars'] : 5;
+
         $fieldname = $params['itemName'];
 
         /**
@@ -109,6 +121,10 @@ class SuggestWizard {
             throw new ShopwareApiClientConfigurationException('The Class:"' . $shopwareApiClientClass . '" does not exist. Please check your type configuration in flexform config!', 1460126052);
         }
 
+        if (isset($params['row']['sys_language_uid'][0])) {
+            $language = (int)$params['row']['sys_language_uid'][0];
+        }
+
         $selector = '
         <label>&nbsp;</label>
         <div class="px-shopware autocomplete t3-form-suggest-container">
@@ -118,6 +134,8 @@ class SuggestWizard {
                         placeholder="' . $this->getLanguageService()->sL($this->languagePrefix . 'suggest_wizard.placeholder.' . strtolower($endpoint), FALSE) . '"
                         data-type="' . htmlspecialchars($endpoint) . '"
                         data-fieldname="' . htmlspecialchars($fieldname) . '" 
+                        data-language="' . $language . '" 
+                        data-minchars="' . $minchars. '" 
                 />
                 <span class="loading input-group-addon">
                     <i style="display: none;" id="loader" class="fa fa-circle-o-notch fa-spin"></i>
@@ -143,6 +161,11 @@ class SuggestWizard {
         // Get parameters from $_GET/$_POST
         $search = isset($parsedBody['value']) ? $parsedBody['value'] : $queryParams['value'];
         $endpoint = isset($parsedBody['type']) ? $parsedBody['type'] : $queryParams['type'];
+        $language = isset($parsedBody['language']) ? (int)$parsedBody['language'] : (int)$queryParams['language'];
+        // set language to 0 if no language was given
+        if ($language < 0) {
+            $language = 0;
+        }
 
         /**
          * check if the responsible shopwareApiClient interface and class exists for the given flexform type configuration
@@ -160,7 +183,8 @@ class SuggestWizard {
         /** @var AbstractShopwareApiClientInterface $shopwareApiClient */
         $shopwareApiClient = $this->objectManager->get($shopwareApiClientClass);
 
-        $results = $shopwareApiClient->findByTerm($search, 8);
+        $shopId = $this->localeToShopMappingService->getShopIdBySysLanguageUid($language);
+        $results = $shopwareApiClient->findByTerm($search, 8, TRUE, array('language' => $shopId));
 
         /** @var SuggestEntryInterface $result */
         foreach ($results as $result) {

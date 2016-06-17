@@ -56,14 +56,19 @@ class LocaleToShopMappingService implements \TYPO3\CMS\Core\SingletonInterface {
     }
 
     /**
-     * @param $locale
+     * @param int $sys_language_uid
      *
      * @return integer
      */
-    public function getLanguageId($locale) {
+    public function getShopIdBySysLanguageUid($sys_language_uid) {
         $shopToLocaleMappings = $this->settings['api']['shopToLocale'];
-        $shopId = array_search($locale, $shopToLocaleMappings);
-        return $shopId;
+
+        foreach ($shopToLocaleMappings as $shopId => $shopToLocaleMapping) {
+            if ((int)$sys_language_uid === (int)$shopToLocaleMapping['sys_language_uid']) {
+                return $shopId;
+            }
+        }
+        return 1;
     }
 
 }

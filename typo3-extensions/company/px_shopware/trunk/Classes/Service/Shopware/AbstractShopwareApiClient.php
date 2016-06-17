@@ -154,7 +154,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
      *
      * @var int
      */
-    protected $language;
+    protected $shopId;
 
     /**
      * The user-object the script uses in backend mode
@@ -259,12 +259,13 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
             /**
              * retrieve the language id from localeMappingService
              */
-            $locale = GeneralUtility::trimExplode('.', $GLOBALS['TSFE']->config['config']['locale_all'], TRUE);
-            $locale = ($locale && isset($locale[0])) ? $locale[0] : $this->settings['api']['locale_all'];
-            $this->language = $this->localeMappingService->getLanguageId($locale);
+            $language = GeneralUtility::trimExplode('.', $GLOBALS['TSFE']->config['config']['sys_language_uid'], TRUE);
+            $language = ($language && isset($language[0])) ? $language[0] : 0;
+            $this->shopId = $this->localeMappingService->getShopIdBySysLanguageUid($language);
         } else {
-            $this->language = NULL;
+            $this->shopId = NULL;
         }
+
     }
 
     /**
@@ -284,8 +285,8 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
 
         ArrayUtility::mergeRecursiveWithOverrule($params, array('px_shopware' => 1));
 
-        if ($this->language) {
-            ArrayUtility::mergeRecursiveWithOverrule($params, array('language' => $this->language));
+        if ($this->shopId && !array_key_exists('language', $params)) {
+            ArrayUtility::mergeRecursiveWithOverrule($params, array('language' => $this->shopId));
         }
 
         $queryString = http_build_query($params);
@@ -544,11 +545,12 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     /**
      * @param int $id
      * @param bool $doCacheRequest
+     * @param array $params
      *
      * @return \Portrino\PxShopware\Domain\Model\ShopwareModelInterface
      */
-    public function findById($id, $doCacheRequest = TRUE) {
-        $result = $this->get($this->getValidEndpoint() . $id, array(), $doCacheRequest);
+    public function findById($id, $doCacheRequest = TRUE, $params = array()) {
+        $result = $this->get($this->getValidEndpoint() . $id, $params, $doCacheRequest);
         if ($result) {
             $token = (isset($result->pxShopwareTypo3Token)) ? (bool)$result->pxShopwareTypo3Token : FALSE;
             if (isset($result->data) && isset($result->data->id)) {
@@ -563,13 +565,14 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
      * @param $term
      * @param int $limit
      * @param bool $doCacheRequest
+     * @param array $params
      *
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
-    public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE) {
+    public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE, $params = array()) {
         $shopwareModels = new ObjectStorage();
 
-        $params = array(
+        ArrayUtility::mergeRecursiveWithOverrule($params, array(
             'limit' => $limit,
             'sort' => array(
                 array(
@@ -584,7 +587,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
                     'value' => '%' . $term . '%'
                 )
             )
-        );
+        ));
 
         $result = $this->get($this->getValidEndpoint(), $params, $doCacheRequest);
         if ($result) {

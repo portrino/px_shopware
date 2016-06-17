@@ -24,6 +24,7 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -47,8 +48,9 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
      * @param string $term
      * @param int $limit
      * @param bool $doCacheRequest
+     * @param array $params
      */
-    public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE) {
+    public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE, $params = array()) {
         $shopwareModels = new ObjectStorage();
 
         /**
@@ -81,7 +83,7 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
             );
         }
 
-        $params = array(
+        ArrayUtility::mergeRecursiveWithOverrule($params, array(
             'limit' => $limit,
             'sort' => array(
                 array(
@@ -90,8 +92,8 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
                 )
             ),
             'filter' => $filter
-        );
-        
+        ));
+
         $result = $this->get($this->getValidEndpoint(), $params, $doCacheRequest);
         if ($result) {
             $token = (isset($result->pxShopwareTypo3Token)) ? (bool)$result->pxShopwareTypo3Token : FALSE;
