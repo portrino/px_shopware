@@ -1,5 +1,10 @@
 # PxShopware Change log
 
+2.0.0 - 2016-06-17
+------------------
+* complete refactoring of localization features
+* adds `Pi1PageLayoutViewDraw` for previewing of px_showare plugin configuration
+
 1.4.1 - 2016-06-17
 ------------------
 * adds `LocaleToShopMappingService` which replaces `LocaleMappingService` because we need to map the locale to the 

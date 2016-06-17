@@ -156,19 +156,21 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
             }
         }
 
-
-
-
-
-//        \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($row);
-//        \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($selectedItems);
-//        exit;
-
         $this->view->assign('selectedItems', $selectedItems);
+
+
+        $pageTsConfig = BackendUtility::getTCEFORM_TSconfig('tt_content', $row);
+        $pageTsConfig = $this->typoScriptService->convertTypoScriptArrayToPlainArray($pageTsConfig['pi_flexform']);
+
+        $this->view->assign(
+            'template',
+            array(
+                0 => $pageTsConfig['pxshopware_pi1']['sDEF']['settings.template']['addItems'][$flexformConfiguration['settings']['template']]
+            )
+        );
         $this->view->assign('row', $row);
 
-//        $itemContent .= $this->view->render();
-        $itemContent .= '';
+        $itemContent = $this->view->render();
     }
 
     /**

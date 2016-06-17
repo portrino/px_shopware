@@ -1,102 +1,30 @@
 {namespace v = FluidTYPO3\Vhs\ViewHelpers}
-<f:if condition="{templateConfiguration}">
-    <f:then>
-        <table>
-            <tr>
-                <td style="width: 50%; padding-right: 20px;">
-                    <f:if condition="{templateConfiguration.preview}">
-                        <f:then>
-                            <f:image src="{templateConfiguration.preview}" width="700c" />
-                        </f:then>
-                        <f:else>
-                            <f:image src="EXT:px_dynamic_content/Resources/Public/Images/Preview/Default.jpg" width="700c" />
-                        </f:else>
-                    </f:if>
-                </td>
-                <td style="vertical-align: top; width: 50%;">
-                    <h2><f:translate key="LLL:EXT:px_dynamic_content/Resources/Private/Language/locallang_db.xlf:tt_content.CType.pxdynamiccontent_pi1" /></h2>
-                    <h3>
-                        <f:translate key="LLL:EXT:px_dynamic_content/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxdynamiccontent_pi1.settings.template" />:
-                        <strong><f:translate key="{templateConfiguration.label}" /></strong>
-                    </h3>
-                    <h4>
-                        <f:translate key="LLL:EXT:px_dynamic_content/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxdynamiccontent_pi1.template.allowed_elements" />:
-                        <br>
-                        <f:for each="{templateConfiguration.elements}" key="identifier" as="label">
-                            <span style="margin-top: 5px;" class="badge badge-default">{identifier}</span>
-                        </f:for>
-                    </h4>
-                    <div class="panel panel-space panel-default recordlist">
-                        <div class="panel-heading">
-                            <f:translate key="LLL:EXT:px_dynamic_content/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxdynamiccontent_pi1.settings.elements" />
-                        </div>
-                        <table class="table table-striped table-hover" style="width: 100%">
-                            <thead>
-                            <tr>
-                                <th>
-                                    <f:translate key="LLL:EXT:px_dynamic_content/Resources/Private/Language/locallang_db.xlf:tx_pxdynamiccontent_domain_model_element.identifier" />
-                                </th>
-                                <th>
-                                    <f:translate key="LLL:EXT:px_dynamic_content/Resources/Private/Language/locallang_db.xlf:tx_pxdynamiccontent_domain_model_element.value" />
-                                </th>
-                                <th>
-                                    <f:translate key="LLL:EXT:px_dynamic_content/Resources/Private/Language/locallang_db.xlf:tx_pxdynamiccontent_domain_model_element.link" />
-                                </th>
-                                <th>
-                                    <f:translate key="LLL:EXT:px_dynamic_content/Resources/Private/Language/locallang_db.xlf:tx_pxdynamiccontent_domain_model_element.media" />
-                                </th>
-                                <th>
-                                    <f:translate key="LLL:EXT:px_dynamic_content/Resources/Private/Language/locallang_db.xlf:tx_pxdynamiccontent_domain_model_element.content_elements" />
-                                </th>
-                                <th>
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <f:for each="{data.elements}" as="element">
-                                <tr>
-                                    <td>
-                                        {element.identifier}
-                                    </td>
-                                    <td>
-                                        {element.value -> f:format.crop(maxCharacters: 15)}
-                                    </td>
-                                    <td>
-                                        <v:condition.string.isNumeric value="{element.link}">
-                                            <v:page.info pageUid="{element.link}" as="page">
-                                                {page.title -> f:format.crop(maxCharacters: 30)}
-                                            </v:page.info>
-                                        </v:condition.string.isNumeric>
-                                    </td>
-                                    <td>
-                                        <f:if condition="{element.media -> f:count()} > 0">
-                                            <f:image src="{element.media.0.uid}" treatIdAsReference="1" height="30c"/>
-                                        </f:if>
-                                    </td>
-                                    <td>
-                                        <f:if condition="{element.contentElements -> f:count()} > 0">
-                                            <a href="{element.contentElements.0.backendEditUrl}" style="text-decoration: underline;" title="{f:translate(key:'LLL:EXT:lang/locallang_core.xlf:cm.editcontent')}">
-                                                {element.contentElements.0.header -> f:format.crop(maxCharacters: 15)}
-                                            </a>
-                                        </f:if>
-                                    </td>
-                                    <td class="col-control">
-                                        <div class="btn-group" role="group">
-                                            <a class="btn btn-default" href="{element.backendEditUrl}" title="{f:translate(key:'LLL:EXT:lang/locallang_core.xlf:cm.edit')}">
-                                                <f:be.buttons.icon icon="actions-open" title="Edit"></f:be.buttons.icon>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </f:for>
-                            </tbody>
-                        </table>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </f:then>
-    <f:else>
-        No Template Configuration found!
-    </f:else>
-</f:if>
+<div class="panel panel-space panel-default recordlist">
+    <div class="panel-heading">
+        Articles
+    </div>
+    <table class="table table-striped table-hover" style="width: 100%">
+        <tbody>
+            <f:for each="{selectedItems}" as="selectedItem">
+                <tr>
+                    <td>
+                        <a href="{selectedItem.raw.pxShopwareUrl}" target="_blank" title="{selectedItem.selectItemLabel}">
+                            <f:if condition="{selectedItem.images -> f:count()} > 0">
+                                <img src="{selectedItem.images.0.url}" width="30">
+                            </f:if>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{selectedItem.raw.pxShopwareUrl}" target="_blank" title="{selectedItem.selectItemLabel}">
+                            {selectedItem.selectItemLabel}
+                        </a>
+                    </td>
+                </tr>
+            </f:for>
+        </tbody>
+    </table>
+    <div class="panel-footer">
+        <f:translate key="LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxshopware_pi1.settings.template" />:
+        <strong><f:translate key="{template.0}" /></strong>
+    </div>
+</div>
