@@ -1,4 +1,14 @@
 # PxShopware Change log
+
+1.4.1 - 2016-06-17
+------------------
+* adds `LocaleToShopMappingService` which replaces `LocaleMappingService` because we need to map the locale to the 
+  related shop
+  * e.g.: "de_DE -> 1" or "it_IT -> 3"
+  * this means if the TYPO3 language is german(de_DE) the API-Call will use ?language=1 and when the language is italian
+    (it_IT) the API-Call will be appended with ?language=3 to get the correct translation of an article for example
+* this changes could be reverted if the bug described here: https://issues.shopware.com/#/issues/SW-15388 is fixed   
+
 1.4.0 - 2016-06-15
 ------------------
 * enables solr indexing for shopware articles
