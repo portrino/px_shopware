@@ -34,11 +34,27 @@ define(['jquery', 'jquery/autocomplete', 'TYPO3/CMS/Backend/FormEngine'], functi
         var $containerElement = $searchField.closest('.t3-form-suggest-container');
         var $loader = $('#loader');
         var type = $searchField.data('type'),
+            language = $searchField.data('language'),
             minimumCharacters = $searchField.data('minchars'),
             url = TYPO3.settings.ajaxUrls['tx_pxshopware::searchAction'],
             params = {
-                'type': type
+                'type': type,
+                'language': language
             };
+
+        var timeoutId = 0;
+        $searchField.keyup(function () {
+            if ($searchField.autocomplete().disabled === true) {
+                $searchField.autocomplete('disable');
+                clearTimeout(timeoutId); // doesn't matter if it's 0
+                timeoutId = setTimeout(function(){
+                    $searchField.autocomplete('enable');
+                    $searchField.keyup();
+                }, 1000);
+            }
+        });
+
+        $searchField.autocomplete('disable');
 
         $searchField.autocomplete({
             // ajax options
@@ -87,6 +103,7 @@ define(['jquery', 'jquery/autocomplete', 'TYPO3/CMS/Backend/FormEngine'], functi
             onSearchComplete: function() {
                 $loader.hide();
                 $containerElement.addClass('open');
+                $searchField.autocomplete('disable');
             },
             beforeRender: function(container) {
                 // Unset height, width and z-index again, should be fixed by the plugin at a later point
@@ -97,6 +114,8 @@ define(['jquery', 'jquery/autocomplete', 'TYPO3/CMS/Backend/FormEngine'], functi
                 $containerElement.removeClass('open');
             }
         });
+
+        $searchField.autocomplete('disable');
 
         // set up the events
         $containerElement.on('click', '.autocomplete-suggestion-link', function(evt) {

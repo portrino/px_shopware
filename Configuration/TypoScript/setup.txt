@@ -25,8 +25,13 @@ plugin.tx_pxshopware {
 
             # shop mapping configuration for localization of resources
             shopToLocale {
-                1 = de_DE
-                2 = gb_GB
+                # 1 is the shopId in SW
+                1 {
+                    sys_language_uid = 0
+                }
+                2 {
+                    sys_language_uid = 1
+                }
                 # ...
             }
         }

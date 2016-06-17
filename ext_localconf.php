@@ -178,6 +178,11 @@ $boot = function ($_EXTKEY) {
             $GLOBALS['TYPO3_CONF_VARS']['BE']['toolbarItems'][1435433105] =
                 \Portrino\PxShopware\Backend\ToolbarItems\ShopwareConnectorInformationToolbarItem::class;
 
+            /**
+             * hook for content element preview in backend
+             */
+            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem'][] =
+                \Portrino\PxShopware\Backend\Hooks\Pi1PageLayoutViewDraw::class;
 
 
             if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {

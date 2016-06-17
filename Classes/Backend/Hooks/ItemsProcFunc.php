@@ -29,6 +29,7 @@ use Portrino\PxShopware\Domain\Model\Article;
 use Portrino\PxShopware\Domain\Model\Category;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurationException;
+use Portrino\PxShopware\Service\Shopware\LocaleToShopMappingService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -52,11 +53,17 @@ class ItemsProcFunc {
     protected $configurationManager;
 
     /**
+     * @var LocaleToShopMappingService
+     */
+    protected $localeToShopMappingService;
+
+    /**
      * ItemsProcFunc constructor.
      *
      */
     public function __construct() {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->localeToShopMappingService = $this->objectManager->get(LocaleToShopMappingService::class);
     }
 
     /**
@@ -82,11 +89,14 @@ class ItemsProcFunc {
         /** @var AbstractShopwareApiClientInterface $shopwareApiClient */
         $shopwareApiClient = $this->objectManager->get($shopwareApiClientClass);
 
+        $language = isset($config['flexParentDatabaseRow']['sys_language_uid']) ? $config['flexParentDatabaseRow']['sys_language_uid'] : 0;
+        $shopId = $this->localeToShopMappingService->getShopIdBySysLanguageUid($language);
+
         /** @var array $selectedItems */
         $selectedItems = isset($config['row']['settings.items']) ? GeneralUtility::trimExplode(',', $config['row']['settings.items'], TRUE) : array();
         foreach ($selectedItems as $item) {
             /** @var ItemEntryInterface $selectedItem */
-            $selectedItem = $shopwareApiClient->findById($item, FALSE);
+            $selectedItem = $shopwareApiClient->findById($item, FALSE,array('language' => $shopId));
             if ($selectedItem) {
                 $selectedItemOption = array(
                     $selectedItem->getSelectItemLabel(),
