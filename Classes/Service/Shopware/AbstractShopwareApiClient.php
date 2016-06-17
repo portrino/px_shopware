@@ -609,12 +609,13 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
 
     /**
      * @param bool $doCacheRequest
+     * @param array $params
      *
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
-    public function findAll($doCacheRequest = TRUE) {
+    public function findAll($doCacheRequest = TRUE, $params = array()) {
         $shopwareModels = new ObjectStorage();
-        $result = $this->get($this->getValidEndpoint(), array(), $doCacheRequest);
+        $result = $this->get($this->getValidEndpoint(), $params, $doCacheRequest);
         if ($result) {
             $token = (isset($result->pxShopwareTypo3Token)) ? (bool)$result->pxShopwareTypo3Token : FALSE;
             if (isset($result->data) && is_array($result->data)) {

@@ -63,6 +63,7 @@ interface AbstractShopwareApiClientInterface {
      * @param $id
      * @param bool $doCacheRequest
      * @param array $params
+     *
      * @return \Portrino\PxShopware\Domain\Model\ShopwareModelInterface
      */
     public function findById($id, $doCacheRequest = TRUE, $params = array());
@@ -79,13 +80,16 @@ interface AbstractShopwareApiClientInterface {
 
     /**
      * @param bool $doCacheRequest
+     * @param array $params
+     *
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
-    public function findAll($doCacheRequest = TRUE);
+    public function findAll($doCacheRequest = TRUE, $params = array());
 
     /**
      * @param array $params
      * @param bool $doCacheRequest
+     * 
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
     public function findByParams($params = array(), $doCacheRequest = TRUE);

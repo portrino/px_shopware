@@ -96,7 +96,7 @@ class ItemsProcFunc {
         $selectedItems = isset($config['row']['settings.items']) ? GeneralUtility::trimExplode(',', $config['row']['settings.items'], TRUE) : array();
         foreach ($selectedItems as $item) {
             /** @var ItemEntryInterface $selectedItem */
-            $selectedItem = $shopwareApiClient->findById($item, FALSE,array('language' => $shopId));
+            $selectedItem = $shopwareApiClient->findById($item, FALSE, array('language' => $shopId));
             if ($selectedItem) {
                 $selectedItemOption = array(
                     $selectedItem->getSelectItemLabel(),
@@ -131,7 +131,11 @@ class ItemsProcFunc {
         /** @var AbstractShopwareApiClientInterface $shopwareApiClient */
         $shopwareApiClient = $this->objectManager->get($shopwareApiClientClass);
 
-        $items = $shopwareApiClient->findAll();
+        $language = isset($config['flexParentDatabaseRow']['sys_language_uid']) ? $config['flexParentDatabaseRow']['sys_language_uid'] : 0;
+        $shopId = $this->localeToShopMappingService->getShopIdBySysLanguageUid($language);
+        $items = $shopwareApiClient->findAll(TRUE, array('language' => $shopId));
+
+        $i = 0;
         /** @var ItemEntryInterface $item */
         foreach ($items as $item) {
             $option = array(
@@ -139,6 +143,11 @@ class ItemsProcFunc {
                 $item->getSelectItemId()
             );
             array_push($config['items'], $option);
+            $i++;
+
+            if ($i == 10) {
+                break;
+            }
         }
     }
 
