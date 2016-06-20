@@ -48,6 +48,7 @@ TypoScript value                        Data type   Description                 
 settings.api.url                        string      The Shopware-API url (e.g. http://www.my-online-shop.com/api/)
 settings.api.username                   string      The Shopware API user
 settings.api.key                        string      The API-Key of the API user
+settings.api.languageToShop             array       The language to shop mapping configuration for sys_language_uid to the specific shop_id in Shopware                                0 { shop_id = 1 sys_language_uid = 0 } ...
 settings.cacheLifeTime                  int         The cache lifetime in seconds                                                                                                    3600
 settings.noImage.path                   string      The path to the default image (if no article image was given)                                                                    EXT:px_shopware/Resources/Public/Images/
 settings.noImage.filename               string      name of the default image                                                                                                        no_image_available.jpg
@@ -57,7 +58,44 @@ view.layoutRootPaths                    array       Will be used to configure di
 ======================================  ==========  ===============================================================================================================================  ====================================================
 
 Examples
----------
+--------
+
+**Add new language**
+
+::
+
+    plugin.tx_pxshopware {
+        settings {
+            api {
+                # shop to locale mapping configuration for correct localization of resources
+                languageToShop {
+                    # german (default)
+                    0 {
+                        shop_id = 1
+                        sys_language_uid = 0
+                    }
+                    # english
+                    1 {
+                        shop_id = 2
+                        sys_language_uid = 1
+
+                    }
+                    # italian
+                    2 {
+                        shop_id = 3
+                        sys_language_uid = 3
+                    }
+                }
+            }
+        }
+    }
+
+Now all API-Calls will be appended with ``?language=3`` if the italian frontend in TYPO3 will called (e.g.: ``?L=3``).
+This will result in the italian translation for the given resource (@see https://developers.shopware.com/developers-guide/rest-api/api-resource-article/#optional-parameters for details)
+
+.. note::
+
+    Articles will be also translated in TYPO3 backend for preview in page mode or during auto suggest in plugin flexform configuration.
 
 **Override partial for articles**
 

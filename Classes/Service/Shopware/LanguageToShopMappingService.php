@@ -25,11 +25,11 @@ namespace Portrino\PxShopware\Service\Shopware;
  ***************************************************************/
 
 /**
- * Class LocaleToShopMappingService
+ * Class LanguageToShopMappingService
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-class LocaleToShopMappingService implements \TYPO3\CMS\Core\SingletonInterface {
+class LanguageToShopMappingService implements \TYPO3\CMS\Core\SingletonInterface {
 
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
@@ -58,17 +58,22 @@ class LocaleToShopMappingService implements \TYPO3\CMS\Core\SingletonInterface {
     /**
      * @param int $sys_language_uid
      *
-     * @return integer
+     * @return integer the shop id for the specific language in SW
      */
     public function getShopIdBySysLanguageUid($sys_language_uid) {
-        $shopToLocaleMappings = $this->settings['api']['shopToLocale'];
+        /**
+         * set shop_id to 1 per default
+         */
+        $result = 1;
+        $shopToLocaleMappings = $this->settings['api']['languageToShop'];
 
-        foreach ($shopToLocaleMappings as $shopId => $shopToLocaleMapping) {
+        foreach ($shopToLocaleMappings as $shopToLocaleMapping) {
             if ((int)$sys_language_uid === (int)$shopToLocaleMapping['sys_language_uid']) {
-                return $shopId;
+                $result = (int)$shopToLocaleMapping['shop_id'];
+                break;
             }
         }
-        return 1;
+        return $result;
     }
 
 }

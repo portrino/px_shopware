@@ -27,7 +27,7 @@ namespace Portrino\PxShopware\Backend\Form\Wizard;
 
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurationException;
-use Portrino\PxShopware\Service\Shopware\LocaleToShopMappingService;
+use Portrino\PxShopware\Service\Shopware\LanguageToShopMappingService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
@@ -58,7 +58,7 @@ class SuggestWizard {
     protected $pageRenderer;
 
     /**
-     * @var LocaleToShopMappingService
+     * @var LanguageToShopMappingService
      */
     protected $localeToShopMappingService;
 
@@ -79,7 +79,7 @@ class SuggestWizard {
         $this->pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-        $this->localeToShopMappingService = $this->objectManager->get(LocaleToShopMappingService::class);
+        $this->localeToShopMappingService = $this->objectManager->get(LanguageToShopMappingService::class);
     }
 
     /**

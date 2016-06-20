@@ -32,7 +32,7 @@ use Portrino\PxLib\Domain\Model\Content;
 use Portrino\PxLib\Domain\Repository\ContentRepository;
 use Portrino\PxLib\Utility\FlexformUtility;
 use Portrino\PxShopware\Service\Shopware\ArticleClient;
-use Portrino\PxShopware\Service\Shopware\LocaleToShopMappingService;
+use Portrino\PxShopware\Service\Shopware\LanguageToShopMappingService;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
 use \TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -78,9 +78,9 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
     protected $typoScriptService;
 
     /**
-     * @var LocaleToShopMappingService
+     * @var LanguageToShopMappingService
      */
-    protected $localeToShopMappingService;
+    protected $languageToShopMappingService;
 
     /**
      * @var FlexFormService
@@ -113,7 +113,7 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
         $this->typoScriptService = $this->objectManager->get(TypoScriptService::class);
         $this->flexFormService = $this->objectManager->get(FlexFormService::class);
         $this->articleClient = $this->objectManager->get(ArticleClient::class);
-        $this->localeToShopMappingService = $this->objectManager->get(LocaleToShopMappingService::class);
+        $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopMappingService::class);
 
         /**
          * initialize the view
@@ -147,7 +147,7 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
         $selectedItemsArray = isset($flexformConfiguration['settings']['items']) ? GeneralUtility::trimExplode(',', $flexformConfiguration['settings']['items'], TRUE) : array();
 
         foreach ($selectedItemsArray as $item) {
-            $language = $this->localeToShopMappingService->getShopIdBySysLanguageUid($row['sys_language_uid']);
+            $language = $this->languageToShopMappingService->getShopIdBySysLanguageUid($row['sys_language_uid']);
             /** @var ItemEntryInterface $selectedItem */
             $selectedItem = $this->articleClient->findById($item, FALSE, array('language' => $language));
 
@@ -157,15 +157,13 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
         }
 
         $this->view->assign('selectedItems', $selectedItems);
-
-
-        $pageTsConfig = BackendUtility::getTCEFORM_TSconfig('tt_content', $row);
-        $pageTsConfig = $this->typoScriptService->convertTypoScriptArrayToPlainArray($pageTsConfig['pi_flexform']);
+        $TCEFORM_TSconfig = BackendUtility::getTCEFORM_TSconfig('tt_content', $row);
+        $TCEFORM_TSconfig = $this->typoScriptService->convertTypoScriptArrayToPlainArray($TCEFORM_TSconfig['pi_flexform']);
 
         $this->view->assign(
             'template',
             array(
-                0 => $pageTsConfig['pxshopware_pi1']['sDEF']['settings.template']['addItems'][$flexformConfiguration['settings']['template']]
+                0 => $TCEFORM_TSconfig['pxshopware_pi1']['sDEF']['settings.template']['addItems'][$flexformConfiguration['settings']['template']]
             )
         );
         $this->view->assign('row', $row);

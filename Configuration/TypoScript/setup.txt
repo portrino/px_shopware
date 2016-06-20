@@ -20,16 +20,17 @@ plugin.tx_pxshopware {
             url = {$plugin.tx_pxshopware.settings.api.url}
             username = {$plugin.tx_pxshopware.settings.api.username}
             key = {$plugin.tx_pxshopware.settings.api.key}
-            # this value will be used if no config.locale_all was set
+            # this value will be used if no config.locale_all was set (not used for now! @see: https://issues.shopware.com/#/issues/SW-15388)
             locale_all = de_DE
 
-            # shop mapping configuration for localization of resources
-            shopToLocale {
-                # 1 is the shopId in SW
-                1 {
+            # language to shop mapping configuration for localization of resources
+            languageToShop {
+                0 {
+                    shop_id = 1
                     sys_language_uid = 0
                 }
-                2 {
+                1 {
+                    shop_id = 2
                     sys_language_uid = 1
                 }
                 # ...
