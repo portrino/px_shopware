@@ -1,6 +1,6 @@
 # PxShopware Change log
 
-2.0.0 - 2016-06-17
+1.5.0 - 2016-06-17
 ------------------
 * complete refactoring of localization features
 * adds `Pi1PageLayoutViewDraw` for previewing of px_showare plugin configuration

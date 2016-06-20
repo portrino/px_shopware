@@ -29,7 +29,7 @@ use Portrino\PxShopware\Domain\Model\Article;
 use Portrino\PxShopware\Domain\Model\Category;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurationException;
-use Portrino\PxShopware\Service\Shopware\LocaleToShopMappingService;
+use Portrino\PxShopware\Service\Shopware\LanguageToShopMappingService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -53,9 +53,9 @@ class ItemsProcFunc {
     protected $configurationManager;
 
     /**
-     * @var LocaleToShopMappingService
+     * @var LanguageToShopMappingService
      */
-    protected $localeToShopMappingService;
+    protected $languageToShopMappingService;
 
     /**
      * ItemsProcFunc constructor.
@@ -63,7 +63,7 @@ class ItemsProcFunc {
      */
     public function __construct() {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->localeToShopMappingService = $this->objectManager->get(LocaleToShopMappingService::class);
+        $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopMappingService::class);
     }
 
     /**
@@ -90,7 +90,7 @@ class ItemsProcFunc {
         $shopwareApiClient = $this->objectManager->get($shopwareApiClientClass);
 
         $language = isset($config['flexParentDatabaseRow']['sys_language_uid']) ? $config['flexParentDatabaseRow']['sys_language_uid'] : 0;
-        $shopId = $this->localeToShopMappingService->getShopIdBySysLanguageUid($language);
+        $shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
 
         /** @var array $selectedItems */
         $selectedItems = isset($config['row']['settings.items']) ? GeneralUtility::trimExplode(',', $config['row']['settings.items'], TRUE) : array();
@@ -132,10 +132,9 @@ class ItemsProcFunc {
         $shopwareApiClient = $this->objectManager->get($shopwareApiClientClass);
 
         $language = isset($config['flexParentDatabaseRow']['sys_language_uid']) ? $config['flexParentDatabaseRow']['sys_language_uid'] : 0;
-        $shopId = $this->localeToShopMappingService->getShopIdBySysLanguageUid($language);
+        $shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
         $items = $shopwareApiClient->findAll(TRUE, array('language' => $shopId));
 
-        $i = 0;
         /** @var ItemEntryInterface $item */
         foreach ($items as $item) {
             $option = array(
@@ -143,11 +142,6 @@ class ItemsProcFunc {
                 $item->getSelectItemId()
             );
             array_push($config['items'], $option);
-            $i++;
-
-            if ($i == 10) {
-                break;
-            }
         }
     }
 

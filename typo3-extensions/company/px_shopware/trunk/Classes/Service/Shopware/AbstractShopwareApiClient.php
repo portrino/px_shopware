@@ -113,10 +113,10 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     protected $persistenceManager;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\LocaleToShopMappingService
+     * @var \Portrino\PxShopware\Service\Shopware\LanguageToShopMappingService
      * @inject
      */
-    protected $localeMappingService;
+    protected $languageToShopMappingService;
 
     /**
      * the extConf array of PxShopware extension
@@ -261,7 +261,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
              */
             $language = GeneralUtility::trimExplode('.', $GLOBALS['TSFE']->config['config']['sys_language_uid'], TRUE);
             $language = ($language && isset($language[0])) ? $language[0] : 0;
-            $this->shopId = $this->localeMappingService->getShopIdBySysLanguageUid($language);
+            $this->shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
         } else {
             $this->shopId = NULL;
         }

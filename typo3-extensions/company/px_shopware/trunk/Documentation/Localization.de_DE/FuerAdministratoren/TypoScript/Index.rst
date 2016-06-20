@@ -50,7 +50,8 @@ TypoScript value                        Data type   Description                 
 settings.api.url                        string      Die URL Ihrer Shopware-API (z.B. http://www.my-online-shop.com/api/)
 settings.api.username                   string      Der Shopware API-Nutzer
 settings.api.key                        string      Der API-Key des API-Nutzers
-settings.cacheLifeTime                  int         Die Lebensdauer des Caches in Sekunden                                                                                                     3600
+settings.api.languageToShop             array       Mapping der sys_language_uid im TYPO3 zur jeweiligen ShopId im Shopware                                                          0 { shop_id = 1 sys_language_uid = 0 } ...
+settings.cacheLifeTime                  int         Die Lebensdauer des Caches in Sekunden                                                                                           3600
 settings.noImage.path                   string      Pfad zum Default-Bild (Wenn kein Bild dem Artikel übergeben wird, dann wird ein Default-Bild angezeigt.)                         EXT:px_shopware/Resources/Public/Images/
 settings.noImage.filename               string      Name des Default-Bildes                                                                                                          no_image_available.jpg
 view.templateRootPaths                  array       Wird genutzt um verschiedene Pfade für Templates zu konfigurieren. Diese werden in umgekehrter Reihenfolge überschrieben.        0 = EXT:px_shopware/Resources/Private/Templates/
@@ -58,14 +59,47 @@ view.partialRootPaths                   array       Wird genutzt um verschiedene
 view.layoutRootPaths                    array       Wird genutzt um verschiedene Pfade für Layouts zu konfigurieren. Diese werden in umgekehrter Reihenfolge überschrieben.          0 = EXT:px_shopware/Resources/Private/Layouts/
 ======================================  ==========  ===============================================================================================================================  ====================================================
 
-.. important::
-
-   Im der TYPO3-Toolbar wird entweder die API-Konfiguration aus dem Extension Manager oder die von der Rootseite gesehen
-   erste im TypoScript gefundene API-Konfiguration genutzt. Insofern sie in Ihrem TYPO3 CMS mehere Shop-Systeme anbinden
-   wollen ist somit nicht immer im Backend (Toolbar) ersichtlich ob alle Shops verbunden sind.
-
 Beispiele
 ---------
+
+**Eine neue Sprache konfigurieren.**
+
+::
+
+    plugin.tx_pxshopware {
+        settings {
+            api {
+                # shop to locale mapping configuration for correct localization of resources
+                languageToShop {
+                    # german (default)
+                    0 {
+                        shop_id = 1
+                        sys_language_uid = 0
+                    }
+                    # english
+                    1 {
+                        shop_id = 2
+                        sys_language_uid = 1
+
+                    }
+                    # italian
+                    2 {
+                        shop_id = 3
+                        sys_language_uid = 3
+                    }
+                }
+            }
+        }
+    }
+
+Wird das TYPO3 Frontend nun auf italienisch aufgerufen (``?L=3``), dann wird über die API ``?language=3`` mitgeschickt,
+damit die italienische Übersetzung des Shopware-Artikels zurückgegeben wird. Aufgrund eines Fehlers in der API (https://issues.shopware.com/#/issues/SW-15388)
+muss man diese Konfiguration für jede Sprache selbst übernehmen.
+
+.. note::
+
+    Artikel werden auch im Backend in die jeweilige Sprache übersetzt, wenn man beispielsweise im Seitenmodus die Pluginvorschau
+    betrachtet oder den AutoSuggest Wizard der Flexform benutzt.
 
 **Partial für Artikel überschreiben**
 
