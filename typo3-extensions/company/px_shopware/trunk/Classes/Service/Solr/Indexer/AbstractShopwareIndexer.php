@@ -28,6 +28,8 @@ namespace Portrino\PxShopware\Service\Solr\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use ApacheSolrForTypo3\Solr\Util;
+use Portrino\PxShopware\Service\Shopware\LanguageToShopMappingService;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class AbstractShopwareIndexer
@@ -35,6 +37,30 @@ use ApacheSolrForTypo3\Solr\Util;
  * @package Portrino\PxShopware\Service\Solr\Indexer
  */
 class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexer {
+
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     */
+    protected $objectManager;
+
+    /**
+     * @var LanguageToShopMappingService
+     */
+    protected $languageToShopMappingService;
+
+
+    /**
+     * Constructor
+     *
+     * @param array Array of indexer options
+     */
+    public function __construct(array $options = array()) {
+        parent::__construct($options);
+
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopMappingService::class);
+    }
 
 
     /**
@@ -48,7 +74,7 @@ class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexe
         $documents = array();
 
         /** @var \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $itemRecord */
-        $itemRecord = $this->getShopwareRecord($item);
+        $itemRecord = $this->getShopwareRecord($item, $language);
 
             // get general fields
         /** @var \Apache_Solr_Document $itemDocument */
@@ -133,9 +159,10 @@ class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexe
      * get Data from shopware API
      *
      * @param Item $item The item to index
+     * @param integer $language The language to use.
      * @return \Portrino\PxShopware\Domain\Model\AbstractShopwareModel The record to use to build the base document
      */
-    protected function getShopwareRecord(Item $item) {
+    protected function getShopwareRecord(Item $item, $language = 0) {
         // overwrite in sub classes
     }
 
