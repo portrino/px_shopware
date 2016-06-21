@@ -1,5 +1,10 @@
 # PxShopware Change log
 
+1.5.2 - 2016-06-21
+------------------
+* bugfix release
+* fixes multi-language support for solr indexing of articles
+
 1.5.1 - 2016-06-21
 ------------------
 * bugfix release
