@@ -28,7 +28,6 @@ namespace Portrino\PxShopware\Service\Solr\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use Portrino\PxShopware\Domain\Model\Article;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\Util;
 
 /**
  * Class ArticleIndexer
@@ -42,16 +41,17 @@ class ArticleIndexer extends AbstractShopwareIndexer {
      * get Article Data from shopware API
      *
      * @param Item $item The item to index
+     * @param integer $language The language to use.
      * @return Article The record to use to build the base document
      */
-    protected function getShopwareRecord(Item $item) {
+    protected function getShopwareRecord(Item $item, $language = 0) {
 
         // get Data from shopware API
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-        $shopwareClient = $objectManager->get(\Portrino\PxShopware\Service\Shopware\ArticleClient::class);
+        $shopwareClient = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\ArticleClient::class);
 
-        return $shopwareClient->findById($item->getRecordUid());
+        $shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
+
+        return $shopwareClient->findById($item->getRecordUid(), TRUE, array('language' => $shopId));
     }
 
 
