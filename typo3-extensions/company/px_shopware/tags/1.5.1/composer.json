@@ -1,0 +1,41 @@
+{
+    "name": "portrino/px_shopware",
+    "description": "Shopware Integration for TYPO3",
+    "version": "1.5.1",
+    "type": "typo3-cms-extension",
+    "keywords": [
+        "TYPO3",
+        "Shopware",
+        "CMS",
+        "portrino"
+    ],
+    "homepage": "http://www.portrino.de",
+    "license": [
+        "GPL-2.0+"
+    ],
+    "authors": [
+        {
+            "name": "Andre Wuttig",
+            "email": "wuttig@portrino.de",
+            "homepage": "http://www.portrino.de",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "http://qm.portrino.de/projects/portrino/issues",
+        "source": "http://qm.portrino.de/svn/portrino/typo3-extensions/company/px_shopware"
+    },
+    "require": {
+        "typo3/cms-core": ">=7.6.0,<8.0",
+        "php": ">=5.5.0",
+        "lib-curl": "^7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Portrino\\PxShopware\\": "Classes"
+        }
+    },
+    "replace": {
+        "px_shopware": "*"
+    }
+}
