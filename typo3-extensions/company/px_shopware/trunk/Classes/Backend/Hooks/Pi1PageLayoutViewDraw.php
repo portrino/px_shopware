@@ -25,9 +25,6 @@ namespace Portrino\PxShopware\Backend\Hooks;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Portrino\PxDynamicContent\Domain\Model\Element;
-use Portrino\PxDynamicContent\Domain\Model\ElementContainer;
-use Portrino\PxDynamicContent\Domain\Repository\ElementRepository;
 use Portrino\PxLib\Domain\Model\Content;
 use Portrino\PxLib\Domain\Repository\ContentRepository;
 use Portrino\PxLib\Utility\FlexformUtility;
@@ -128,10 +125,10 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
      * Preprocesses the preview rendering of a content element.
      *
      * @param \TYPO3\CMS\Backend\View\PageLayoutView $parentObject Calling parent object
-     * @param boolean                                $drawItem Whether to draw the item using the default functionalities
-     * @param string                                 $headerContent Header content
-     * @param string                                 $itemContent Item content
-     * @param array                                  $row Record row of tt_content
+     * @param boolean $drawItem Whether to draw the item using the default functionalities
+     * @param string $headerContent Header content
+     * @param string $itemContent Item content
+     * @param array $row Record row of tt_content
      *
      * @return void
      */
@@ -169,6 +166,7 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
         $this->view->assign('row', $row);
 
         $itemContent = $this->view->render();
+        $drawItem = FALSE;
     }
 
     /**

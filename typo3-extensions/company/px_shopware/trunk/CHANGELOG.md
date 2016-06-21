@@ -1,5 +1,10 @@
 # PxShopware Change log
 
+1.5.1 - 2016-06-21
+------------------
+* bugfix release
+* prevents `Pi1PageLayoutViewDraw` from default drawing procedures
+
 1.5.0 - 2016-06-17
 ------------------
 * complete refactoring of localization features
