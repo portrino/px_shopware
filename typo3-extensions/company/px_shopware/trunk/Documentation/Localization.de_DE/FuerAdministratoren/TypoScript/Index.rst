@@ -50,7 +50,7 @@ TypoScript value                        Data type   Description                 
 settings.api.url                        string      Die URL Ihrer Shopware-API (z.B. http://www.my-online-shop.com/api/)
 settings.api.username                   string      Der Shopware API-Nutzer
 settings.api.key                        string      Der API-Key des API-Nutzers
-settings.api.languageToShop             array       Mapping der sys_language_uid im TYPO3 zur jeweiligen ShopId im Shopware                                                          0 { shop_id = 1 sys_language_uid = 0 } ...
+settings.api.languageToShopware         array       Mapping der sys_language_uid im TYPO3 zur jeweiligen ShopId im Shopware                                                          0 { shop_id = 1 sys_language_uid = 0 } ...
 settings.cacheLifeTime                  int         Die Lebensdauer des Caches in Sekunden                                                                                           3600
 settings.noImage.path                   string      Pfad zum Default-Bild (Wenn kein Bild dem Artikel übergeben wird, dann wird ein Default-Bild angezeigt.)                         EXT:px_shopware/Resources/Public/Images/
 settings.noImage.filename               string      Name des Default-Bildes                                                                                                          no_image_available.jpg
@@ -70,21 +70,24 @@ Beispiele
         settings {
             api {
                 # shop to locale mapping configuration for correct localization of resources
-                languageToShop {
+                languageToShopware {
                     # german (default)
                     0 {
                         shop_id = 1
+                        parentCategory = 2
                         sys_language_uid = 0
                     }
                     # english
                     1 {
                         shop_id = 2
+                        parentCategory = 463
                         sys_language_uid = 1
 
                     }
                     # italian
                     2 {
                         shop_id = 3
+                        parentCategory = 4198
                         sys_language_uid = 3
                     }
                 }

@@ -79,9 +79,10 @@ class ArticleIndexer extends AbstractShopwareIndexer {
      *
      * @param \Apache_Solr_Document $itemDocument
      * @param Article $article
+     * @param integer $language The language to use.
      * @return \Apache_Solr_Document $itemDocument
      */
-    protected function overwriteSpecialFields(\Apache_Solr_Document $itemDocument, Article $article) {
+    protected function overwriteSpecialFields(\Apache_Solr_Document $itemDocument, Article $article, $language = 0) {
 
         $itemDocument->setField('title', $article->getName());
 
@@ -103,8 +104,11 @@ class ArticleIndexer extends AbstractShopwareIndexer {
             $categoryNames = array();
             /** @var \Portrino\PxShopware\Domain\Model\Category $category */
             foreach ($article->getCategories() as $category) {
-                $categoryNames[] = $category->getName();
+                if ($category->getLanguage() == $language) {
+                    $categoryNames[] = $category->getName();
+                }
             }
+
             $itemDocument->setField('category_stringM', array_unique($categoryNames));
             $itemDocument->setField('category_textM', array_unique($categoryNames));
         }

@@ -25,11 +25,11 @@ namespace Portrino\PxShopware\Service\Shopware;
  ***************************************************************/
 
 /**
- * Class LanguageToShopMappingService
+ * Class LanguageToShopwareMappingService
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-class LanguageToShopMappingService implements \TYPO3\CMS\Core\SingletonInterface {
+class LanguageToShopwareMappingService implements \TYPO3\CMS\Core\SingletonInterface {
 
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
@@ -65,7 +65,7 @@ class LanguageToShopMappingService implements \TYPO3\CMS\Core\SingletonInterface
          * set shop_id to 1 per default
          */
         $result = 1;
-        $shopToLocaleMappings = $this->settings['api']['languageToShop'];
+        $shopToLocaleMappings = $this->settings['api']['languageToShopware'];
 
         foreach ($shopToLocaleMappings as $shopToLocaleMapping) {
             if ((int)$sys_language_uid === (int)$shopToLocaleMapping['sys_language_uid']) {
@@ -73,6 +73,45 @@ class LanguageToShopMappingService implements \TYPO3\CMS\Core\SingletonInterface
                 break;
             }
         }
+        return $result;
+    }
+
+    /**
+     * @param int $sys_language_uid
+     *
+     * @return integer the parent category id for the specific language in SW
+     */
+    public function getParentCategoryBySysLanguageUid($sys_language_uid) {
+        $result = 0;
+        $shopToLocaleMappings = $this->settings['api']['languageToShopware'];
+
+        foreach ($shopToLocaleMappings as $shopToLocaleMapping) {
+            if ((int)$sys_language_uid === (int)$shopToLocaleMapping['sys_language_uid']) {
+                $result = (int)$shopToLocaleMapping['parentCategory'];
+                break;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param string the parent category id for the specific language in SW
+     *
+     * @return integer $sys_language_uid
+     */
+    public function getSysLanguageUidByParentCategoryPath($path) {
+        $result = 0;
+
+        $pathArray = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('|', $path, TRUE);
+        $shopToLocaleMappings = $this->settings['api']['languageToShopware'];
+
+        foreach ($shopToLocaleMappings as $shopToLocaleMapping) {
+            if (in_array($shopToLocaleMapping['parentCategory'], $pathArray)) {
+                $result = (int)$shopToLocaleMapping['sys_language_uid'];
+                break;
+            }
+        }
+
         return $result;
     }
 

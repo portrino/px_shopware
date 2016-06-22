@@ -29,7 +29,7 @@ use Portrino\PxLib\Domain\Model\Content;
 use Portrino\PxLib\Domain\Repository\ContentRepository;
 use Portrino\PxLib\Utility\FlexformUtility;
 use Portrino\PxShopware\Service\Shopware\ArticleClient;
-use Portrino\PxShopware\Service\Shopware\LanguageToShopMappingService;
+use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
 use \TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -75,7 +75,7 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
     protected $typoScriptService;
 
     /**
-     * @var LanguageToShopMappingService
+     * @var LanguageToShopwareMappingService
      */
     protected $languageToShopMappingService;
 
@@ -110,7 +110,7 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
         $this->typoScriptService = $this->objectManager->get(TypoScriptService::class);
         $this->flexFormService = $this->objectManager->get(FlexFormService::class);
         $this->articleClient = $this->objectManager->get(ArticleClient::class);
-        $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopMappingService::class);
+        $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
 
         /**
          * initialize the view

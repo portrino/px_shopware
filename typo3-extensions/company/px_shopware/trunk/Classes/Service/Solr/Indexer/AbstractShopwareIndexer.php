@@ -28,7 +28,7 @@ namespace Portrino\PxShopware\Service\Solr\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use ApacheSolrForTypo3\Solr\Util;
-use Portrino\PxShopware\Service\Shopware\LanguageToShopMappingService;
+use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
@@ -45,7 +45,7 @@ class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexe
     protected $objectManager;
 
     /**
-     * @var LanguageToShopMappingService
+     * @var LanguageToShopwareMappingService
      */
     protected $languageToShopMappingService;
 
@@ -59,7 +59,7 @@ class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexe
         parent::__construct($options);
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopMappingService::class);
+        $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
     }
 
 
@@ -89,7 +89,7 @@ class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexe
         $itemDocument = $this->addDocumentFieldsFromTyposcript($itemDocument, $itemIndexingConfiguration, $itemDataRaw);
 
             // overwrite fields for specific item type
-        $itemDocument = $this->overwriteSpecialFields($itemDocument, $itemRecord);
+        $itemDocument = $this->overwriteSpecialFields($itemDocument, $itemRecord, $language);
 
             // check if item should be indexed
         if ($this->itemIsValid($itemRecord)) {
@@ -172,9 +172,10 @@ class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexe
      *
      * @param \Apache_Solr_Document $itemDocument
      * @param \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $itemRecord
+     * @param integer $language The language to use.
      * @return \Apache_Solr_Document $itemDocument
      */
-    protected function overwriteSpecialFields(\Apache_Solr_Document $itemDocument, \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $itemRecord) {
+    protected function overwriteSpecialFields(\Apache_Solr_Document $itemDocument, \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $itemRecord, $language = 0) {
         // overwrite in sub classes
     }
 

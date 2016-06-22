@@ -322,7 +322,22 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
                     if (isset($category->id)) {
                         /** @var Category $detailedCategory */
                         $detailedCategory = $this->categoryClient->findById($category->id);
-                        $this->addCategory($detailedCategory);
+
+                        /**
+                         * Get the current language
+                         * -> depends on the TYPO3_MODE
+                         */
+                        if (TYPO3_MODE === 'FE') {
+                            $language = GeneralUtility::trimExplode('.', $GLOBALS['TSFE']->config['config']['sys_language_uid'], TRUE);
+                            $sys_language_id = ($language && isset($language[0])) ? $language[0] : 0;
+                                // add only categories of current FE language
+                            if ($detailedCategory->getLanguage() == $sys_language_id) {
+                                $this->addCategory($detailedCategory);
+                            }
+                        } else {
+                            // if BE access add all categories, needs to be filtered elsewhere
+                            $this->addCategory($detailedCategory);
+                        }
                     }
                 }
             }
