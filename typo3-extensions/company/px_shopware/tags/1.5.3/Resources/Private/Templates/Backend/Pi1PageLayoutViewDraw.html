@@ -1,0 +1,30 @@
+{namespace v = FluidTYPO3\Vhs\ViewHelpers}
+<div class="panel panel-space panel-default recordlist">
+    <div class="panel-heading">
+        Articles
+    </div>
+    <table class="table table-striped table-hover" style="width: 100%">
+        <tbody>
+            <f:for each="{selectedItems}" as="selectedItem">
+                <tr>
+                    <td>
+                        <a href="{selectedItem.raw.pxShopwareUrl}" target="_blank" title="{selectedItem.selectItemLabel}">
+                            <f:if condition="{selectedItem.images -> f:count()} > 0">
+                                <img src="{selectedItem.images.0.url}" width="30">
+                            </f:if>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{selectedItem.raw.pxShopwareUrl}" target="_blank" title="{selectedItem.selectItemLabel}">
+                            {selectedItem.selectItemLabel}
+                        </a>
+                    </td>
+                </tr>
+            </f:for>
+        </tbody>
+    </table>
+    <div class="panel-footer">
+        <f:translate key="LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxshopware_pi1.settings.template" />:
+        <strong><f:translate key="{template.0}" /></strong>
+    </div>
+</div>
