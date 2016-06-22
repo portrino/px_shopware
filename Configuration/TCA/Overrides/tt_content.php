@@ -54,6 +54,7 @@ $boot = function () {
         $GLOBALS['TCA']['tt_content']['types'][$pluginSignature] = [
             'showitem' => '
                 --palette--;' . $frontendLanguageFilePrefix . 'palette.general;general,
+                --palette--;'. $frontendLanguageFilePrefix . 'header;header,rowDescription,
             --div--;' . $frontendLanguageFilePrefix . 'tabs.plugin,
                 pi_flexform,
             --div--;' . $frontendLanguageFilePrefix . 'tabs.access,
@@ -62,6 +63,8 @@ $boot = function () {
             --div--;' . $frontendLanguageFilePrefix . 'tabs.extended
         '
         ];
+
+//        $GLOBALS['TCA']['tt_content']['types'][$pluginSignature] = $GLOBALS['TCA']['tt_content']['types']['list'];
 
         // Add category tab when categories column exits
         if (!empty($GLOBALS['TCA']['tt_content']['columns']['categories'])) {
