@@ -75,6 +75,17 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     protected $path;
 
     /**
+     * @var int
+     */
+    protected $language;
+
+    /**
+     * @var \Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService
+     * @inject
+     */
+    protected $languageToShopMappingService;
+
+    /**
      * Category constructor.
      *
      * @param $raw
@@ -92,6 +103,14 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
         if (isset($this->raw->changed)) {
             $this->setChanged($this->raw->changed);
         }
+
+        if ($this->raw->path) {
+            if (!$this->languageToShopMappingService) {
+                $this->languageToShopMappingService = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService::class);
+            }
+            $this->language = $this->languageToShopMappingService->getSysLanguageUidByParentCategoryPath($this->raw->path);
+        }
+
         $this->initStorageObjects();
     }
 
@@ -289,6 +308,20 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
      */
     public function getSuggestIconIdentifier() {
         return 'px-shopware-category';
+    }
+
+    /**
+     * @return int
+     */
+    public function getLanguage() {
+        return $this->language;
+    }
+
+    /**
+     * @param int $language
+     */
+    public function setLanguage($language) {
+        $this->language = $language;
     }
 
 }

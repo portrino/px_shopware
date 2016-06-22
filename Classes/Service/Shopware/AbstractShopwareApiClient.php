@@ -113,7 +113,7 @@ abstract class AbstractShopwareApiClient implements \TYPO3\CMS\Core\SingletonInt
     protected $persistenceManager;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\LanguageToShopMappingService
+     * @var \Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService
      * @inject
      */
     protected $languageToShopMappingService;

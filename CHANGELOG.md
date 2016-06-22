@@ -1,7 +1,9 @@
 # PxShopware Change log
+
 1.5.3 - 2016-06-22
 ------------------
 * adds rowDescription to content elements for px_shopware 
+* fixes multi-language support for categories
 
 1.5.2 - 2016-06-21
 ------------------

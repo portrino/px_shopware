@@ -24,6 +24,8 @@ namespace Portrino\PxShopware\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class AbstractShopwareModel
@@ -50,12 +52,20 @@ abstract class AbstractShopwareModel implements ShopwareModelInterface {
     protected $token;
 
     /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
+     */
+    protected $objectManager;
+
+    /**
      * AbstractShopwareModel constructor.
      *
      * @param $raw
      * @param $token
      */
     public function __construct($raw, $token) {
+
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
         $this->setRaw($raw);
         if (isset($this->raw->id)) {
             $this->setId($this->raw->id);

@@ -29,7 +29,7 @@ use Portrino\PxShopware\Domain\Model\Article;
 use Portrino\PxShopware\Domain\Model\Category;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurationException;
-use Portrino\PxShopware\Service\Shopware\LanguageToShopMappingService;
+use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -53,7 +53,7 @@ class ItemsProcFunc {
     protected $configurationManager;
 
     /**
-     * @var LanguageToShopMappingService
+     * @var LanguageToShopwareMappingService
      */
     protected $languageToShopMappingService;
 
@@ -63,7 +63,7 @@ class ItemsProcFunc {
      */
     public function __construct() {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopMappingService::class);
+        $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
     }
 
     /**
