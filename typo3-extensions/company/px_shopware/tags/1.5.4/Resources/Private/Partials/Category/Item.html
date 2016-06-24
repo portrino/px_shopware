@@ -1,0 +1,22 @@
+<f:if condition="{category.url}">
+    <f:then>
+        <a href="{category.url}">
+            <f:render section="category" arguments="{_all}" />
+        </a>
+    </f:then>
+    <f:else>
+        <f:render section="category" arguments="{_all}" />
+    </f:else>
+</f:if>
+
+<f:section name="category">
+    <div class="category item">
+        {category.name}
+
+        <f:comment>
+            <!-- use this for each loop to iterate through the sub categories -->
+            <f:for each="{category.subCategories}" as="subCategory"></f:for>
+        </f:comment>
+
+    </div>
+</f:section>

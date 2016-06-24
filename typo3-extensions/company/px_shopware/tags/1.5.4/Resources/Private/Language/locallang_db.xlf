@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2016-03-15T13:57:09Z">
+        <header>
+            <type>database</type>
+            <description>Language labels for database tables/fields belonging to extension 'px_shopware'</description>
+            <generator>LFEditor</generator>
+            <authorName>Andre Wuttig</authorName>
+            <authorEmail>wuttig@portrino.de</authorEmail>
+        </header>
+        <body>
+
+            <trans-unit id="ext_conf_template.api.url">
+                <source>API-Url: e.g.: "http://www.my-online-shop.com/api/"</source>
+            </trans-unit>
+            <trans-unit id="ext_conf_template.api.username">
+                <source>API-Username: e.g.: "api-user"</source>
+            </trans-unit>
+            <trans-unit id="ext_conf_template.api.key">
+                <source>API-Key: e.g.: "0NeOU2Ovs1MMuDkv89a9J7ep1oeoGiQSDdrPeZ2y"</source>
+            </trans-unit>
+            <trans-unit id="ext_conf_template.caching.disable">
+                <source>
+                    Disable Caching:
+                    WARNING! This may slow down your system!
+                </source>
+            </trans-unit>
+            <trans-unit id="ext_conf_template.caching.lifetime">
+                <source>Cache Lifetime: The cache lifetime in seconds (e.g.: 3600 means 1 hour)</source>
+            </trans-unit>
+            <trans-unit id="ext_conf_template.logging.disable">
+                <source>Disable Logging: Disables logging for backend. Logging in frontend is disabled per default.</source>
+            </trans-unit>
+            <trans-unit id="ext_conf_template.plugin.fetchAllItems">
+                <source>
+                    Fetch all Items: Fetch all possible items from API and render the select list as selectMultipleSideBySide form field.
+                    WARNING: If you have many products in your shop this option may decrease your performance! Use default "Autosuggest Wizard" instead!
+                </source>
+            </trans-unit>
+
+            <trans-unit id="toolbar_items.shopware_connector_information">
+                <source>Shopware Connector Information</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.header">
+                <source>Shopware Connector Information</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop">
+                <source>Shopware</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.status">
+                <source>Status</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.status.connected_full">
+                <source>Connected (Full Version)</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.status.connected_full.message">
+                <source>
+                    <![CDATA[
+                        Thank you for purchasing our product: "TYPO3-Connector for Shopware". <br>
+                        If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:%1$s">contact us </a>
+                        or visit our <a style="text-decoration: underline;" href="%2$s" target="_blank">website</a>.
+                    ]]>
+                </source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.status.connected_trial">
+                <source>Connected (Trial Version)</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.status.connected_trial.message">
+                <source>
+                    <![CDATA[
+                        You are using the trial version of this extension. <br>
+                        Please download our <a style="text-decoration: underline;" href="%1$s" target="_blank">TYPO3-Connector</a> plugin from shopware store
+                        and install it on your shopware system to get the full version.
+                        <br>
+                        <br>
+                        If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:%2$s">contact us </a>
+                        or visit our <a style="text-decoration: underline;" href="%3$s" target="_blank">website</a>.
+                    ]]>
+                </source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.status.disconnected">
+                <source>Disconnected</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.status.disconnected.message">
+                <source>
+                    <![CDATA[
+                        There is a problem with your shop connection <br>
+                        First have a look on our <a style="text-decoration: underline;" href="%1$s" target="_blank">documentation</a><br>
+                        If the error still occurs check the TYPO3 "system log".
+                        <br><br>
+                        If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:%2$s">contact us </a>
+                        or visit our <a style="text-decoration: underline;" href="%3$s" target="_blank">website</a>.
+                    ]]>
+                </source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.version">
+                <source>Version</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.revision">
+                <source>Revision</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.shop.shops">
+                <source>Shops</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache">
+                <source>Cache</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache.caches">
+                <source>Cache Tables</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache.caches.entries">
+                <source>entries</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache.status">
+                <source>Status</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache.status.active">
+                <source>Active</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache.status.inactive">
+                <source>Inactive</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache.level.0">
+                <source>Level 1</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.cache.level.1">
+                <source>Level 2</source>
+            </trans-unit>
+            <trans-unit id="toolbar_items.shopware_connector_information.configuration.status.missing">
+                <source> It seems you have missed to include the static TS template! Please insert it!</source>
+            </trans-unit>
+            <trans-unit id="clear_cache_menu.title">
+                <source>Flush shopware caches</source>
+            </trans-unit>
+
+            <trans-unit id="clear_cache_menu.description">
+                <source>Clear all shopware related caches for articles, categories etc.</source>
+            </trans-unit>
+
+            <trans-unit id="tx_pxshopware_wizard_header">
+                <source>Shopware</source>
+            </trans-unit>
+
+            <trans-unit id="tt_content.CType.div.px_shopware">
+                <source>Shopware</source>
+            </trans-unit>
+
+            <trans-unit id="tt_content.CType.pxshopware_pi1">
+                <source>Article(s)</source>
+            </trans-unit>
+            <trans-unit id="tt_content.CType.pxshopware_pi1.title">
+                <source>Article(s)</source>
+            </trans-unit>
+            <trans-unit id="tt_content.CType.pxshopware_pi1.description">
+                <source>Show one or more articles from Shopware</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings">
+                <source>Settings</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.items">
+                <source>Articles</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.template">
+                <source>Template</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.template.not_defined">
+                <source>Not defined!</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.template.default">
+                <source>Default</source>
+            </trans-unit>
+
+            <trans-unit id="tt_content.CType.pxshopware_pi2">
+                <source>Category(s)</source>
+            </trans-unit>
+            <trans-unit id="tt_content.CType.pxshopware_pi2.title">
+                <source>Category(s)</source>
+            </trans-unit>
+            <trans-unit id="tt_content.CType.pxshopware_pi2.description">
+                <source>Show one or more categories from Shopware</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi2.settings">
+                <source>Settings</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi2.settings.items">
+                <source>Categories</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi2.settings.template">
+                <source>Template</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi2.settings.template.default">
+                <source>Default</source>
+            </trans-unit>
+
+            <trans-unit id="suggest_wizard.placeholder.article">
+                <source>Article Number or Name</source>
+            </trans-unit>
+
+            <trans-unit id="suggest_wizard.placeholder.category">
+                <source>Category Name</source>
+            </trans-unit>
+
+        </body>
+    </file>
+</xliff>
