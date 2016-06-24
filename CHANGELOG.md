@@ -1,5 +1,10 @@
 # PxShopware Change log
 
+1.5.4 - 2016-06-24
+------------------
+* fixes a bug in `Pi1PageLayoutViewDraw` which leads to exception in backend if no template or not existent template 
+  was selected
+
 1.5.3 - 2016-06-22
 ------------------
 * adds rowDescription to content elements for px_shopware 

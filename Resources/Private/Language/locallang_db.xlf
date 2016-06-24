@@ -163,6 +163,9 @@
             <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.template">
                 <source>Template</source>
             </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.template.not_defined">
+                <source>Not defined!</source>
+            </trans-unit>
             <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.template.default">
                 <source>Default</source>
             </trans-unit>
