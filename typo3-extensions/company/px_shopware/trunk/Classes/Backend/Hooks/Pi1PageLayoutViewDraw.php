@@ -31,11 +31,13 @@ use Portrino\PxLib\Utility\FlexformUtility;
 use Portrino\PxShopware\Service\Shopware\ArticleClient;
 use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
 use \TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Service\FlexFormService;
 use TYPO3\CMS\Extbase\Service\TypoScriptService;
@@ -53,7 +55,7 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
     /**
      * Object manager
      *
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
+     * @var ObjectManagerInterface
      */
     protected $objectManager;
 
@@ -90,9 +92,19 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
     protected $articleClient;
 
     /**
-     * @var \TYPO3\CMS\Fluid\View\StandaloneView
+     * @var StandaloneView
      */
     protected $view;
+
+    /**
+     * @var DatabaseConnection
+     */
+    protected $databaseConnection;
+
+    /**
+     * @var LanguageService
+     */
+    protected $languageService;
 
     /**
      * @var string
@@ -111,6 +123,8 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
         $this->flexFormService = $this->objectManager->get(FlexFormService::class);
         $this->articleClient = $this->objectManager->get(ArticleClient::class);
         $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
+        $this->databaseConnection = $this->getDatabase();
+        $this->languageService = $this->getLanguageService();
 
         /**
          * initialize the view
@@ -157,12 +171,16 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
         $TCEFORM_TSconfig = BackendUtility::getTCEFORM_TSconfig('tt_content', $row);
         $TCEFORM_TSconfig = $this->typoScriptService->convertTypoScriptArrayToPlainArray($TCEFORM_TSconfig['pi_flexform']);
 
-        $this->view->assign(
-            'template',
-            array(
-                0 => $TCEFORM_TSconfig['pxshopware_pi1']['sDEF']['settings.template']['addItems'][$flexformConfiguration['settings']['template']]
-            )
-        );
+        $templateConfigurations = $TCEFORM_TSconfig['pxshopware_pi1']['sDEF']['settings.template']['addItems'];
+
+        if (isset($flexformConfiguration['settings']['template']) && array_key_exists($flexformConfiguration['settings']['template'], $templateConfigurations)) {
+            $templateLLL = $TCEFORM_TSconfig['pxshopware_pi1']['sDEF']['settings.template']['addItems'][$flexformConfiguration['settings']['template']];
+            $template = $this->languageService->sL($templateLLL);
+        } else {
+            $template = $this->languageService->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxshopware_pi1.settings.template.not_defined');
+        }
+
+        $this->view->assign('template', $template);
         $this->view->assign('row', $row);
 
         $itemContent = $this->view->render();
@@ -174,5 +192,12 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
      */
     protected function getDatabase() {
         return $GLOBALS['TYPO3_DB'];
+    }
+
+    /**
+     * @return LanguageService
+     */
+    protected function getLanguageService() {
+        return $GLOBALS['LANG'];
     }
 }
