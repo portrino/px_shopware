@@ -186,9 +186,6 @@ $boot = function ($_EXTKEY) {
 
 
             if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {
-                    // add scheduler task
-                $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = \Portrino\PxShopware\Task\IndexQueueCommandController::class;
-
                 $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\ApacheSolrForTypo3\Solr\IndexQueue\Queue::class] = array(
                     'className' => \Portrino\PxShopware\Xclass\Solr\IndexQueue\Queue::class
                 );

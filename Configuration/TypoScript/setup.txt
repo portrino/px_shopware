@@ -91,10 +91,10 @@ module.tx_pxshopware < plugin.tx_pxshopware
             queue {
                 Portrino_PxShopware_Domain_Model_Article = 1
                 Portrino_PxShopware_Domain_Model_Article {
-                    skipPreFetchFromDb = 1
+                    external = 1
+                    initialization = Portrino\PxShopware\Service\Solr\IndexQueue\Initializer\Article
                     indexer = Portrino\PxShopware\Service\Solr\Indexer\ArticleIndexer
                     indexer {
-#                        option = value
                     }
                     fields {
                         changed = changed
@@ -128,7 +128,8 @@ module.tx_pxshopware < plugin.tx_pxshopware
                     # deactivate for now
                 Portrino_PxShopware_Domain_Model_Category = 0
                 Portrino_PxShopware_Domain_Model_Category {
-                    skipPreFetchFromDb = 1
+                    external = 1
+                    initialization = Portrino\PxShopware\Service\Solr\IndexQueue\Initializer\Category
                     indexer = Portrino\PxShopware\Service\Solr\Indexer\CategoryIndexer
                     indexer {
                         ignoredIds = 1,3,4,51
