@@ -38,7 +38,6 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -65,16 +64,6 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
     ];
 
     /**
-     * @var string Key of the extension
-     */
-    protected $extensionName = 'PxShopware';
-
-    /**
-     * @var string Key of the extension
-     */
-    protected $extensionKey = 'px_shopware';
-
-    /**
      * @var string
      */
     protected $apiUrl = '';
@@ -92,7 +81,7 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
     /**
      * @var string
      */
-    protected $cacheLifeTime = '';
+    protected $cacheLifeTime = 0;
 
     /**
      * @var resource
@@ -100,16 +89,23 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
     protected $cURL;
 
     /**
+     * the language id we should send to shopware API
+     *
+     * @var int
+     */
+    protected $shopId;
+
+    /**
+     * @var \Portrino\PxShopware\Service\Shopware\ConfigurationService
+     * @inject
+     */
+    protected $configurationService;
+
+    /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
      * @inject
      */
     protected $objectManager;
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-     * @inject
-     */
-    protected $configurationManager;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
@@ -124,27 +120,6 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
     protected $languageToShopMappingService;
 
     /**
-     * the extConf array of PxShopware extension
-     *
-     * @var array
-     */
-    protected $settings;
-
-    /**
-     * the settings array of PxShopware plugin
-     *
-     * @var array
-     */
-    protected $extConf;
-
-    /**
-     * application context
-     *
-     * @var \TYPO3\CMS\Core\Core\ApplicationContext
-     */
-    protected $applicationContext;
-
-    /**
      * @var FrontendInterface
      */
     protected $cache;
@@ -154,69 +129,16 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
      */
     protected $logger;
 
-    /**
-     * the language id we should send to shopware API
-     *
-     * @var int
-     */
-    protected $shopId;
-
-    /**
-     * The user-object the script uses in backend mode
-     *
-     * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-     */
-    public $BE_USER;
-
     public function initializeObject()
     {
-        /** @var LogManager $logger */
-        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
-
-        if (TYPO3_MODE === 'BE') {
-            $this->BE_USER = $GLOBALS['BE_USER'];
+        if ($this->configurationService->isLoggingEnabled()) {
+            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
         }
 
-        $this->applicationContext = GeneralUtility::getApplicationContext();
-        /**
-         * global extension configuration
-         */
-        $this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['px_shopware']);
-        $apiConfiguration = $this->extConf['api.'];
-        $cacheConfiguration = $this->extConf['caching.'];
-
-        /**
-         * config from TS or flexform
-         */
-        $this->settings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, 'PxShopware');
-
         try {
-            $this->apiUrl = (isset($this->settings['api']['url']) && $this->settings['api']['url'] != '') ? $this->settings['api']['url'] : (isset($apiConfiguration['url']) ? $apiConfiguration['url'] : false);
-
-            if ($this->apiUrl === false) {
-                throw new ShopwareApiClientConfigurationException('No apiUrl given to connect to shopware REST-Service! Please add it to your extension configuration, TS or flexform.',
-                    1458807513);
-            }
-
-            if (filter_var($this->apiUrl, FILTER_VALIDATE_URL) === false) {
-                throw new ShopwareApiClientConfigurationException('apiUrl is not valid. Please enter a valid url in your extension configuration, TS or flexform.',
-                    1459492118);
-            }
-
-            $this->apiUrl = rtrim($this->apiUrl, '/') . '/';
-
-            $this->username = (isset($this->settings['api']['username']) && $this->settings['api']['username'] != '') ? $this->settings['api']['username'] : (isset($apiConfiguration['username']) ? $apiConfiguration['username'] : false);
-            if ($this->username === false) {
-                throw new ShopwareApiClientConfigurationException('No username given to connect to shopware REST-Service! Please add it to your extension configuration, TS or Flexform.',
-                    1458807514);
-            }
-
-            $this->apiKey = (isset($this->settings['api']['key']) && $this->settings['api']['key'] != '') ? $this->settings['api']['key'] : (isset($apiConfiguration['key']) ? $apiConfiguration['key'] : false);
-            if ($this->apiKey === false) {
-                throw new ShopwareApiClientConfigurationException('No apiKey given to connect to shopware REST-Service! Please add it to your extension configuration, TS or Flexform.',
-                    1458807515);
-            }
-
+            $this->apiUrl = $this->configurationService->getApiUrl();
+            $this->username = $this->configurationService->getApiUsername();
+            $this->apiKey = $this->configurationService->getApiKey();
         } catch (ShopwareApiClientConfigurationException $exception) {
             if (TYPO3_MODE === 'BE') {
                 $this->logException($exception);
@@ -241,11 +163,11 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
         ));
 
         // cache initialization (if caching is not disabled!)
-        if ((boolean)$cacheConfiguration['disable'] !== true) {
+        if ($this->configurationService->isCachingEnabled()) {
             /** @var CacheChainFactory $cacheChainFactory */
             $cacheChainFactory = GeneralUtility::makeInstance(CacheChainFactory::class);
             $this->cache = $cacheChainFactory->create();
-            $this->cacheLifeTime = isset($settings['caching']['lifetime']) ? (int)$settings['caching']['lifetime'] : (isset($cacheConfiguration['lifetime']) ? (int)$cacheConfiguration['lifetime'] : 0);
+            $this->cacheLifeTime = $this->configurationService->getCacheLifeTime();
         }
 
         /**
@@ -470,8 +392,7 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
      */
     protected function logException($exception)
     {
-        $loggingConfiguration = $this->extConf['logging.'];
-        if ((boolean)$loggingConfiguration['disable'] != true) {
+        if ($this->logger !== null) {
             $this->logger->log(
                 LogLevel::ERROR,
                 $exception->getMessage(),
@@ -479,7 +400,10 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
                     'code' => $exception->getCode()
                 )
             );
-            $this->BE_USER->writelog(4, 0, 1, 0, $exception->getMessage(), ['code' => $exception->getCode()]);
+
+            if (TYPO3_MODE === 'BE') {
+                $GLOBALS['BE_USER']->writelog(4, 0, 1, 0, $exception->getMessage(), ['code' => $exception->getCode()]);
+            }
         }
     }
 
