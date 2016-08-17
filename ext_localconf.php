@@ -10,23 +10,22 @@ $boot = function ($_EXTKEY) {
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
                 'Portrino.' . $_EXTKEY,
                 'Pi1',
-                array(
-                    'Article' => 'list',
-                ),
-                // non-cacheable actions
-                array(
-                )
+                ['Article' => 'list'],
+                []
             );
 
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
                 'Portrino.' . $_EXTKEY,
                 'Pi2',
-                array(
-                    'Category' => 'list',
-                ),
-                // non-cacheable actions
-                array(
-                )
+                ['Category' => 'list'],
+                []
+            );
+
+            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+                'Portrino.' . $_EXTKEY,
+                'Notification',
+                ['Notification' => 'index'],
+                ['Notification' => 'index']
             );
 
             /**
