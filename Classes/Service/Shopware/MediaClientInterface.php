@@ -24,11 +24,18 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use Portrino\PxShopware\Domain\Model\Media;
 
 /**
  * Interface MediaClientInterface
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-interface MediaClientInterface extends AbstractShopwareApiClientInterface {
+interface MediaClientInterface extends AbstractShopwareApiClientInterface
+{
+
+    const ENDPOINT = 'media';
+    const CACHE_TAG = 'showpare_media';
+    const ENTITY_CLASS_NAME = Media::class;
+
 }

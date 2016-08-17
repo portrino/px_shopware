@@ -26,7 +26,6 @@ namespace Portrino\PxShopware\Domain\Model;
  ***************************************************************/
 use Portrino\PxShopware\Backend\Form\Wizard\SuggestEntryInterface;
 use Portrino\PxShopware\Backend\Hooks\ItemEntryInterface;
-use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -35,7 +34,8 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *
  * @package Portrino\PxShopware\Domain\Model
  */
-class Category extends AbstractShopwareModel implements SuggestEntryInterface, ItemEntryInterface {
+class Category extends AbstractShopwareModel implements SuggestEntryInterface, ItemEntryInterface
+{
 
     /**
      * @var string
@@ -86,12 +86,11 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     protected $languageToShopMappingService;
 
     /**
-     * Category constructor.
-     *
-     * @param $raw
-     * @param $token
+     * @param object $raw
+     * @param string $token
      */
-    public function __construct($raw, $token) {
+    public function __construct($raw, $token)
+    {
         parent::__construct($raw, $token);
 
         if (isset($this->raw->name)) {
@@ -110,25 +109,11 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
             }
             $this->language = $this->languageToShopMappingService->getSysLanguageUidByParentCategoryPath($this->raw->path);
         }
-
-        $this->initStorageObjects();
     }
 
-    /**
-     * Initializes all \TYPO3\CMS\Extbase\Persistence\ObjectStorage properties.
-     *
-     * @return void
-     */
-    protected function initStorageObjects() {
+    public function initializeObject()
+    {
         $this->path = new ObjectStorage();
-    }
-
-    /**
-     *
-     */
-    public function initializeObject() {
-
-
         if (isset($this->getRaw()->media) && is_object($this->getRaw()->media) && isset($this->getRaw()->media->id)) {
             $media = $this->mediaClient->findById($this->getRaw()->media->id);
             $this->setImage($media);
@@ -138,35 +123,40 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     /**
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Category>
      */
-    public function getSubCategories () {
+    public function getSubCategories()
+    {
         return $this->categoryClient->findByParent($this->id);
     }
 
     /**
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * @param string $name
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
     }
 
     /**
      * @return \TYPO3\CMS\Core\Http\Uri
      */
-    public function getUri() {
+    public function getUri()
+    {
         return $this->uri;
     }
 
     /**
      * @param \TYPO3\CMS\Core\Http\Uri|string $uri
      */
-    public function setUri($uri) {
+    public function setUri($uri)
+    {
         if (is_string($uri)) {
             $uri = new \TYPO3\CMS\Core\Http\Uri($uri);
         }
@@ -176,14 +166,16 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     /**
      * @return \DateTime
      */
-    public function getChanged() {
+    public function getChanged()
+    {
         return $this->changed;
     }
 
     /**
      * @param \DateTime|string $changed
      */
-    public function setChanged($changed) {
+    public function setChanged($changed)
+    {
         if (is_string($changed)) {
             $changed = new \DateTime($changed);
         }
@@ -193,28 +185,32 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     /**
      * @return \Portrino\PxShopware\Domain\Model\Media
      */
-    public function getImage() {
+    public function getImage()
+    {
         return $this->image;
     }
 
     /**
      * @param \Portrino\PxShopware\Domain\Model\Media $image
      */
-    public function setImage(\Portrino\PxShopware\Domain\Model\Media $image) {
+    public function setImage(\Portrino\PxShopware\Domain\Model\Media $image)
+    {
         $this->image = $image;
     }
 
     /**
      * @return ObjectStorage
      */
-    public function getPath() {
+    public function getPath()
+    {
         return $this->path;
     }
 
     /**
      * @param ObjectStorage $path
      */
-    public function setPath($path) {
+    public function setPath($path)
+    {
         $this->path = $path;
     }
 
@@ -225,7 +221,8 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
      *
      * @return void
      */
-    public function addPathElement(\Portrino\PxShopware\Domain\Model\Category $pathElement) {
+    public function addPathElement(\Portrino\PxShopware\Domain\Model\Category $pathElement)
+    {
         $this->path->attach($pathElement);
     }
 
@@ -236,7 +233,8 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
      *
      * @return void
      */
-    public function removePathElement(\Portrino\PxShopware\Domain\Model\Category $pathElementToRemove) {
+    public function removePathElement(\Portrino\PxShopware\Domain\Model\Category $pathElementToRemove)
+    {
         $this->path->detach($pathElementToRemove);
     }
 
@@ -245,10 +243,11 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
      *
      * @return mixed
      */
-    public function getBreadCrumbPath($includeSelf = TRUE) {
+    public function getBreadCrumbPath($includeSelf = true)
+    {
 
         if (isset($this->getRaw()->path) && $this->getRaw()->path != '') {
-            $pathArray = array_reverse(GeneralUtility::trimExplode('|', $this->getRaw()->path, TRUE));
+            $pathArray = array_reverse(GeneralUtility::trimExplode('|', $this->getRaw()->path, true));
             foreach ($pathArray as $pathItem) {
                 /** @var Category|NULL $pathElement */
                 $pathElement = $this->categoryClient->findById($pathItem);
@@ -259,10 +258,10 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
         }
 
         /** @var array $path */
-        $path = array_map(function($item) {
+        $path = array_map(function ($item) {
             return $item->getName();
         }, $this->getPath()->toArray());
-        if ($includeSelf === TRUE) {
+        if ($includeSelf === true) {
             array_push($path, $this->getName());
         }
         return implode('/', $path);
@@ -271,56 +270,64 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     /**
      * @return int
      */
-    public function getSelectItemId() {
+    public function getSelectItemId()
+    {
         return $this->getId();
     }
 
     /**
      * @return string
      */
-    public function getSelectItemLabel() {
+    public function getSelectItemLabel()
+    {
         return $this->getName() . ' [' . $this->getId() . ']';
     }
 
     /**
      * @return int
      */
-    public function getSuggestId() {
+    public function getSuggestId()
+    {
         return $this->getId();
     }
 
     /**
      * @return string
      */
-    public function getSuggestLabel() {
+    public function getSuggestLabel()
+    {
         return $this->getName() . ' [' . $this->getId() . ']';
     }
 
     /**
      * @return string
      */
-    public function getSuggestDescription() {
-        return $this->getBreadCrumbPath(FALSE);
+    public function getSuggestDescription()
+    {
+        return $this->getBreadCrumbPath(false);
     }
 
     /**
      * @return string
      */
-    public function getSuggestIconIdentifier() {
+    public function getSuggestIconIdentifier()
+    {
         return 'px-shopware-category';
     }
 
     /**
      * @return int
      */
-    public function getLanguage() {
+    public function getLanguage()
+    {
         return $this->language;
     }
 
     /**
      * @param int $language
      */
-    public function setLanguage($language) {
+    public function setLanguage($language)
+    {
         $this->language = $language;
     }
 

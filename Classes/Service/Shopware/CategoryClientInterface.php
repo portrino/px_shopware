@@ -24,16 +24,23 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use Portrino\PxShopware\Domain\Model\Category;
 
 /**
  * Interface CategoryClientInterface
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-interface CategoryClientInterface extends AbstractShopwareApiClientInterface {
+interface CategoryClientInterface extends AbstractShopwareApiClientInterface
+{
+
+    const ENDPOINT = 'categories';
+    const CACHE_TAG = 'showpare_category';
+    const ENTITY_CLASS_NAME = Category::class;
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Category>
+     * @param int $parentId
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage <\Portrino\PxShopware\Domain\Model\Category>
      */
     public function findByParent($parentId);
 }

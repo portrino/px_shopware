@@ -25,17 +25,14 @@ namespace Portrino\PxShopware\Backend\Hooks;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Portrino\PxLib\Domain\Model\Content;
-use Portrino\PxLib\Domain\Repository\ContentRepository;
-use Portrino\PxLib\Utility\FlexformUtility;
 use Portrino\PxShopware\Service\Shopware\ArticleClient;
 use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\View\PageLayoutView;
+use TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHookInterface;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
-use \TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -43,25 +40,21 @@ use TYPO3\CMS\Extbase\Service\FlexFormService;
 use TYPO3\CMS\Extbase\Service\TypoScriptService;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Lang\LanguageService;
-use TYPO3\TtAddress\Hooks\DataHandler\BackwardsCompatibilityNameFormat;
 
 /**
  * Class Pi1PageLayoutViewDraw
  *
  * @package Portrino\PxShopware\Backend\Hooks
  */
-class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHookInterface {
+class Pi1PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
+{
 
     /**
-     * Object manager
-     *
      * @var ObjectManagerInterface
      */
     protected $objectManager;
 
     /**
-     * Configuration Manager
-     *
      * @var BackendConfigurationManager
      */
     protected $configurationManager;
@@ -115,7 +108,8 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
      * Pi1PageLayoutViewDraw constructor.
      *
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->configurationManager = $this->objectManager->get(BackendConfigurationManager::class);
         $this->settings = $this->configurationManager->getConfiguration('PxShopware');
@@ -138,7 +132,7 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
     /**
      * Preprocesses the preview rendering of a content element.
      *
-     * @param \TYPO3\CMS\Backend\View\PageLayoutView $parentObject Calling parent object
+     * @param PageLayoutView $parentObject Calling parent object
      * @param boolean $drawItem Whether to draw the item using the default functionalities
      * @param string $headerContent Header content
      * @param string $itemContent Item content
@@ -146,7 +140,13 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
      *
      * @return void
      */
-    public function preProcess(\TYPO3\CMS\Backend\View\PageLayoutView &$parentObject, &$drawItem, &$headerContent, &$itemContent, array &$row) {
+    public function preProcess(
+        PageLayoutView &$parentObject,
+        &$drawItem,
+        &$headerContent,
+        &$itemContent,
+        array &$row
+    ) {
         if ($row['CType'] !== 'pxshopware_pi1') {
             return;
         }
@@ -160,7 +160,7 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
         foreach ($selectedItemsArray as $item) {
             $language = $this->languageToShopMappingService->getShopIdBySysLanguageUid($row['sys_language_uid']);
             /** @var ItemEntryInterface $selectedItem */
-            $selectedItem = $this->articleClient->findById($item, FALSE, array('language' => $language));
+            $selectedItem = $this->articleClient->findById($item, false, array('language' => $language));
 
             if ($selectedItem) {
                 $selectedItems->attach($selectedItem);
@@ -184,20 +184,22 @@ class Pi1PageLayoutViewDraw implements \TYPO3\CMS\Backend\View\PageLayoutViewDra
         $this->view->assign('row', $row);
 
         $itemContent = $this->view->render();
-        $drawItem = FALSE;
+        $drawItem = false;
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return DatabaseConnection
      */
-    protected function getDatabase() {
+    protected function getDatabase()
+    {
         return $GLOBALS['TYPO3_DB'];
     }
 
     /**
      * @return LanguageService
      */
-    protected function getLanguageService() {
+    protected function getLanguageService()
+    {
         return $GLOBALS['LANG'];
     }
 }

@@ -30,7 +30,8 @@ namespace Portrino\PxShopware\Domain\Model;
  *
  * @package Portrino\PxShopware\Domain\Model
  */
-class Detail extends AbstractShopwareModel {
+class Detail extends AbstractShopwareModel
+{
 
     /**
      * @var string
@@ -38,12 +39,11 @@ class Detail extends AbstractShopwareModel {
     protected $number = '';
 
     /**
-     * Detail constructor.
-     *
-     * @param $raw
-     * @param $token
+     * @param object $raw
+     * @param string $token
      */
-    public function __construct($raw, $token) {
+    public function __construct($raw, $token)
+    {
         parent::__construct($raw, $token);
 
         if (isset($this->raw->number)) {
@@ -54,16 +54,17 @@ class Detail extends AbstractShopwareModel {
     /**
      * @return string
      */
-    public function getNumber() {
+    public function getNumber()
+    {
         return $this->number;
     }
 
     /**
      * @param string $number
      */
-    public function setNumber($number) {
+    public function setNumber($number)
+    {
         $this->number = $number;
     }
-
 
 }

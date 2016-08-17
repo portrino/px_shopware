@@ -30,30 +30,23 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-class MediaClient extends AbstractShopwareApiClient implements MediaClientInterface {
-
-    /**
-     * @var string
-     */
-    protected $endpoint = 'media';
-
-    /**
-     * @var string
-     */
-    protected $entityClassName = \Portrino\PxShopware\Domain\Model\Media::class;
+class MediaClient extends AbstractShopwareApiClient implements MediaClientInterface
+{
 
     /**
      * @return string
      */
-    public function getEndpoint() {
-        return $this->endpoint;
+    public function getEndpoint()
+    {
+        return self::ENDPOINT;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getEntityClassName() {
-        return $this->entityClassName;
+    public function getEntityClassName()
+    {
+        return self::ENTITY_CLASS_NAME;
     }
 
 }
