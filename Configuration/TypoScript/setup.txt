@@ -42,7 +42,7 @@ plugin.tx_pxshopware {
         # the duration after which the item is updated via REST-API
         caching {
 #            disable = 0
-            cacheLifeTime = {$plugin.tx_pxshopware.settings.cacheLifeTime}
+            lifetime = {$plugin.tx_pxshopware.settings.cacheLifeTime}
         }
         # fallback image if no image was given for article or other item
         noImage {
