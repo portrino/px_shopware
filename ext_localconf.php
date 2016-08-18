@@ -167,6 +167,7 @@ $boot = function ($_EXTKEY) {
 
                 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:px_shopware/Configuration/PageTSconfig/pxshopware_pi1.ts">');
                 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:px_shopware/Configuration/PageTSconfig/pxshopware_pi2.ts">');
+                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:px_shopware/Configuration/PageTSconfig/linkHandler.ts">');
 
             }
 
@@ -202,12 +203,6 @@ $boot = function ($_EXTKEY) {
                     )
                 )
             );
-//
-//            $GLOBALS['TBE_MODULES']['_configuration'][$_EXTKEY] = array (
-//                'jsFiles' => array (
-//                    'EXT:' . $_EXTKEY . '/Resources/Public/Javascript/Backend/FormEngineSuggest.js',
-//                ),
-//            );
 
             break;
     }
