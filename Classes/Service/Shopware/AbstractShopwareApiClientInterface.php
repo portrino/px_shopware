@@ -24,7 +24,7 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use Portrino\PxShopware\Domain\Model\ShopwareModelInterface;
+use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException;
 
 /**
  * Class AbstractShopwareApiClient
@@ -39,7 +39,7 @@ interface AbstractShopwareApiClientInterface {
 
     /**
      * @return bool
-     * @throws \ShopwareApiClientException
+     * @throws ShopwareApiClientException
      */
     public function isConnected();
 
@@ -50,7 +50,7 @@ interface AbstractShopwareApiClientInterface {
      * - status_disconnected (No connection to shopware system possible)
      *
      * @return string
-     * @throws \ShopwareApiClientException
+     * @throws ShopwareApiClientException
      */
     public function getStatus();
 

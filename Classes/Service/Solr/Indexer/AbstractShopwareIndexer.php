@@ -25,10 +25,15 @@ namespace Portrino\PxShopware\Service\Solr\Indexer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\GarbageCollector;
+use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
+use Portrino\PxShopware\Domain\Model\AbstractShopwareModel;
+use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
@@ -36,8 +41,13 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  *
  * @package Portrino\PxShopware\Service\Solr\Indexer
  */
-class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexer {
+class AbstractShopwareIndexer extends Indexer
+{
 
+    /**
+     * @var string
+     */
+    protected $clientClassName = AbstractShopwareApiClientInterface::class;
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManager
@@ -49,19 +59,18 @@ class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexe
      */
     protected $languageToShopMappingService;
 
-
     /**
      * Constructor
      *
-     * @param array Array of indexer options
+     * @param array $options of indexer options
      */
-    public function __construct(array $options = array()) {
+    public function __construct(array $options = [])
+    {
         parent::__construct($options);
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
     }
-
 
     /**
      * Creates a single Solr Document for an item in a specific language.
@@ -70,126 +79,134 @@ class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexe
      * @param integer $language The language to use.
      * @return boolean TRUE if item was indexed successfully, FALSE on failure
      */
-    protected function indexItem(Item $item, $language = 0) {
-        $documents = array();
+    protected function indexItem(Item $item, $language = 0)
+    {
+        $documents = [];
 
-        /** @var \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $itemRecord */
+        /** @var AbstractShopwareModel $itemRecord */
         $itemRecord = $this->getShopwareRecord($item, $language);
 
-            // get general fields
+        // In this case we have no item for the current language and skip indexing
+        if ($itemRecord === NULL) {
+            return true;
+        }
+
+        // get general fields
         /** @var \Apache_Solr_Document $itemDocument */
         $itemDocument = $this->getBaseDocument($item, $itemRecord);
 
         $itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
 
-            // get raw item data as array, needed for Solr core functions
+        // get raw item data as array, needed for Solr core functions
         $itemDataRaw = json_decode(json_encode($itemRecord->getRaw()), true);
 
-            // process TS config for additional fields
+        // process TS config for additional fields
         $itemDocument = $this->addDocumentFieldsFromTyposcript($itemDocument, $itemIndexingConfiguration, $itemDataRaw);
 
-            // overwrite fields for specific item type
+        // overwrite fields for specific item type
         $itemDocument = $this->overwriteSpecialFields($itemDocument, $itemRecord, $language);
 
-            // check if item should be indexed
+        // check if item should be indexed
         if ($this->itemIsValid($itemRecord)) {
 
             $documents[] = $itemDocument;
 
-                // allow indexItemAddDocuments Hooks
+            // allow indexItemAddDocuments Hooks
             $documents = array_merge($documents, $this->getAdditionalDocuments(
                 $item,
                 $language,
                 $itemDocument
             ));
 
-                // apply fieldProcessingInstructions from TS
+            // apply fieldProcessingInstructions from TS
             $documents = $this->processDocuments($item, $documents);
 
-                // allow preAddModifyDocuments Hooks
+            // allow preAddModifyDocuments Hooks
             $documents = $this->preAddModifyDocuments(
                 $item,
                 $language,
                 $documents
             );
         } else {
-                // item is not valid, delete from index!
-            /** @var \ApacheSolrForTypo3\Solr\GarbageCollector $garbageCollector */
-            $garbageCollector = GeneralUtility::makeInstance(\ApacheSolrForTypo3\Solr\GarbageCollector::class);
+            // item is not valid, delete from index!
+            $garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
             $garbageCollector->collectGarbage($item->getType(), $itemRecord->getId());
         }
 
-            // add clean documents to solr index core
+        // add clean documents to solr index core
         $response = $this->solr->addDocuments($documents);
-        if ($response->getHttpStatus() == 200) {
-            $itemIndexed = TRUE;
-        }
+        $itemIndexed = $response->getHttpStatus() === 200;
 
         $this->log($item, $documents, $response);
 
         return $itemIndexed;
-
     }
 
 
     /**
      * check if record should be added/updated or deleted from index
      *
-     * @param \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $itemRecord The item to index
+     * @param AbstractShopwareModel $itemRecord The item to index
      * @return bool valid or not
      */
-    protected function itemIsValid(\Portrino\PxShopware\Domain\Model\AbstractShopwareModel $itemRecord) {
-        $result = TRUE;
+    protected function itemIsValid(AbstractShopwareModel $itemRecord)
+    {
+        $result = true;
 
-            // check for active flag here
-        if (isset($itemRecord->getRaw()->active) && $itemRecord->getRaw()->active === FALSE) {
-            $result = FALSE;
+        // check for active flag here
+        if (isset($itemRecord->getRaw()->active) && $itemRecord->getRaw()->active === false) {
+            $result = false;
         }
-            // check if item should be ignored
+        // check if item should be ignored
         if ($this->options['ignoredIds'] != '') {
-            $ignoredIds = GeneralUtility::trimExplode(',', $this->options['ignoredIds'], TRUE);
+            $ignoredIds = GeneralUtility::trimExplode(',', $this->options['ignoredIds'], true);
             if (in_array($itemRecord->getId(), $ignoredIds)) {
-                $result = FALSE;
+                $result = false;
             }
         }
         return $result;
     }
 
     /**
-     * get Data from shopware API
+     * Get data from shopware API
      *
      * @param Item $item The item to index
      * @param integer $language The language to use.
-     * @return \Portrino\PxShopware\Domain\Model\AbstractShopwareModel The record to use to build the base document
+     * @return AbstractShopwareModel The record to use to build the base document
      */
-    protected function getShopwareRecord(Item $item, $language = 0) {
-        // overwrite in sub classes
+    protected function getShopwareRecord(Item $item, $language = 0)
+    {
+        $shopwareClient = $this->objectManager->get($this->clientClassName);
+        $shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
+        return $shopwareClient->findById($item->getRecordUid(), true, ['language' => $shopId]);
     }
-
 
     /**
      * overwrite special fields for item type
      *
      * @param \Apache_Solr_Document $itemDocument
-     * @param \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $itemRecord
+     * @param AbstractShopwareModel $itemRecord
      * @param integer $language The language to use.
      * @return \Apache_Solr_Document $itemDocument
      */
-    protected function overwriteSpecialFields(\Apache_Solr_Document $itemDocument, \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $itemRecord, $language = 0) {
+    protected function overwriteSpecialFields(
+        \Apache_Solr_Document $itemDocument,
+        AbstractShopwareModel $itemRecord,
+        $language = 0
+    ) {
         // overwrite in sub classes
     }
-
 
     /**
      * Creates a Solr document with the basic / core fields set already.
      *
      * @param Item $item The item to index
-     * @param \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $itemRecord The record to use to build the base document
+     * @param AbstractShopwareModel $itemRecord The record to use to build the base document
      * @return \Apache_Solr_Document A basic Solr document
      */
-    protected function getBaseDocument(Item $item, \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $itemRecord) {
-        $site = GeneralUtility::makeInstance(\ApacheSolrForTypo3\Solr\Site::class,
-            $item->getRootPageUid());
+    protected function getBaseDocument(Item $item, AbstractShopwareModel $itemRecord)
+    {
+        $site = GeneralUtility::makeInstance(Site::class, $item->getRootPageUid());
 
         /** @var $document \Apache_Solr_Document */
         $document = GeneralUtility::makeInstance(\Apache_Solr_Document::class);
@@ -197,7 +214,7 @@ class AbstractShopwareIndexer extends \ApacheSolrForTypo3\Solr\IndexQueue\Indexe
         // required fields
         $document->setField('id', Util::getDocumentId(
             $item->getType(),
-            0, // TODO: pid for shopware models ??
+            $item->getRootPageUid(),
             $itemRecord->getId()
         ));
         $document->setField('type', $item->getType());

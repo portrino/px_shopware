@@ -38,10 +38,8 @@ class Media extends AbstractShopwareModel {
     protected $url = '';
 
     /**
-     * Media constructor.
-     *
-     * @param $raw
-     * @param $token
+     * @param object $raw
+     * @param string $token
      */
     public function __construct($raw, $token) {
         parent::__construct($raw, $token);

@@ -1,10 +1,10 @@
 <?php
-namespace Portrino\PxShopware\Service\Shopware;
+namespace Portrino\PxShopware\LinkHandler;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2016 Andre Wuttig <wuttig@portrino.de>, portrino GmbH
+ *  (c) 2016 Sascha Nowak <sascha.nowak@netlogix.de>, netlogix GmbH & Co. KG
  *
  *  All rights reserved
  *
@@ -24,18 +24,19 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use Portrino\PxShopware\Domain\Model\Media;
 
-/**
- * Interface MediaClientInterface
- *
- * @package Portrino\PxShopware\Service\Shopware
- */
-interface MediaClientInterface extends AbstractShopwareApiClientInterface
+use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+
+class ArticleLinkHandler extends AbstractLinkHandler
 {
 
-    const ENDPOINT = 'media';
-    const CACHE_TAG = 'showpare_media';
-    const ENTITY_CLASS_NAME = Media::class;
+    public function __construct()
+    {
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->client = $objectManager->get(ArticleClientInterface::class);
+        $this->type = 'article';
+    }
 
 }

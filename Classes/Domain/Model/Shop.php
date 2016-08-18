@@ -30,7 +30,8 @@ namespace Portrino\PxShopware\Domain\Model;
  *
  * @package Portrino\PxShopware\Domain\Model
  */
-class Shop extends AbstractShopwareModel {
+class Shop extends AbstractShopwareModel
+{
 
     /**
      * @var string
@@ -38,12 +39,11 @@ class Shop extends AbstractShopwareModel {
     protected $name = '';
 
     /**
-     * Shop constructor.
-     *
-     * @param $raw
-     * @param $token
+     * @param object $raw
+     * @param string $token
      */
-    public function __construct($raw, $token) {
+    public function __construct($raw, $token)
+    {
         parent::__construct($raw, $token);
 
         if (isset($this->raw->name)) {
@@ -54,14 +54,16 @@ class Shop extends AbstractShopwareModel {
     /**
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * @param string $name
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
     }
 

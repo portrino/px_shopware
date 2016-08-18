@@ -24,13 +24,9 @@ namespace Portrino\PxShopware\Backend\Hooks;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Wizard\NewContentElementWizardHookInterface;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
-use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
-use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Lang\LanguageService;
 
 /**
@@ -40,7 +36,8 @@ use TYPO3\CMS\Lang\LanguageService;
  *
  * @package Portrino\PxShopware\Backend\Hooks
  */
-class WizardItems implements NewContentElementWizardHookInterface {
+class WizardItems implements NewContentElementWizardHookInterface
+{
 
     /**
      * Processes the items of the new content element wizard
@@ -51,7 +48,8 @@ class WizardItems implements NewContentElementWizardHookInterface {
      *
      * @return void
      */
-    public function manipulateWizardItems(&$wizardItems, &$parentObject) {
+    public function manipulateWizardItems(&$wizardItems, &$parentObject)
+    {
         $extKey = 'px_shopware';
 
         $wizardItems['px_shopware'] = array();
@@ -65,11 +63,13 @@ class WizardItems implements NewContentElementWizardHookInterface {
         );
 
         foreach ($pluginSignatures as $pluginSignature) {
-            if (!GeneralUtility::inList($GLOBALS['BE_USER']->groupData['explicit_allowdeny'],'tt_content:CType:' . $pluginSignature . ':DENY')) {
+            if (!GeneralUtility::inList($GLOBALS['BE_USER']->groupData['explicit_allowdeny'],
+                'tt_content:CType:' . $pluginSignature . ':DENY')
+            ) {
                 $wizardItems[$pluginSignature] = array(
                     'title' => $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xml:tt_content.CType.' . $pluginSignature . '.title'),
                     'iconIdentifier' => str_replace('_', '-', $pluginSignature),
-                    'params' => '&defVals[tt_content][CType]='. $pluginSignature,
+                    'params' => '&defVals[tt_content][CType]=' . $pluginSignature,
                     'description' => $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xml:tt_content.CType.' . $pluginSignature . '.description'),
                     'tt_content_defValues' => array(
                         'CType' => $pluginSignature
@@ -82,14 +82,16 @@ class WizardItems implements NewContentElementWizardHookInterface {
     /**
      * @return LanguageService
      */
-    public function getLanguageService() {
+    public function getLanguageService()
+    {
         return $GLOBALS['LANG'];
     }
 
     /**
      * @return DatabaseConnection
      */
-    public function getDatabase() {
+    public function getDatabase()
+    {
         return $GLOBALS['TYPO3_DB'];
     }
 }

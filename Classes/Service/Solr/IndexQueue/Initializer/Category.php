@@ -1,10 +1,10 @@
 <?php
-namespace Portrino\PxShopware\Service\Shopware;
+namespace Portrino\PxShopware\Service\Solr\IndexQueue\Initializer;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2016 Andre Wuttig <wuttig@portrino.de>, portrino GmbH
+ *  (c) 2016 Sascha Nowak <sascha.nowak@netlogix.de>, netlogix GmbH & Co. KG
  *
  *  All rights reserved
  *
@@ -24,18 +24,32 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use Portrino\PxShopware\Domain\Model\Media;
 
-/**
- * Interface MediaClientInterface
- *
- * @package Portrino\PxShopware\Service\Shopware
- */
-interface MediaClientInterface extends AbstractShopwareApiClientInterface
+use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
+
+class Category extends AbstractInitializer
 {
 
-    const ENDPOINT = 'media';
-    const CACHE_TAG = 'showpare_media';
-    const ENTITY_CLASS_NAME = Media::class;
+    protected $clientClassName = CategoryClientInterface::class;
+
+    public function initialize()
+    {
+        $rowsToIndex = [];
+
+        $defaultRecord = $this->getRecordDefaults();
+        /** @var \Portrino\PxShopware\Domain\Model\Category $category */
+        foreach ($this->shopwareClient->findAll(false) as $category) {
+            $record = $defaultRecord;
+            $record['item_uid'] = $category->getId();
+            $rowsToIndex[] = $record;
+        }
+
+        return $this->getDatabaseConnection()->exec_INSERTmultipleRows(
+            'tx_solr_indexqueue_item',
+            array_keys($defaultRecord),
+            $rowsToIndex
+        );
+
+    }
 
 }

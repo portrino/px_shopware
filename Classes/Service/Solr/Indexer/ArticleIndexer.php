@@ -27,6 +27,7 @@ namespace Portrino\PxShopware\Service\Solr\Indexer;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use Portrino\PxShopware\Domain\Model\Article;
+use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,26 +35,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @package Portrino\PxShopware\Service\Solr\Indexer
  */
-class ArticleIndexer extends AbstractShopwareIndexer {
-
+class ArticleIndexer extends AbstractShopwareIndexer
+{
 
     /**
-     * get Article Data from shopware API
-     *
-     * @param Item $item The item to index
-     * @param integer $language The language to use.
-     * @return Article The record to use to build the base document
+     * @var string
      */
-    protected function getShopwareRecord(Item $item, $language = 0) {
-
-        // get Data from shopware API
-        $shopwareClient = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\ArticleClient::class);
-
-        $shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
-
-        return $shopwareClient->findById($item->getRecordUid(), TRUE, array('language' => $shopId));
-    }
-
+    protected $clientClassName = ArticleClientInterface::class;
 
     /**
      * check if record should be added/updated or deleted from index
@@ -61,18 +49,18 @@ class ArticleIndexer extends AbstractShopwareIndexer {
      * @param Article $article The item to index
      * @return bool valid or not
      */
-    protected function itemIsValid(Article $article) {
+    protected function itemIsValid(Article $article)
+    {
 
         $result = parent::itemIsValid($article);
 
-            // ALSO check for categories, if article has no category shopware will throw error! so do not add to search result!
-        if (!isset($article->getRaw()->categories) || $article->getRaw()->categories == FALSE) {
-            $result = FALSE;
+        // ALSO check for categories, if article has no category shopware will throw error! so do not add to search result!
+        if (!isset($article->getRaw()->categories) || $article->getRaw()->categories == false) {
+            $result = false;
         }
 
         return $result;
     }
-
 
     /**
      * overwrite special fields for articles
@@ -82,7 +70,8 @@ class ArticleIndexer extends AbstractShopwareIndexer {
      * @param integer $language The language to use.
      * @return \Apache_Solr_Document $itemDocument
      */
-    protected function overwriteSpecialFields(\Apache_Solr_Document $itemDocument, Article $article, $language = 0) {
+    protected function overwriteSpecialFields(\Apache_Solr_Document $itemDocument, Article $article, $language = 0)
+    {
 
         $itemDocument->setField('title', $article->getName());
 
@@ -149,4 +138,5 @@ class ArticleIndexer extends AbstractShopwareIndexer {
 
         return $itemDocument;
     }
+
 }

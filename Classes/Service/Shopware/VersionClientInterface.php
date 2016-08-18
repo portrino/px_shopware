@@ -24,11 +24,18 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use Portrino\PxShopware\Domain\Model\Version;
 
 /**
  * Interface VersionClientInterface
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-interface VersionClientInterface extends AbstractShopwareApiClientInterface {
+interface VersionClientInterface extends AbstractShopwareApiClientInterface
+{
+
+    const ENDPOINT = 'version';
+    const CACHE_TAG = 'showpare_version';
+    const ENTITY_CLASS_NAME = Version::class;
+
 }

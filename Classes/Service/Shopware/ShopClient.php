@@ -30,30 +30,23 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-class ShopClient extends AbstractShopwareApiClient implements ShopClientInterface {
-
-    /**
-     * @var string
-     */
-    protected $endpoint = 'shops';
-
-    /**
-     * @var
-     */
-    protected $entityClassName = \Portrino\PxShopware\Domain\Model\Shop::class;
+class ShopClient extends AbstractShopwareApiClient implements ShopClientInterface
+{
 
     /**
      * @return string
      */
-    public function getEndpoint() {
-        return $this->endpoint;
+    public function getEndpoint()
+    {
+        return self::ENDPOINT;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getEntityClassName() {
-        return $this->entityClassName;
+    public function getEntityClassName()
+    {
+        return self::ENTITY_CLASS_NAME;
     }
 
 }
