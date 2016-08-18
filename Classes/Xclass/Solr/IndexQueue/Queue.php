@@ -25,7 +25,6 @@ namespace Portrino\PxShopware\Xclass\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -46,13 +45,7 @@ class Queue extends \ApacheSolrForTypo3\Solr\IndexQueue\Queue {
 
         // grouping records by table
         foreach ($indexQueueItemRecords as $indexQueueItemRecord) {
-            $configuration = Util::getSolrConfigurationFromPageId($indexQueueItemRecord['root']);
-            $isExternal = (bool)$configuration->getValueByPathOrDefaultValue('plugin.tx_solr.index.queue.' . $indexQueueItemRecord['indexing_configuration'] . '.external', false);
-            if ($isExternal) {
-                $tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']] = ['uid' => $indexQueueItemRecord['item_uid']];
-            } else {
-                $tableUids[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']] = $indexQueueItemRecord['item_uid'];
-            }
+            $tableUids[$indexQueueItemRecord['item_type']][] = $indexQueueItemRecord['item_uid'];
         }
 
         // fetching records by table, saves us a lot of single queries
@@ -66,6 +59,14 @@ class Queue extends \ApacheSolrForTypo3\Solr\IndexQueue\Queue {
                 'uid'
             );
             $tableRecords[$table] = $records;
+
+            if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'])) {
+                $params = ['table' => $table, 'uids' => $uids, 'tableRecords' => &$tableRecords];
+                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'] as $reference) {
+                    GeneralUtility::callUserFunction($reference, $params, $this);
+                }
+                unset($params);
+            }
         }
 
         // creating index queue item objects and assigning / mapping
