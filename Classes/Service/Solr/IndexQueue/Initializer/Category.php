@@ -36,16 +36,17 @@ class Category extends AbstractInitializer
     {
         $rowsToIndex = [];
 
+        $defaultRecord = $this->getRecordDefaults();
         /** @var \Portrino\PxShopware\Domain\Model\Category $category */
         foreach ($this->shopwareClient->findAll(false) as $category) {
-            $record = $this->getRecordDefaults();
+            $record = $defaultRecord;
             $record['item_uid'] = $category->getId();
             $rowsToIndex[] = $record;
         }
 
         return $this->getDatabaseConnection()->exec_INSERTmultipleRows(
             'tx_solr_indexqueue_item',
-            ['root', 'item_type', 'item_uid', 'indexing_configuration', 'indexing_priority', 'changed'],
+            array_keys($defaultRecord),
             $rowsToIndex
         );
 

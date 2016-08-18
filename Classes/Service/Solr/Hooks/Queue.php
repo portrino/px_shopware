@@ -41,7 +41,7 @@ class Queue implements SingletonInterface
     /**
      * @param array $params
      */
-    public function postProcessFetchRecordsForIndexQueueItem($params)
+    public function postProcessFetchRecordsForIndexQueueItem(&$params)
     {
         if (!in_array($params['table'], $this->tables)) {
             return;

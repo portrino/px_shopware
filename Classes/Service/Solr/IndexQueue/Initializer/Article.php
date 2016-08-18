@@ -36,9 +36,10 @@ class Article extends AbstractInitializer
     {
         $rowsToIndex = [];
 
+        $defaultRecord = $this->getRecordDefaults();
         /** @var \Portrino\PxShopware\Domain\Model\Article $article */
         foreach ($this->shopwareClient->findAll(false) as $article) {
-            $record = $this->getRecordDefaults();
+            $record = $defaultRecord;
             $record['item_uid'] = $article->getId();
             $record['changed'] = $article->getChanged()->getTimestamp();
             $rowsToIndex[] = $record;
@@ -46,7 +47,7 @@ class Article extends AbstractInitializer
 
         return $this->getDatabaseConnection()->exec_INSERTmultipleRows(
             'tx_solr_indexqueue_item',
-            ['root', 'item_type', 'item_uid', 'indexing_configuration', 'indexing_priority', 'changed'],
+            array_keys($defaultRecord),
             $rowsToIndex
         );
 

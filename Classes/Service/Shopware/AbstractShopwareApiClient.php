@@ -79,7 +79,7 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
     protected $apiKey = '';
 
     /**
-     * @var string
+     * @var int
      */
     protected $cacheLifeTime = 0;
 
