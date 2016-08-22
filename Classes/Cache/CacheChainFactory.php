@@ -42,10 +42,13 @@ class CacheChainFactory implements SingletonInterface {
         /** @var CacheManager $cacheManager */
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
         $cacheChain = new CacheChain();
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXT']['px_shopware']['cache_chain'] as $cachePriority => $cacheIdentifier) {
-            $cache = ($cacheManager->hasCache($cacheIdentifier)) ? $cacheManager->getCache($cacheIdentifier) : NULL;
-            if ($cache) {
-                $cacheChain->addCache($cache, $cachePriority);
+
+        if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['px_shopware']['cache_chain'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXT']['px_shopware']['cache_chain'] as $cachePriority => $cacheIdentifier) {
+                $cache = ($cacheManager->hasCache($cacheIdentifier)) ? $cacheManager->getCache($cacheIdentifier) : NULL;
+                if ($cache) {
+                    $cacheChain->addCache($cache, $cachePriority);
+                }
             }
         }
         return $cacheChain;

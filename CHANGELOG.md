@@ -1,5 +1,11 @@
 # PxShopware Change log
 
+1.5.5 - 2016-08-22
+------------------
+* fixes a bug which results in PHP-Warning if caching is disabled
+* fixes #77584 
+* https://forge.typo3.org/issues/77584
+
 1.5.4 - 2016-06-24
 ------------------
 * fixes a bug in `Pi1PageLayoutViewDraw` which leads to exception in backend if no template or not existent template 
