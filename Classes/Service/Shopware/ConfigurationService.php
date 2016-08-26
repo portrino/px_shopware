@@ -24,14 +24,14 @@ class ConfigurationService implements SingletonInterface
         $settings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, 'PxShopware');
         $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['px_shopware']);
 
-        if (!isset($settings['api']['url']) && isset($extConf['api.']['url'])) {
+        if ($settings['api']['url'] === '' && isset($extConf['api.']['url'])) {
             $settings['api']['url'] = $extConf['api.']['url'];
         }
-        if (!isset($settings['api']['username']) && isset($extConf['api.']['username'])) {
+        if ($settings['api']['username'] === '' && isset($extConf['api.']['username'])) {
             $settings['api']['username'] = $extConf['api.']['username'];
         }
-        if (!isset($settings['api']['key']) && isset($extConf['api.']['key'])) {
-            $settings['api']['key'] = $extConf['api.']['username'];
+        if ($settings['api']['key'] === '' && isset($extConf['api.']['key'])) {
+            $settings['api']['key'] = $extConf['api.']['key'];
         }
 
         if (!isset($settings['caching']['disable']) && isset($extConf['caching.']['disable'])) {
