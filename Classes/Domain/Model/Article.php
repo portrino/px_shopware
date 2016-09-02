@@ -26,13 +26,15 @@ namespace Portrino\PxShopware\Domain\Model;
  ***************************************************************/
 use Portrino\PxShopware\Backend\Form\Wizard\SuggestEntryInterface;
 use Portrino\PxShopware\Backend\Hooks\ItemEntryInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Article
  *
  * @package Portrino\PxShopware\Domain\Model
  */
-class Article extends AbstractShopwareModel implements SuggestEntryInterface, ItemEntryInterface{
+class Article extends AbstractShopwareModel implements SuggestEntryInterface, ItemEntryInterface
+{
 
     /**
      * @var string
@@ -104,7 +106,8 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      * @param $raw
      * @param $token
      */
-    public function __construct($raw, $token) {
+    public function __construct($raw, $token)
+    {
         parent::__construct($raw, $token);
 
         if (isset($this->raw->name)) {
@@ -128,8 +131,10 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
          */
         if (isset($this->raw->description) && $this->raw->description != '') {
             $this->setDescription($this->raw->description);
-        } else if (isset($this->raw->descriptionLong) && $this->raw->descriptionLong != '') {
-            $this->setDescription($this->raw->descriptionLong);
+        } else {
+            if (isset($this->raw->descriptionLong) && $this->raw->descriptionLong != '') {
+                $this->setDescription($this->raw->descriptionLong);
+            }
         }
 
         $this->initStorageObjects();
@@ -140,7 +145,8 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      *
      * @return void
      */
-    protected function initStorageObjects() {
+    protected function initStorageObjects()
+    {
         $this->images = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
         $this->categories = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
     }
@@ -148,48 +154,55 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      *
      */
-    public function initializeObject() {
+    public function initializeObject()
+    {
     }
 
     /**
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * @param string $name
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
     }
 
     /**
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
 
     /**
      * @param string $description
      */
-    public function setDescription($description) {
+    public function setDescription($description)
+    {
         $this->description = $description;
     }
 
     /**
      * @return \DateTime
      */
-    public function getChanged() {
+    public function getChanged()
+    {
         return $this->changed;
     }
 
     /**
      * @param \DateTime|string $changed
      */
-    public function setChanged($changed) {
+    public function setChanged($changed)
+    {
         if (is_string($changed)) {
             $changed = new \DateTime($changed);
         }
@@ -203,7 +216,8 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      *
      * @return void
      */
-    public function addImage(\Portrino\PxShopware\Domain\Model\Media $image) {
+    public function addImage(\Portrino\PxShopware\Domain\Model\Media $image)
+    {
         $this->images->attach($image);
     }
 
@@ -214,7 +228,8 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      *
      * @return void
      */
-    public function removeImage(\Portrino\PxShopware\Domain\Model\Media $imageToRemove) {
+    public function removeImage(\Portrino\PxShopware\Domain\Model\Media $imageToRemove)
+    {
         $this->images->detach($imageToRemove);
     }
 
@@ -223,8 +238,9 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      *
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Media> $images
      */
-    public function getImages() {
-        if ($this->images->count() === 0){
+    public function getImages()
+    {
+        if ($this->images->count() === 0) {
             if (isset($this->getRaw()->images) && is_array($this->getRaw()->images)) {
                 foreach ($this->raw->images as $image) {
                     if (isset($image->mediaId)) {
@@ -247,7 +263,8 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      *
      * @return void
      */
-    public function setImages(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $images) {
+    public function setImages(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $images)
+    {
         $this->images = $images;
     }
 
@@ -256,14 +273,16 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      *
      * @return NULL|\Portrino\PxShopware\Domain\Model\Media
      */
-    public function getFirstImage() {
-        return ($this->getImages() != NULL && $this->getImages()->count() > 0) ? array_values($this->getImages()->toArray())[0] : NULL;
+    public function getFirstImage()
+    {
+        return ($this->getImages() != null && $this->getImages()->count() > 0) ? array_values($this->getImages()->toArray())[0] : null;
     }
 
     /**
      * @return Detail
      */
-    public function getDetail() {
+    public function getDetail()
+    {
         if (!$this->detail) {
 
             /**
@@ -271,14 +290,16 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
              */
             if (!isset($this->getRaw()->mainDetail)) {
                 /** @var Article $detail */
-                $detailedArticle = $this->articleClient->findById($this->getId(), FALSE);
+                $detailedArticle = $this->articleClient->findById($this->getId(), false);
                 /** @var Detail $detail */
                 $detail = $this->objectManager->get(Detail::class, $detailedArticle->raw->mainDetail, $this->token);
                 $this->setDetail($detail);
-            } else if (isset($this->getRaw()->mainDetail)) {
-                /** @var Detail $detail */
-                $detail = $this->objectManager->get(Detail::class, $this->getRaw()->mainDetail, $this->token);
-                $this->setDetail($detail);
+            } else {
+                if (isset($this->getRaw()->mainDetail)) {
+                    /** @var Detail $detail */
+                    $detail = $this->objectManager->get(Detail::class, $this->getRaw()->mainDetail, $this->token);
+                    $this->setDetail($detail);
+                }
             }
         }
 
@@ -288,7 +309,8 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * @param Detail $detail
      */
-    public function setDetail($detail) {
+    public function setDetail($detail)
+    {
         $this->detail = $detail;
     }
 
@@ -303,12 +325,13 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * @return string
      */
-    public function getOrderNumber() {
+    public function getOrderNumber()
+    {
         $result = '';
         if ($this->orderNumber != null) {
             $result = $this->orderNumber;
         } else {
-            $result =  ($this->getDetail() != NULL) ? $this->getDetail()->getNumber() : '';
+            $result = ($this->getDetail() != null) ? $this->getDetail()->getNumber() : '';
         }
         return $result;
     }
@@ -316,14 +339,16 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * @return \TYPO3\CMS\Core\Http\Uri
      */
-    public function getUri() {
+    public function getUri()
+    {
         return $this->uri;
     }
 
     /**
      * @param \TYPO3\CMS\Core\Http\Uri|string $uri
      */
-    public function setUri($uri) {
+    public function setUri($uri)
+    {
         if (is_string($uri)) {
             $uri = new \TYPO3\CMS\Core\Http\Uri($uri);
         }
@@ -333,7 +358,8 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
      */
-    public function getCategories() {
+    public function getCategories()
+    {
 
         if ($this->categories->count() === 0) {
             if (isset($this->getRaw()->categories)) {
@@ -351,9 +377,10 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
                          * -> depends on the TYPO3_MODE
                          */
                         if (TYPO3_MODE === 'FE') {
-                            $language = GeneralUtility::trimExplode('.', $GLOBALS['TSFE']->config['config']['sys_language_uid'], TRUE);
+                            $language = GeneralUtility::trimExplode('.',
+                                $GLOBALS['TSFE']->config['config']['sys_language_uid'], true);
                             $sys_language_id = ($language && isset($language[0])) ? $language[0] : 0;
-                                // add only categories of current FE language
+                            // add only categories of current FE language
                             if ($detailedCategory->getLanguage() == $sys_language_id) {
                                 $this->addCategory($detailedCategory);
                             }
@@ -372,7 +399,8 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $categories
      */
-    public function setCategories($categories) {
+    public function setCategories($categories)
+    {
         $this->categories = $categories;
     }
 
@@ -383,7 +411,8 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      *
      * @return void
      */
-    public function addCategory(\Portrino\PxShopware\Domain\Model\Category $category) {
+    public function addCategory(\Portrino\PxShopware\Domain\Model\Category $category)
+    {
         $this->categories->attach($category);
     }
 
@@ -394,21 +423,24 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      *
      * @return void
      */
-    public function removeCategory(\Portrino\PxShopware\Domain\Model\Category $categoryToRemove) {
+    public function removeCategory(\Portrino\PxShopware\Domain\Model\Category $categoryToRemove)
+    {
         $this->categories->detach($categoryToRemove);
     }
 
     /**
      * @return int
      */
-    public function getSuggestId() {
+    public function getSuggestId()
+    {
         return $this->getId();
     }
 
     /**
      * @return string
      */
-    public function getSuggestLabel() {
+    public function getSuggestLabel()
+    {
         $result = $this->getName() . ' [' . $this->getId() . ']';
         $orderNumber = !empty($this->getOrderNumber()) ? ' (' . $this->getOrderNumber() . ')' : '';
         $result .= $orderNumber;
@@ -418,28 +450,32 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * @return string
      */
-    public function getSuggestDescription() {
+    public function getSuggestDescription()
+    {
         return $this->getDescription();
     }
 
     /**
      * @return string
      */
-    public function getSuggestIconIdentifier() {
+    public function getSuggestIconIdentifier()
+    {
         return 'px-shopware-article';
     }
 
     /**
      * @return int
      */
-    public function getSelectItemId() {
+    public function getSelectItemId()
+    {
         return (int)$this->getId();
     }
 
     /**
      * @return string
      */
-    public function getSelectItemLabel() {
+    public function getSelectItemLabel()
+    {
         $result = $this->getName() . ' [' . $this->getId() . ']';
         $orderNumber = !empty($this->getOrderNumber()) ? ' (' . $this->getOrderNumber() . ')' : '';
         $result .= $orderNumber;
