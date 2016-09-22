@@ -25,7 +25,11 @@ namespace Portrino\PxShopware\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Portrino\PxShopware\Domain\Model\Article;
+use Portrino\PxShopware\Domain\Model\Category;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
+use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
+use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
 use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -38,11 +42,10 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  *
  * @package Portrino\PxShopware\Controller
  */
-abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+{
 
     /**
-     * application context
-     *
      * @var \TYPO3\CMS\Core\Core\ApplicationContext
      */
     protected $applicationContext;
@@ -60,7 +63,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     /**
      * @var array
      */
-    protected $extConf = array();
+    protected $extConf = [];
 
     /**
      * @var string
@@ -72,27 +75,27 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      *
      * @var array
      */
-    protected $actionSettings = array();
+    protected $actionSettings = [];
 
     /**
      * contains the specific ts settings for the current controller
      *
      * @var array
      */
-    protected $controllerSettings = array();
+    protected $controllerSettings = [];
 
     /**
      * contains the ts settings for the extbase mvc framework
      *
      * @var array
      */
-    protected $extbaseFrameworkConfiguration = array();
+    protected $extbaseFrameworkConfiguration = [];
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
      * @inject
      */
-    protected $persistenceManager = NULL;
+    protected $persistenceManager;
 
     /**
      * @var string
@@ -123,7 +126,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      *
      * @return void
      */
-    protected function initializeAction() {
+    protected function initializeAction()
+    {
         parent::initializeAction();
         $this->applicationContext = GeneralUtility::getApplicationContext();
         $this->dateTime = new \DateTime('now', new \DateTimeZone('Europe/Berlin'));
@@ -150,7 +154,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      *
      * @return void
      */
-    protected function initializeView(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view) {
+    protected function initializeView(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view)
+    {
         parent::initializeView($view);
         $this->view->assignMultiple(array(
             'extbaseFrameworkConfiguration' => $this->extbaseFrameworkConfiguration,
@@ -161,7 +166,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             'language' => $this->language
         ));
 
-        if ($this->isTrialVersion === TRUE) {
+        if ($this->isTrialVersion === true) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'flash.warning.trial.description',
@@ -207,7 +212,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString)
             ->build();
 
-        $this->redirectToURI($uri);
+        $this->redirectToUri($uri);
     }
 
     /**
@@ -257,7 +262,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * @return void
      * @override \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
-    public function processRequest(\TYPO3\CMS\Extbase\Mvc\RequestInterface $request, \TYPO3\CMS\Extbase\Mvc\ResponseInterface $response) {
+    public function processRequest(\TYPO3\CMS\Extbase\Mvc\RequestInterface $request, \TYPO3\CMS\Extbase\Mvc\ResponseInterface $response)
+    {
         try {
             parent::processRequest($request, $response);
         } catch (\Exception $exception) {
@@ -286,11 +292,12 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * response object. If the action doesn't return anything and a valid
      * view exists, the view is rendered automatically.
      *
-     * @return void
+     * @throws PageNotFoundException
      * @api
      * @override \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
-    protected function callActionMethod() {
+    protected function callActionMethod()
+    {
         try {
             parent::callActionMethod();
         } catch (\Exception $exception) {
@@ -311,24 +318,48 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     }
 
     /**
-     * action list
-     *
      * @return void
      */
-    public function listAction() {
+    public function listAction()
+    {
         $itemUidList = isset($this->settings['items']) ? GeneralUtility::trimExplode(',', $this->settings['items']) : array();
         $items = new ObjectStorage();
+        $cacheTags = [];
         foreach ($itemUidList as $itemUid) {
             if ($item = $this->shopwareClient->findById($itemUid)) {
                 $items->attach($item);
+                $cacheTags[] = $this->getCacheTagForItem($item);
                 /**
                  * only show one item if isTrialVersion
                  */
-                if ($this->isTrialVersion === TRUE) {
+                if ($this->isTrialVersion === true) {
                     break;
                 }
             }
         }
+        $this->getTypeScriptFrontendController()->addCacheTags(array_unique($cacheTags));
         $this->view->assign('items', $items);
+    }
+
+    /**
+     * @param \Portrino\PxShopware\Domain\Model\ShopwareModelInterface $item
+     * @return string
+     */
+    protected function getCacheTagForItem(\Portrino\PxShopware\Domain\Model\ShopwareModelInterface $item)
+    {
+        switch (get_class($item)) {
+            case Article::class:
+                return ArticleClientInterface::CACHE_TAG . '_' . $item->getId();
+            case Category::class:
+                return CategoryClientInterface::CACHE_TAG . '_' . $item->getId();
+        }
+    }
+
+    /**
+     * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+     */
+    protected function getTypeScriptFrontendController()
+    {
+        return $GLOBALS['TSFE'];
     }
 }

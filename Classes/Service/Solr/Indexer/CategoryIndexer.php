@@ -25,10 +25,8 @@ namespace Portrino\PxShopware\Service\Solr\Indexer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use Portrino\PxShopware\Domain\Model\Category;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\Util;
+use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
 
 /**
  * Class CategoryIndexer
@@ -37,24 +35,10 @@ use ApacheSolrForTypo3\Solr\Util;
  */
 class CategoryIndexer extends AbstractShopwareIndexer {
 
-
     /**
-     * get Article Data from shopware API
-     *
-     * @param Item $item The item to index
-     * @param integer $language The language to use.
-     * @return Category The record to use to build the base document
+     * @var string
      */
-    protected function getShopwareRecord(Item $item, $language = 0) {
-
-            // get Data from shopware API
-        $shopwareClient = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\CategoryClient::class);
-
-        $shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
-
-        return $shopwareClient->findById($item->getRecordUid(), TRUE, array('language' => $shopId));
-    }
-
+    protected $clientClassName = CategoryClientInterface::class;
 
     /**
      * overwrite special fields for categories

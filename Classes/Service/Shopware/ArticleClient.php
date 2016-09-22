@@ -32,25 +32,18 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-class ArticleClient extends AbstractShopwareApiClient implements ArticleClientInterface {
-
-    /**
-     * @var string
-     */
-    protected $endpoint = 'articles';
-
-    /**
-     * @var
-     */
-    protected $entityClassName = \Portrino\PxShopware\Domain\Model\Article::class;
+class ArticleClient extends AbstractShopwareApiClient implements ArticleClientInterface
+{
 
     /**
      * @param string $term
      * @param int $limit
      * @param bool $doCacheRequest
      * @param array $params
+     * @return ObjectStorage
      */
-    public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE, $params = array()) {
+    public function findByTerm($term, $limit = -1, $doCacheRequest = true, $params = [])
+    {
         $shopwareModels = new ObjectStorage();
 
         /**
@@ -96,13 +89,13 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
 
         $result = $this->get($this->getValidEndpoint(), $params, $doCacheRequest);
         if ($result) {
-            $token = (isset($result->pxShopwareTypo3Token)) ? (bool)$result->pxShopwareTypo3Token : FALSE;
+            $token = (isset($result->pxShopwareTypo3Token)) ? (bool)$result->pxShopwareTypo3Token : false;
             if (isset($result->data) && is_array($result->data)) {
                 foreach ($result->data as $data) {
                     if (isset($data->id)) {
                         /** @var \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $shopwareModel */
                         $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $data, $token);
-                        if ($shopwareModel != NULL) {
+                        if ($shopwareModel != null) {
                             $shopwareModels->attach($shopwareModel);
                         }
                     }
@@ -115,15 +108,17 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
     /**
      * @return string
      */
-    public function getEndpoint() {
-        return $this->endpoint;
+    public function getEndpoint()
+    {
+        return self::ENDPOINT;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getEntityClassName() {
-        return $this->entityClassName;
+    public function getEntityClassName()
+    {
+        return self::ENTITY_CLASS_NAME;
     }
 
 }

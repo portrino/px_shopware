@@ -1,10 +1,10 @@
 <?php
-namespace Portrino\PxShopware\Service\Shopware;
+namespace Portrino\PxShopware\Service\Solr\Hooks;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2016 Andre Wuttig <wuttig@portrino.de>, portrino GmbH
+ *  (c) 2016 Sascha Nowak <sascha.nowak@netlogix.de>, netlogix GmbH & Co. KG
  *
  *  All rights reserved
  *
@@ -24,18 +24,31 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use Portrino\PxShopware\Domain\Model\Media;
 
-/**
- * Interface MediaClientInterface
- *
- * @package Portrino\PxShopware\Service\Shopware
- */
-interface MediaClientInterface extends AbstractShopwareApiClientInterface
+use TYPO3\CMS\Core\SingletonInterface;
+
+class Queue implements SingletonInterface
 {
 
-    const ENDPOINT = 'media';
-    const CACHE_TAG = 'showpare_media';
-    const ENTITY_CLASS_NAME = Media::class;
+    /**
+     * @var array
+     */
+    protected $tables = [
+        'Portrino_PxShopware_Domain_Model_Article',
+        'Portrino_PxShopware_Domain_Model_Category'
+    ];
 
+    /**
+     * @param array $params
+     */
+    public function postProcessFetchRecordsForIndexQueueItem(&$params)
+    {
+        if (!in_array($params['table'], $this->tables)) {
+            return;
+        }
+
+        foreach ($params['uids'] as $uid) {
+            $params['tableRecords'][$params['table']][$uid] = ['uid' => $uid];
+        }
+    }
 }

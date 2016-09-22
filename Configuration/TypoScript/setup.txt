@@ -40,7 +40,10 @@ plugin.tx_pxshopware {
         }
         # override global cache lifetime which is configured in extension configuration
         # the duration after which the item is updated via REST-API
-        cacheLifeTime = {$plugin.tx_pxshopware.settings.cacheLifeTime}
+        caching {
+#            disable = 0
+            lifetime = {$plugin.tx_pxshopware.settings.cacheLifeTime}
+        }
         # fallback image if no image was given for article or other item
         noImage {
             path = {$plugin.tx_pxshopware.settings.noImage.path}
@@ -83,18 +86,40 @@ plugin.tx_pxshopware_pi2 {
 
 module.tx_pxshopware < plugin.tx_pxshopware
 
+tx_pxshopware_notification_page = PAGE
+tx_pxshopware_notification_page {
+    typeNum = 1471426941
+    config {
+        disableAllHeaderCode = 1
+        disablePrefixComment = 1
+        admPanel = 0
+        debug = 0
+        metaCharset = utf-8
+        additionalHeaders = Content-type:application/json
+    }
 
-    # add article and category indexing if ext:solr is loaded
+    10 = USER
+    10 {
+        userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+
+        vendorName = Portrino
+        extensionName = PxShopware
+        pluginName = Notification
+        controller = Notification
+        action = index
+    }
+}
+
+# add article and category indexing if ext:solr is loaded
 [userFunc = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded(solr)]
     plugin.tx_solr {
         index {
             queue {
                 Portrino_PxShopware_Domain_Model_Article = 1
                 Portrino_PxShopware_Domain_Model_Article {
-                    skipPreFetchFromDb = 1
+                    initialization = Portrino\PxShopware\Service\Solr\IndexQueue\Initializer\Article
                     indexer = Portrino\PxShopware\Service\Solr\Indexer\ArticleIndexer
                     indexer {
-#                        option = value
                     }
                     fields {
                         changed = changed
@@ -128,7 +153,7 @@ module.tx_pxshopware < plugin.tx_pxshopware
                     # deactivate for now
                 Portrino_PxShopware_Domain_Model_Category = 0
                 Portrino_PxShopware_Domain_Model_Category {
-                    skipPreFetchFromDb = 1
+                    initialization = Portrino\PxShopware\Service\Solr\IndexQueue\Initializer\Category
                     indexer = Portrino\PxShopware\Service\Solr\Indexer\CategoryIndexer
                     indexer {
                         ignoredIds = 1,3,4,51

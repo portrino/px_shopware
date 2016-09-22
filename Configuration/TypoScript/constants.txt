@@ -19,7 +19,7 @@ plugin.tx_pxshopware {
         }
         # override global cache lifetime which is configured in extension configuration
         # the duration after which the item is updated via REST-API
-        cacheLifeTime = 3600
+        cacheLifeTime = 0
 
         # no image configuration
         noImage {

@@ -19,11 +19,17 @@
             "email": "wuttig@portrino.de",
             "homepage": "http://www.portrino.de",
             "role": "Developer"
+        },
+        {
+            "name": "Sascha Nowak",
+            "email": "sascha.nowak@netlogix.de",
+            "homepage": "https://websolutions.netlogix.de/",
+            "role": "Developer"
         }
     ],
     "support": {
-        "issues": "http://qm.portrino.de/projects/portrino/issues",
-        "source": "http://qm.portrino.de/svn/portrino/typo3-extensions/company/px_shopware"
+        "issues": "https://github.com/portrino/px_shopware/issues",
+        "source": "https://github.com/portrino/px_shopware"
     },
     "require": {
         "typo3/cms-core": ">=7.6.0,<8.0",

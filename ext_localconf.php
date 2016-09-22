@@ -10,23 +10,22 @@ $boot = function ($_EXTKEY) {
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
                 'Portrino.' . $_EXTKEY,
                 'Pi1',
-                array(
-                    'Article' => 'list',
-                ),
-                // non-cacheable actions
-                array(
-                )
+                ['Article' => 'list'],
+                []
             );
 
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
                 'Portrino.' . $_EXTKEY,
                 'Pi2',
-                array(
-                    'Category' => 'list',
-                ),
-                // non-cacheable actions
-                array(
-                )
+                ['Category' => 'list'],
+                []
+            );
+
+            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+                'Portrino.' . $_EXTKEY,
+                'Notification',
+                ['Notification' => 'index'],
+                ['Notification' => 'index']
             );
 
             /**
@@ -168,6 +167,7 @@ $boot = function ($_EXTKEY) {
 
                 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:px_shopware/Configuration/PageTSconfig/pxshopware_pi1.ts">');
                 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:px_shopware/Configuration/PageTSconfig/pxshopware_pi2.ts">');
+                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:px_shopware/Configuration/PageTSconfig/linkHandler.ts">');
 
             }
 
@@ -186,9 +186,6 @@ $boot = function ($_EXTKEY) {
 
 
             if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {
-                    // add scheduler task
-                $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = \Portrino\PxShopware\Task\IndexQueueCommandController::class;
-
                 $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\ApacheSolrForTypo3\Solr\IndexQueue\Queue::class] = array(
                     'className' => \Portrino\PxShopware\Xclass\Solr\IndexQueue\Queue::class
                 );
@@ -206,12 +203,6 @@ $boot = function ($_EXTKEY) {
                     )
                 )
             );
-//
-//            $GLOBALS['TBE_MODULES']['_configuration'][$_EXTKEY] = array (
-//                'jsFiles' => array (
-//                    'EXT:' . $_EXTKEY . '/Resources/Public/Javascript/Backend/FormEngineSuggest.js',
-//                ),
-//            );
 
             break;
     }

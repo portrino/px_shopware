@@ -31,64 +31,41 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-class CategoryClient extends AbstractShopwareApiClient implements CategoryClientInterface {
+class CategoryClient extends AbstractShopwareApiClient implements CategoryClientInterface
+{
 
     /**
-     * @var string
-     */
-    protected $endpoint = 'categories';
-
-    /**
-     * @var
-     */
-    protected $entityClassName = \Portrino\PxShopware\Domain\Model\Category::class;
-
-    /**
-     * @return string
-     */
-    public function getEndpoint() {
-        return $this->endpoint;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getEntityClassName() {
-        return $this->entityClassName;
-    }
-
-    /**
-     *
      * Do not use this during initialization, because it could lead to max nesting level exception
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Category>
+     * @param int $parentId
+     * @return ObjectStorage <\Portrino\PxShopware\Domain\Model\Category>
      */
-    public function findByParent($parentId) {
+    public function findByParent($parentId)
+    {
         $result = new ObjectStorage();
 
         $filterByParentId = array(
             array(
                 'property' => 'parentId',
                 'expression' => '=',
-                'value'    => $parentId
+                'value' => $parentId
             ),
         );
 
         $response = $this->get($this->getValidEndpoint(), array('filter' => $filterByParentId));
 
 
-
         if ($response) {
-            $token = (isset($response->pxShopwareTypo3Token)) ? (bool)$response->pxShopwareTypo3Token : FALSE;
+            $token = (isset($response->pxShopwareTypo3Token)) ? (bool)$response->pxShopwareTypo3Token : false;
             $isTrialVersion = ($this->getStatus() === AbstractShopwareApiClientInterface::STATUS_CONNECTED_TRIAL);
 
             if (isset($response->data) && is_array($response->data)) {
                 foreach ($response->data as $data) {
                     if (isset($data->id)) {
                         $category = $this->objectManager->get($this->getEntityClassName(), $data, $token);
-                        if ($category != NULL) {
+                        if ($category != null) {
                             $result->attach($category);
-                            if ($isTrialVersion === TRUE) {
+                            if ($isTrialVersion === true) {
                                 break;
                             }
                         }
@@ -97,6 +74,22 @@ class CategoryClient extends AbstractShopwareApiClient implements CategoryClient
             }
         }
         return $result;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndpoint()
+    {
+        return self::ENDPOINT;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEntityClassName()
+    {
+        return self::ENTITY_CLASS_NAME;
     }
 
 }

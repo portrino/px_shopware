@@ -32,11 +32,10 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  *
  * @package Portrino\PxShopware\Domain\Model
  */
-abstract class AbstractShopwareModel implements ShopwareModelInterface {
+abstract class AbstractShopwareModel implements ShopwareModelInterface
+{
 
     /**
-     * id
-     *
      * @var int
      */
     protected $id = '';
@@ -57,12 +56,11 @@ abstract class AbstractShopwareModel implements ShopwareModelInterface {
     protected $objectManager;
 
     /**
-     * AbstractShopwareModel constructor.
-     *
-     * @param $raw
-     * @param $token
+     * @param object $raw
+     * @param string $token
      */
-    public function __construct($raw, $token) {
+    public function __construct($raw, $token)
+    {
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
@@ -76,42 +74,48 @@ abstract class AbstractShopwareModel implements ShopwareModelInterface {
     /**
      * @return int
      */
-    public function getId() {
+    public function getId()
+    {
         return (int)$this->id;
     }
 
     /**
      * @param int $id
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
     }
 
     /**
-     * @return object|NULL
+     * @return object
      */
-    public function getRaw() {
+    public function getRaw()
+    {
         return $this->raw;
     }
 
     /**
-     * @param string $raw
+     * @param object $raw
      */
-    public function setRaw($raw) {
+    public function setRaw($raw)
+    {
         $this->raw = $raw;
     }
 
     /**
      * @return boolean
      */
-    public function isToken() {
+    public function isToken()
+    {
         return $this->token;
     }
 
     /**
      * @param boolean $token
      */
-    public function setToken($token) {
+    public function setToken($token)
+    {
         $this->token = $token;
     }
 }

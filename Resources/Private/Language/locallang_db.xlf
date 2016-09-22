@@ -200,6 +200,13 @@
                 <source>Category Name</source>
             </trans-unit>
 
+            <trans-unit id="link_handler.article">
+                <source>Article</source>
+            </trans-unit>
+            <trans-unit id="link_handler.category">
+                <source>Category</source>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

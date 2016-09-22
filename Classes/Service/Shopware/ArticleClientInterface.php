@@ -24,12 +24,18 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use Portrino\PxShopware\Domain\Model\Article;
 
 /**
  * Interface ArticleClientInterface
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-interface ArticleClientInterface extends AbstractShopwareApiClientInterface {
+interface ArticleClientInterface extends AbstractShopwareApiClientInterface
+{
+
+    const ENDPOINT = 'articles';
+    const CACHE_TAG = 'showpare_article';
+    const ENTITY_CLASS_NAME = Article::class;
 
 }

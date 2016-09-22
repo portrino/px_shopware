@@ -1,5 +1,6 @@
 <?php
 namespace Portrino\PxShopware\Service\Shopware;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -23,13 +24,17 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * Class LanguageToShopwareMappingService
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-class LanguageToShopwareMappingService implements \TYPO3\CMS\Core\SingletonInterface {
+class LanguageToShopwareMappingService implements SingletonInterface
+{
 
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
@@ -43,16 +48,9 @@ class LanguageToShopwareMappingService implements \TYPO3\CMS\Core\SingletonInter
      */
     protected $settings;
 
-    /**
-     *
-     */
-    public function initializeObject() {
-        /**
-         * config from TS or flexform
-         */
-        $this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, 'PxShopware');
-
-
+    public function initializeObject()
+    {
+        $this->settings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, 'PxShopware');
     }
 
     /**
@@ -60,7 +58,8 @@ class LanguageToShopwareMappingService implements \TYPO3\CMS\Core\SingletonInter
      *
      * @return integer the shop id for the specific language in SW
      */
-    public function getShopIdBySysLanguageUid($sys_language_uid) {
+    public function getShopIdBySysLanguageUid($sys_language_uid)
+    {
         /**
          * set shop_id to 1 per default
          */
@@ -81,7 +80,8 @@ class LanguageToShopwareMappingService implements \TYPO3\CMS\Core\SingletonInter
      *
      * @return integer the parent category id for the specific language in SW
      */
-    public function getParentCategoryBySysLanguageUid($sys_language_uid) {
+    public function getParentCategoryBySysLanguageUid($sys_language_uid)
+    {
         $result = 0;
         $shopToLocaleMappings = $this->settings['api']['languageToShopware'];
 
@@ -95,14 +95,15 @@ class LanguageToShopwareMappingService implements \TYPO3\CMS\Core\SingletonInter
     }
 
     /**
-     * @param string the parent category id for the specific language in SW
+     * @param string $path the parent category id for the specific language in SW
      *
      * @return integer $sys_language_uid
      */
-    public function getSysLanguageUidByParentCategoryPath($path) {
+    public function getSysLanguageUidByParentCategoryPath($path)
+    {
         $result = 0;
 
-        $pathArray = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('|', $path, TRUE);
+        $pathArray = GeneralUtility::trimExplode('|', $path, true);
         $shopToLocaleMappings = $this->settings['api']['languageToShopware'];
 
         foreach ($shopToLocaleMappings as $shopToLocaleMapping) {
