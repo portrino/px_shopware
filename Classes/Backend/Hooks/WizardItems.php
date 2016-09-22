@@ -52,29 +52,29 @@ class WizardItems implements NewContentElementWizardHookInterface
     {
         $extKey = 'px_shopware';
 
-        $wizardItems['px_shopware'] = array();
+        $wizardItems['px_shopware'] = [];
 
         // set header label
         $wizardItems['px_shopware']['header'] = $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xml:tx_pxshopware_wizard_header');
 
-        $pluginSignatures = array(
+        $pluginSignatures = [
             0 => str_replace('_', '', $extKey) . '_pi1',
             1 => str_replace('_', '', $extKey) . '_pi2'
-        );
+        ];
 
         foreach ($pluginSignatures as $pluginSignature) {
             if (!GeneralUtility::inList($GLOBALS['BE_USER']->groupData['explicit_allowdeny'],
                 'tt_content:CType:' . $pluginSignature . ':DENY')
             ) {
-                $wizardItems[$pluginSignature] = array(
+                $wizardItems[$pluginSignature] = [
                     'title' => $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xml:tt_content.CType.' . $pluginSignature . '.title'),
                     'iconIdentifier' => str_replace('_', '-', $pluginSignature),
                     'params' => '&defVals[tt_content][CType]=' . $pluginSignature,
                     'description' => $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xml:tt_content.CType.' . $pluginSignature . '.description'),
-                    'tt_content_defValues' => array(
+                    'tt_content_defValues' => [
                         'CType' => $pluginSignature
-                    )
-                );
+                    ]
+                ];
             }
         }
     }

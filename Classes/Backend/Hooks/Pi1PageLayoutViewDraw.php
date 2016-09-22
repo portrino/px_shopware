@@ -62,7 +62,7 @@ class Pi1PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
     /**
      * @var array
      */
-    protected $settings = array();
+    protected $settings = [];
 
     /**
      * @var TypoScriptService
@@ -124,7 +124,7 @@ class Pi1PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
          * initialize the view
          */
         $this->view = $this->objectManager->get(StandaloneView::class);
-        $this->view->setTemplateRootPaths(array(0 => 'EXT:' . $this->extensionKey . '/Resources/Private/Templates/Backend/'));
+        $this->view->setTemplateRootPaths([0 => 'EXT:' . $this->extensionKey . '/Resources/Private/Templates/Backend/']);
         $this->view->setTemplate('Pi1PageLayoutViewDraw');
     }
 
@@ -155,12 +155,12 @@ class Pi1PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
 
         /** @var ObjectStorage $selectedItems */
         $selectedItems = new ObjectStorage();
-        $selectedItemsArray = isset($flexformConfiguration['settings']['items']) ? GeneralUtility::trimExplode(',', $flexformConfiguration['settings']['items'], TRUE) : array();
+        $selectedItemsArray = isset($flexformConfiguration['settings']['items']) ? GeneralUtility::trimExplode(',', $flexformConfiguration['settings']['items'], TRUE) : [];
 
         foreach ($selectedItemsArray as $item) {
             $language = $this->languageToShopMappingService->getShopIdBySysLanguageUid($row['sys_language_uid']);
             /** @var ItemEntryInterface $selectedItem */
-            $selectedItem = $this->articleClient->findById($item, false, array('language' => $language));
+            $selectedItem = $this->articleClient->findById($item, false, ['language' => $language]);
 
             if ($selectedItem) {
                 $selectedItems->attach($selectedItem);

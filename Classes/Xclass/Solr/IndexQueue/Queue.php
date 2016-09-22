@@ -39,9 +39,9 @@ class Queue extends \ApacheSolrForTypo3\Solr\IndexQueue\Queue {
     protected function getIndexQueueItemObjectsFromRecords(
         array $indexQueueItemRecords
     ) {
-        $indexQueueItems = array();
-        $tableUids = array();
-        $tableRecords = array();
+        $indexQueueItems = [];
+        $tableUids = [];
+        $tableRecords = [];
 
         // grouping records by table
         foreach ($indexQueueItemRecords as $indexQueueItemRecord) {
@@ -80,7 +80,7 @@ class Queue extends \ApacheSolrForTypo3\Solr\IndexQueue\Queue {
                 );
             } else {
                 GeneralUtility::devLog('Record missing for Index Queue item. Item removed.',
-                    'solr', 3, array($indexQueueItemRecord));
+                    'solr', 3, [$indexQueueItemRecord]);
                 $this->deleteItem($indexQueueItemRecord['item_type'],
                     $indexQueueItemRecord['item_uid']);
             }

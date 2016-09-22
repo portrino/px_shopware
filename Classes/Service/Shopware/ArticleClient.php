@@ -51,41 +51,41 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
          */
         if (is_numeric($term)) {
 
-            $filter = array(
-                array(
+            $filter = [
+                [
                     'property' => 'id',
                     'expression' => '=',
                     'value' => $term
-                ),
-            );
+                ],
+            ];
 
         } else {
 
-            $filter = array(
-                array(
+            $filter = [
+                [
                     'property' => 'name',
                     'expression' => 'LIKE',
                     'value' => '%' . $term . '%'
-                ),
-                array(
+                ],
+                [
                     'operator' => 'OR',
                     'property' => 'mainDetail.number',
                     'expression' => 'LIKE',
                     'value' => '%' . $term . '%'
-                )
-            );
+                ]
+            ];
         }
 
-        ArrayUtility::mergeRecursiveWithOverrule($params, array(
+        ArrayUtility::mergeRecursiveWithOverrule($params, [
             'limit' => $limit,
-            'sort' => array(
-                array(
+            'sort' => [
+                [
                     'property' => 'name',
                     'direction' => 'ASC'
-                )
-            ),
+                ]
+            ],
             'filter' => $filter
-        ));
+        ]);
 
         $result = $this->get($this->getValidEndpoint(), $params, $doCacheRequest);
         if ($result) {

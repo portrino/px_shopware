@@ -41,7 +41,7 @@ class CacheChain implements FrontendInterface, SingletonInterface {
     /**
      * @var array
      */
-    protected $chain = array();
+    protected $chain = [];
 
     /**
      * @var FrontendInterface
@@ -65,7 +65,7 @@ class CacheChain implements FrontendInterface, SingletonInterface {
     }
 
     public function getBackends() {
-        $result = array();
+        $result = [];
         /**
          * @var int $priority
          * @var FrontendInterface $cache
@@ -95,7 +95,7 @@ class CacheChain implements FrontendInterface, SingletonInterface {
      * @return void
      * @api
      */
-    public function set($entryIdentifier, $data, array $tags = array(), $lifetime = NULL) {
+    public function set($entryIdentifier, $data, array $tags = [], $lifetime = NULL) {
         /**
          * @var FrontendInterface $cache
          */
@@ -146,7 +146,7 @@ class CacheChain implements FrontendInterface, SingletonInterface {
      * @return array
      */
     public function getCacheTables() {
-        $result = array();
+        $result = [];
         /** @var BackendInterface $backend */
         foreach ($this->getBackends() as $backend) {
             /** @var Typo3DatabaseBackend $backend */

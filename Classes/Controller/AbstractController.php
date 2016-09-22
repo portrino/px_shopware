@@ -157,25 +157,25 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     protected function initializeView(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view)
     {
         parent::initializeView($view);
-        $this->view->assignMultiple(array(
+        $this->view->assignMultiple([
             'extbaseFrameworkConfiguration' => $this->extbaseFrameworkConfiguration,
             'controllerSettings' => $this->controllerSettings,
             'actionSettings' => $this->actionSettings,
             'extConf' => $this->extConf,
             'dateTime' => $this->dateTime,
             'language' => $this->language
-        ));
+        ]);
 
         if ($this->isTrialVersion === true) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'flash.warning.trial.description',
                     $this->extensionName,
-                    array(
+                    [
                         1 => $this->settings['urls']['shopware_store'],
                         2 => $this->settings['emails']['portrino_support'],
                         3 => $this->settings['urls']['portrino_website']
-                    )
+                    ]
                 ),
                 LocalizationUtility::translate('flash.warning.trial.title', $this->extensionName),
                 FlashMessage::WARNING
@@ -197,7 +197,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * @param bool $addQueryString
      * @param array $argumentsToBeExcludedFromQueryString
      */
-    protected function redirectToPage($pageUid = NULL, array $additionalParams = array(), $pageType = 0, $noCache = FALSE, $noCacheHash = FALSE, $section = '', $linkAccessRestrictedPages = FALSE, $absolute = FALSE, $addQueryString = FALSE, array $argumentsToBeExcludedFromQueryString = array()) {
+    protected function redirectToPage($pageUid = NULL, array $additionalParams = [], $pageType = 0, $noCache = FALSE, $noCacheHash = FALSE, $section = '', $linkAccessRestrictedPages = FALSE, $absolute = FALSE, $addQueryString = FALSE, array $argumentsToBeExcludedFromQueryString = []
+    ) {
         $uri = $this->uriBuilder
             ->reset()
             ->setTargetPageUid($pageUid)
@@ -322,7 +323,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      */
     public function listAction()
     {
-        $itemUidList = isset($this->settings['items']) ? GeneralUtility::trimExplode(',', $this->settings['items']) : array();
+        $itemUidList = isset($this->settings['items']) ? GeneralUtility::trimExplode(',', $this->settings['items']) : [];
         $items = new ObjectStorage();
         $cacheTags = [];
         foreach ($itemUidList as $itemUid) {

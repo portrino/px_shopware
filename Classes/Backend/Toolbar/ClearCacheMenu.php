@@ -54,13 +54,13 @@ class ClearCacheMenu implements \TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHook
             $title = $languageService->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:clear_cache_menu.title');
             $description = $languageService->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:clear_cache_menu.description');
 
-            $cacheActions[] = array(
+            $cacheActions[] = [
                 'id' => 'px_shopware',
                 'title' => $title,
                 'description' => $description,
                 'href' => BackendUtility::getAjaxUrl('tx_pxshopware::clearCache'),
                 'icon' => $this->getIcon()
-            );
+            ];
             $optionValues[] = 'tx_pxshopware::clearCache';
         }
     }

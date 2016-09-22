@@ -18,13 +18,13 @@ $boot = function () {
     /**
      * register icons for each plugin
      */
-    $pluginSignatures = array(
+    $pluginSignatures = [
         0 => str_replace('_', '', $extKey) . '_pi1',
         1 => str_replace('_', '', $extKey) . '_pi2'
-    );
+    ];
     foreach ($pluginSignatures as $pluginSignature) {
         
-        if (\Portrino\PxShopware\Backend\Utility\ExtensionConfigurationMatcher::isFeatureEnabled(array(0 => 'plugin.', 1 => 'fetchAllItems'))) {
+        if (\Portrino\PxShopware\Backend\Utility\ExtensionConfigurationMatcher::isFeatureEnabled([0 => 'plugin.', 1 => 'fetchAllItems'])) {
             \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
                 '*',
                 'FILE:EXT:' . $extKey . '/Configuration/FlexForms/FetchAllItems/'. $pluginSignature .'.xml',

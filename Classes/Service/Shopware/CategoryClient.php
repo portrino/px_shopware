@@ -44,15 +44,15 @@ class CategoryClient extends AbstractShopwareApiClient implements CategoryClient
     {
         $result = new ObjectStorage();
 
-        $filterByParentId = array(
-            array(
+        $filterByParentId = [
+            [
                 'property' => 'parentId',
                 'expression' => '=',
                 'value' => $parentId
-            ),
-        );
+            ],
+        ];
 
-        $response = $this->get($this->getValidEndpoint(), array('filter' => $filterByParentId));
+        $response = $this->get($this->getValidEndpoint(), ['filter' => $filterByParentId]);
 
 
         if ($response) {

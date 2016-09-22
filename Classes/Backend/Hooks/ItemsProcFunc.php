@@ -71,7 +71,7 @@ class ItemsProcFunc {
      * @param string $key
      */
     public function getItemsSelected(array &$config, $key) {
-        $params = isset($config['config']['itemsProcFunc_params']) ? $config['config']['itemsProcFunc_params'] : array();
+        $params = isset($config['config']['itemsProcFunc_params']) ? $config['config']['itemsProcFunc_params'] : [];
         $endpoint = isset($params['type']) ? $params['type'] : '';
         /**
          * check if the responsible shopwareApiClient interface and class exists for the given flexform type configuration
@@ -93,15 +93,15 @@ class ItemsProcFunc {
         $shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
 
         /** @var array $selectedItems */
-        $selectedItems = isset($config['row']['settings.items']) ? GeneralUtility::trimExplode(',', $config['row']['settings.items'], TRUE) : array();
+        $selectedItems = isset($config['row']['settings.items']) ? GeneralUtility::trimExplode(',', $config['row']['settings.items'], TRUE) : [];
         foreach ($selectedItems as $item) {
             /** @var ItemEntryInterface $selectedItem */
-            $selectedItem = $shopwareApiClient->findById($item, FALSE, array('language' => $shopId));
+            $selectedItem = $shopwareApiClient->findById($item, FALSE, ['language' => $shopId]);
             if ($selectedItem) {
-                $selectedItemOption = array(
+                $selectedItemOption = [
                     $selectedItem->getSelectItemLabel(),
                     $selectedItem->getSelectItemId()
-                );
+                ];
                 array_push($config['items'], $selectedItemOption);
             }
         }
@@ -113,7 +113,7 @@ class ItemsProcFunc {
      */
     public function getAllItems(array &$config, $key) {
 
-        $params = isset($config['config']['itemsProcFunc_params']) ? $config['config']['itemsProcFunc_params'] : array();
+        $params = isset($config['config']['itemsProcFunc_params']) ? $config['config']['itemsProcFunc_params'] : [];
         $endpoint = isset($params['type']) ? $params['type'] : '';
         /**
          * check if the responsible shopwareApiClient interface and class exists for the given flexform type configuration
@@ -133,14 +133,14 @@ class ItemsProcFunc {
 
         $language = isset($config['flexParentDatabaseRow']['sys_language_uid']) ? $config['flexParentDatabaseRow']['sys_language_uid'] : 0;
         $shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
-        $items = $shopwareApiClient->findAll(TRUE, array('language' => $shopId));
+        $items = $shopwareApiClient->findAll(TRUE, ['language' => $shopId]);
 
         /** @var ItemEntryInterface $item */
         foreach ($items as $item) {
-            $option = array(
+            $option = [
                 $item->getSelectItemLabel(),
                 $item->getSelectItemId()
-            );
+            ];
             array_push($config['items'], $option);
         }
     }

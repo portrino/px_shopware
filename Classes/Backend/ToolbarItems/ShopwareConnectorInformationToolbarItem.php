@@ -212,11 +212,11 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
         }
 
         if ($shops) {
-            $this->shopInformation[] = array(
+            $this->shopInformation[] = [
                 'title' => $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.shops', true),
                 'value' => $shopString,
                 'icon' => $this->iconFactory->getIcon('px-shopware-shop-shop', Icon::SIZE_SMALL)->render()
-            );
+            ];
         }
     }
 
@@ -236,10 +236,10 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
             $messageText = LocalizationUtility::translate(
                 $this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.status.connected_full.message',
                 $this->extensionName,
-                array(
+                [
                     1 => $this->settings['emails']['portrino_support'],
                     2 => $this->settings['urls']['portrino_website']
-                )
+                ]
             );
         } else {
             if ($status === AbstractShopwareApiClientInterface::STATUS_CONNECTED_TRIAL) {
@@ -354,9 +354,9 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
                         $cacheTables .= $cacheTable . '<br>(' . (string)$this->getDatabaseConnection()->exec_SELECTcountRows('*', $cacheTable) . ' ' . $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.caches.entries', TRUE) . ') <br>';
 
                         if ($cacheTables != '') {
-                            $this->cacheInformation[] = array(
+                            $this->cacheInformation[] = [
                                 'value' => $cacheTables,
-                            );
+                            ];
                         }
                     }
                 }

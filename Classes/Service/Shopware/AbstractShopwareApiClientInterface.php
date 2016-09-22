@@ -66,7 +66,7 @@ interface AbstractShopwareApiClientInterface {
      *
      * @return \Portrino\PxShopware\Domain\Model\ShopwareModelInterface
      */
-    public function findById($id, $doCacheRequest = TRUE, $params = array());
+    public function findById($id, $doCacheRequest = TRUE, $params = []);
 
     /**
      * @param $term
@@ -76,7 +76,7 @@ interface AbstractShopwareApiClientInterface {
      *
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
-    public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE, $params = array());
+    public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE, $params = []);
 
     /**
      * @param bool $doCacheRequest
@@ -84,7 +84,7 @@ interface AbstractShopwareApiClientInterface {
      *
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
-    public function findAll($doCacheRequest = TRUE, $params = array());
+    public function findAll($doCacheRequest = TRUE, $params = []);
 
     /**
      * @param array $params
@@ -92,6 +92,6 @@ interface AbstractShopwareApiClientInterface {
      * 
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
-    public function findByParams($params = array(), $doCacheRequest = TRUE);
+    public function findByParams($params = [], $doCacheRequest = TRUE);
 
 }

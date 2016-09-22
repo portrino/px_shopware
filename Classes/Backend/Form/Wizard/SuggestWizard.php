@@ -184,17 +184,17 @@ class SuggestWizard {
         $shopwareApiClient = $this->objectManager->get($shopwareApiClientClass);
 
         $shopId = $this->localeToShopMappingService->getShopIdBySysLanguageUid($language);
-        $results = $shopwareApiClient->findByTerm($search, 8, TRUE, array('language' => $shopId));
+        $results = $shopwareApiClient->findByTerm($search, 8, TRUE, ['language' => $shopId]);
 
         /** @var SuggestEntryInterface $result */
         foreach ($results as $result) {
-            $entry = array(
+            $entry = [
                 'text' => '<span class="suggest-label">&nbsp;' . $this->highlight($result->getSuggestLabel(), $search) . '</span><br />
                                 <span class="suggest-path"><i>' . $this->crop($result->getSuggestDescription(), 80) . '</i></span>',
                 'label' => $result->getSuggestLabel(),
                 'uid' => $result->getSuggestId(),
                 'sprite' => $this->iconFactory->getIcon($result->getSuggestIconIdentifier(), Icon::SIZE_SMALL)->render()
-            );
+            ];
             $rows[$result->getId()] = $entry;
         }
 

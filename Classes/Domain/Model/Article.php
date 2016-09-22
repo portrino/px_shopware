@@ -74,7 +74,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * @var \Portrino\PxShopware\Domain\Model\Detail
      */
-    protected $detail = array();
+    protected $detail = [];
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface

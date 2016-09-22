@@ -52,7 +52,7 @@ class ArticleClientTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
     public function findByIdTest() {
         $raw = json_decode('{"data": {"id": 2}}');
         /** @var ArticleClient $stub */
-        $stub = $this->getMockBuilder(ArticleClient::class)->setMethods(array('call', 'getValidEndpoint'))->getMock();
+        $stub = $this->getMockBuilder(ArticleClient::class)->setMethods(['call', 'getValidEndpoint'])->getMock();
         $objectManager = $this->getMock(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
         $objectManager->expects($this->any())->method('get')->will($this->returnValue(new Article($raw->data, FALSE)));
         $this->inject($stub, 'objectManager', $objectManager);
@@ -76,7 +76,7 @@ class ArticleClientTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
         $term = 'VEN';
         $raw = json_decode('{"data": [{"id": 2, "name": "VENOM L"}, {"id": 5, "name": "VENOM SKI"}]}');
         /** @var ArticleClient $stub */
-        $stub = $this->getMockBuilder(ArticleClient::class)->setMethods(array('call', 'getValidEndpoint'))->getMock();
+        $stub = $this->getMockBuilder(ArticleClient::class)->setMethods(['call', 'getValidEndpoint'])->getMock();
         $objectManager = $this->getMock(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
         $objectManager
             ->expects($this->any())

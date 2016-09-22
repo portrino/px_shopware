@@ -158,9 +158,9 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
         curl_setopt($this->cURL, CURLOPT_USERAGENT, 'Shopware ApiClient');
         curl_setopt($this->cURL, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
         curl_setopt($this->cURL, CURLOPT_USERPWD, $this->username . ':' . $this->apiKey);
-        curl_setopt($this->cURL, CURLOPT_HTTPHEADER, array(
+        curl_setopt($this->cURL, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json; charset=utf-8',
-        ));
+        ]);
 
         // cache initialization (if caching is not disabled!)
         if ($this->configurationService->isCachingEnabled()) {
@@ -277,12 +277,12 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
 
         if (null === $decodedResult = json_decode($result, true)) {
 
-            $jsonErrors = array(
+            $jsonErrors = [
                 JSON_ERROR_NONE => 'No error occurred',
                 JSON_ERROR_DEPTH => 'The maximum stack depth has been reached',
                 JSON_ERROR_CTRL_CHAR => 'Control character issue, maybe wrong encoded',
                 JSON_ERROR_SYNTAX => 'Syntaxerror',
-            );
+            ];
 
             throw new ShopwareApiClientJsonException($jsonErrors[json_last_error()], 1458808216);
         }
@@ -396,9 +396,9 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
             $this->logger->log(
                 LogLevel::ERROR,
                 $exception->getMessage(),
-                array(
+                [
                     'code' => $exception->getCode()
-                )
+                ]
             );
 
             if (TYPO3_MODE === 'BE') {
@@ -539,22 +539,22 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
     {
         $shopwareModels = new ObjectStorage();
 
-        ArrayUtility::mergeRecursiveWithOverrule($params, array(
+        ArrayUtility::mergeRecursiveWithOverrule($params, [
             'limit' => $limit,
-            'sort' => array(
-                array(
+            'sort' => [
+                [
                     'property' => 'name',
                     'direction' => 'ASC'
-                )
-            ),
-            'filter' => array(
-                array(
+                ]
+            ],
+            'filter' => [
+                [
                     'property' => 'name',
                     'expression' => 'LIKE',
                     'value' => '%' . $term . '%'
-                )
-            )
-        ));
+                ]
+            ]
+        ]);
 
         $result = $this->get($this->getValidEndpoint(), $params, $doCacheRequest);
         if ($result) {

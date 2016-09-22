@@ -90,7 +90,7 @@ class ArticleIndexer extends AbstractShopwareIndexer
         }
 
         if ($article->getCategories()->count() > 0) {
-            $categoryNames = array();
+            $categoryNames = [];
             /** @var \Portrino\PxShopware\Domain\Model\Category $category */
             foreach ($article->getCategories() as $category) {
                 if ($category->getLanguage() == $language) {
