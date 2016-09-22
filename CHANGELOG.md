@@ -1,5 +1,24 @@
 # PxShopware Change log
 
+2.0.0 - 2016-09-22
+------------------
+* [FEATURE] Cleanup solr indexing
+* [FEATURE] Add cachetags for api request
+* [FEATURE] Add cache tags for articles and categories in list action
+* [TASK] Add service to get settings
+* [FEATURE] Add notification interface for shopware
+* [TASK] Replace setting with hook
+* [FEATURE] Add link handler for products and categories
+* [BUGFIX] Fix typoscript setting for cache lifetime
+* [BUGFIX] Review feedback
+* Merge pull request #1 from netlogix/develop
+* [BUGFIX] Fix message for missing configuration
+* [BUGFIX] Fix configuration overlay
+* [FEATURE] Add feature to retrieve orderNumber directly from raw response improve performance
+* [TASK] Fix PSR1 / PSR2 codestyle
+* [TASK] Fix traditional array syntax and replaces it with shorthand syntax
+* [BUGFIX] Fix missing pxShopwareUrl in article model
+
 1.5.5 - 2016-08-22
 ------------------
 * fixes a bug which results in PHP-Warning if caching is disabled
