@@ -78,7 +78,7 @@ class SuggestWizard {
     public function __construct() {
         $this->pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+//        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $this->localeToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
     }
 
@@ -129,7 +129,7 @@ class SuggestWizard {
         <label>&nbsp;</label>
         <div class="px-shopware autocomplete t3-form-suggest-container">
             <div class="input-group has-feedback">
-                <span class="input-group-addon">' . $this->iconFactory->getIcon('actions-search', Icon::SIZE_SMALL)->render() . '</span>
+                <span class="input-group-addon">' . '' . '</span>
                 <input type="search" class="t3-form-suggest-px-shopware form-control" 
                         placeholder="' . $this->getLanguageService()->sL($this->languagePrefix . 'suggest_wizard.placeholder.' . strtolower($endpoint), FALSE) . '"
                         data-type="' . htmlspecialchars($endpoint) . '"
@@ -193,7 +193,7 @@ class SuggestWizard {
                                 <span class="suggest-path"><i>' . $this->crop($result->getSuggestDescription(), 80) . '</i></span>',
                 'label' => $result->getSuggestLabel(),
                 'uid' => $result->getSuggestId(),
-                'sprite' => $this->iconFactory->getIcon($result->getSuggestIconIdentifier(), Icon::SIZE_SMALL)->render()
+                'sprite' => ''
             ];
             $rows[$result->getId()] = $entry;
         }

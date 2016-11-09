@@ -2,9 +2,15 @@
 defined('TYPO3_MODE') or die();
 
 $boot = function () {
+    /** @var string $extKey */
     $extKey = 'px_shopware';
-    $languageFilePrefix = 'LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:';
-    $frontendLanguageFilePrefix = 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:';
+
+    /** @var \Portrino\PxShopware\Backend\Service\LanguageFilePrefixService $languageFilePrefixService */
+    $languageFilePrefixService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Portrino\PxShopware\Backend\Service\LanguageFilePrefixService::class);
+
+
+    $languageFilePrefix = $languageFilePrefixService->getLanguagePrefixForExtension($extKey);
+    $frontendLanguageFilePrefix = $languageFilePrefixService->getLanguagePrefixForExtension('frontend');
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTcaSelectItem(
         'tt_content',

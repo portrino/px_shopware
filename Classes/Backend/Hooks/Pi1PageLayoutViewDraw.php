@@ -124,8 +124,9 @@ class Pi1PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
          * initialize the view
          */
         $this->view = $this->objectManager->get(StandaloneView::class);
-        $this->view->setTemplateRootPaths([0 => 'EXT:' . $this->extensionKey . '/Resources/Private/Templates/Backend/']);
-        $this->view->setTemplate('Pi1PageLayoutViewDraw');
+//        $this->view->setTemplateRootPaths([0 => 'EXT:' . $this->extensionKey . '/Resources/Private/Templates/Backend/']);
+//        $this->view->setTemplate('Pi1PageLayoutViewDraw');
+        $this->view->setTemplatePathAndFilename('EXT:' . $this->extensionKey . '/Resources/Private/Templates/Backend/Pi1PageLayoutViewDraw');
     }
 
 
@@ -169,7 +170,7 @@ class Pi1PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
 
         $this->view->assign('selectedItems', $selectedItems);
         $TCEFORM_TSconfig = BackendUtility::getTCEFORM_TSconfig('tt_content', $row);
-        $TCEFORM_TSconfig = $this->typoScriptService->convertTypoScriptArrayToPlainArray($TCEFORM_TSconfig['pi_flexform']);
+        $TCEFORM_TSconfig = $this->typoScriptService->convertTypoScriptArrayToPlainArray($TCEFORM_TSconfig['_THIS_ROW']['pi_flexform']);
 
         $templateConfigurations = $TCEFORM_TSconfig['pxshopware_pi1']['sDEF']['settings.template']['addItems'];
 

@@ -1,5 +1,9 @@
 # PxShopware Change log
 
+2.1.0 - 2016-11-09
+------------------
+* [FEATURE] Adds Compatibility6 Layer for TYPO3 6.2 legacy support
+
 2.0.0 - 2016-09-22
 ------------------
 * [FEATURE] Cleanup solr indexing

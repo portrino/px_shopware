@@ -350,7 +350,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     public function setUri($uri)
     {
         if (is_string($uri)) {
-            $uri = new \TYPO3\CMS\Core\Http\Uri($uri);
+//            $uri = new \TYPO3\CMS\Core\Http\Uri($uri);
         }
         $this->uri = $uri;
     }
