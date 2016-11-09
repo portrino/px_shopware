@@ -11,6 +11,9 @@
 * [TASK] Display warning if `SuggestWizard` was used under TYPO3 < 7.6
 * [TASK] Add override if Category domain model for TYPO3 6.2 compatibility
 * [TASK] Add override of /PageLayoutViewDraw Hook class for TYPO3 6.2 compatibility
+* [TASK] Add registerAjaxHandler to ext_localconf.php for TYPO3 6.2 compatibility
+* [TASK] Add clear_cache.png for TYPO3 6.2 compatibility
+* [TASK] Change dep for TYPO3 6.2 also in composer.json
 
 **Refactoring / Improvements**
 * [FEATURE] Add PageLayoutViewDraw also for category plugin

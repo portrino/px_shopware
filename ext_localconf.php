@@ -268,6 +268,8 @@ $boot = function ($_EXTKEY) {
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
             'tx_pxshopware::clearCache', \Portrino\PxShopware\Backend\Hooks\Ajax::class . '->clearCache', false
         );
+
+        unset($GLOBALS['TYPO3_CONF_VARS']['BE']['toolbarItems'][1435433105]);
     }
 
 };
