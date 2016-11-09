@@ -187,8 +187,8 @@ $boot = function ($_EXTKEY) {
             /**
              * hook for content element preview in backend
              */
-//            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem'][] =
-//                \Portrino\PxShopware\Backend\Hooks\Pi1PageLayoutViewDraw::class;
+            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem'][] =
+                \Portrino\PxShopware\Backend\Hooks\PageLayoutViewDraw::class;
 
 
             if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {
@@ -257,8 +257,16 @@ $boot = function ($_EXTKEY) {
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
             '<INCLUDE_TYPOSCRIPT: source="DIR:EXT:px_shopware/Configuration/Compatibility6/PageTSconfig/" extension="ts">'
         );
+
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\Portrino\PxShopware\Backend\Hooks\PageLayoutViewDraw::class] = [
+            'className' => \Portrino\PxShopware\Compatibility6\Backend\Hooks\PageLayoutViewDraw::class
+        ];
+
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\Portrino\PxShopware\Domain\Model\Category::class] = [
+            'className' => \Portrino\PxShopware\Compatibility6\Domain\Model\Category::class
+        ];
     }
-    
+
 };
 
 $boot($_EXTKEY);

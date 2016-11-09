@@ -1,9 +1,19 @@
 # PxShopware Change log
 
-2.1.0 - 2016-11-09
+3.0.0 - 2016-11-09
 ------------------
-* [FEATURE] Adds Compatibility6 Layer for TYPO3 6.2 legacy support
+**TYPO3 6.2 Compatibility Release**
+* [TASK] Add compatibility6 layer for TYPO3 6.2 legacy support
+* [TASK] Add compatibility for tt_content plugin / contentElement
+* [TASK] Add custom page_ts for TYPO3 6.2 compatibility of newContentElement wizardItems registration
+* [TASK] Transform svg to png images for some icons for 6.2 compatibility
+* [TASK] Display warning if `SuggestWizard` was used under TYPO3 < 7.6
 
+**Refactoring / Improvements**
+* [TASK] Add PxShopware.xsd for better viewhelper IDE integration
+* [TASK] Remove `WizardItems` class which registers newContentElement wizardItems via php, instead we do this completely via page_ts
+* [BUGFIX] Uses instance of instead of get_class comparison to determine the relevant cacheTag in `AbstractController`
+   
 2.0.0 - 2016-09-22
 ------------------
 * [FEATURE] Cleanup solr indexing

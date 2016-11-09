@@ -25,7 +25,9 @@ namespace Portrino\PxShopware\Backend\Hooks;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\ArticleClient;
+use Portrino\PxShopware\Service\Shopware\CategoryClient;
 use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\PageLayoutView;
@@ -42,11 +44,11 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Lang\LanguageService;
 
 /**
- * Class Pi1PageLayoutViewDraw
+ * Class PageLayoutViewDraw
  *
  * @package Portrino\PxShopware\Backend\Hooks
  */
-class Pi1PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
+class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
 {
 
     /**
@@ -80,9 +82,9 @@ class Pi1PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
     protected $flexFormService;
 
     /**
-     * @var ArticleClient
+     * @var AbstractShopwareApiClientInterface
      */
-    protected $articleClient;
+    protected $shopwareClient;
 
     /**
      * @var StandaloneView
@@ -116,19 +118,39 @@ class Pi1PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
         $this->typoScriptService = $this->objectManager->get(TypoScriptService::class);
         $this->flexFormService = $this->objectManager->get(FlexFormService::class);
         $this->articleClient = $this->objectManager->get(ArticleClient::class);
+        $this->categoryClient = $this->objectManager->get(CategoryClient::class);
         $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
         $this->databaseConnection = $this->getDatabase();
         $this->languageService = $this->getLanguageService();
 
-        /**
-         * initialize the view
-         */
         $this->view = $this->objectManager->get(StandaloneView::class);
-//        $this->view->setTemplateRootPaths([0 => 'EXT:' . $this->extensionKey . '/Resources/Private/Templates/Backend/']);
-//        $this->view->setTemplate('Pi1PageLayoutViewDraw');
-        $this->view->setTemplatePathAndFilename('EXT:' . $this->extensionKey . '/Resources/Private/Templates/Backend/Pi1PageLayoutViewDraw');
     }
 
+    /**
+     * @param string $CType
+     */
+    protected function initializeView($CType) {
+
+        $templateName = str_replace('Pxshopware', '', GeneralUtility::underscoredToUpperCamelCase($CType));
+
+        $this->view->setTemplateRootPaths([0 => 'EXT:' . $this->extensionKey . '/Resources/Private/Templates/Backend/PageLayoutViewDrawItem/']);
+        $this->view->setTemplate($templateName);
+    }
+
+    /**
+     * @param string $CType
+     */
+    protected function initializeShopwareClient($CType) {
+
+        switch ($CType) {
+            case 'pxshopware_pi1':
+                $this->shopwareClient = GeneralUtility::makeInstance(ArticleClient::class);
+                break;
+            case 'pxshopware_pi2':
+                $this->shopwareClient = GeneralUtility::makeInstance(CategoryClient::class);
+                break;
+        }
+    }
 
     /**
      * Preprocesses the preview rendering of a content element.
@@ -148,10 +170,18 @@ class Pi1PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
         &$itemContent,
         array &$row
     ) {
-        if ($row['CType'] !== 'pxshopware_pi1') {
+        /** @var string $CType */
+        $CType = $row['CType'];
+
+        if (in_array($CType, ['pxshopware_pi1', 'pxshopware_pi2'], true) == false) {
             return;
         }
 
+        $this->initializeView($CType);
+
+        $this->initializeShopwareClient($CType);
+
+        /** @var array $flexformConfiguration */
         $flexformConfiguration = $this->flexFormService->convertFlexFormContentToArray($row['pi_flexform']);
 
         /** @var ObjectStorage $selectedItems */
@@ -161,7 +191,7 @@ class Pi1PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
         foreach ($selectedItemsArray as $item) {
             $language = $this->languageToShopMappingService->getShopIdBySysLanguageUid($row['sys_language_uid']);
             /** @var ItemEntryInterface $selectedItem */
-            $selectedItem = $this->articleClient->findById($item, false, ['language' => $language]);
+            $selectedItem = $this->shopwareClient->findById($item, false, ['language' => $language]);
 
             if ($selectedItem) {
                 $selectedItems->attach($selectedItem);
@@ -170,17 +200,20 @@ class Pi1PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
 
         $this->view->assign('selectedItems', $selectedItems);
         $TCEFORM_TSconfig = BackendUtility::getTCEFORM_TSconfig('tt_content', $row);
-        $TCEFORM_TSconfig = $this->typoScriptService->convertTypoScriptArrayToPlainArray($TCEFORM_TSconfig['_THIS_ROW']['pi_flexform']);
+        $TCEFORM_TSconfig = $this->typoScriptService->convertTypoScriptArrayToPlainArray($TCEFORM_TSconfig['pi_flexform']);
 
-        $templateConfigurations = $TCEFORM_TSconfig['pxshopware_pi1']['sDEF']['settings.template']['addItems'];
+        $templateConfigurations = $TCEFORM_TSconfig[$CType]['sDEF']['settings.template']['addItems'];
 
         if (isset($flexformConfiguration['settings']['template']) && array_key_exists($flexformConfiguration['settings']['template'], $templateConfigurations)) {
-            $templateLLL = $TCEFORM_TSconfig['pxshopware_pi1']['sDEF']['settings.template']['addItems'][$flexformConfiguration['settings']['template']];
+            $templateLLL = $TCEFORM_TSconfig[$CType]['sDEF']['settings.template']['addItems'][$flexformConfiguration['settings']['template']];
             $template = $this->languageService->sL($templateLLL);
         } else {
-            $template = $this->languageService->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxshopware_pi1.settings.template.not_defined');
+            $template = $this->languageService->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.' . $CType . '.settings.template.not_defined');
         }
 
+        $header = $this->languageService->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.CType.' . $CType);
+
+        $this->view->assign('header', $header);
         $this->view->assign('template', $template);
         $this->view->assign('row', $row);
 
