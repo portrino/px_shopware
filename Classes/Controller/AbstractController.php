@@ -157,8 +157,14 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     protected function initializeView(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view)
     {
         parent::initializeView($view);
+
+        if (isset($this->settings['template'])) {
+            $this->settings['template'] = ucfirst($this->settings['template']);
+        }
+
         $this->view->assignMultiple([
             'extbaseFrameworkConfiguration' => $this->extbaseFrameworkConfiguration,
+            'settings' => $this->settings,
             'controllerSettings' => $this->controllerSettings,
             'actionSettings' => $this->actionSettings,
             'extConf' => $this->extConf,
@@ -197,7 +203,17 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * @param bool $addQueryString
      * @param array $argumentsToBeExcludedFromQueryString
      */
-    protected function redirectToPage($pageUid = NULL, array $additionalParams = [], $pageType = 0, $noCache = FALSE, $noCacheHash = FALSE, $section = '', $linkAccessRestrictedPages = FALSE, $absolute = FALSE, $addQueryString = FALSE, array $argumentsToBeExcludedFromQueryString = []
+    protected function redirectToPage(
+        $pageUid = null,
+        array $additionalParams = [],
+        $pageType = 0,
+        $noCache = false,
+        $noCacheHash = false,
+        $section = '',
+        $linkAccessRestrictedPages = false,
+        $absolute = false,
+        $addQueryString = false,
+        array $argumentsToBeExcludedFromQueryString = []
     ) {
         $uri = $this->uriBuilder
             ->reset()
@@ -221,8 +237,9 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      *
      * @see Tx_Extbase_MVC_Controller_ActionController::getErrorFlashMessage()
      */
-    protected function getErrorFlashMessage() {
-        return FALSE;
+    protected function getErrorFlashMessage()
+    {
+        return false;
     }
 
     /**
@@ -230,21 +247,24 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      *
      * @return \TYPO3\CMS\Extbase\Mvc\View\ViewInterface
      */
-    public function getView() {
+    public function getView()
+    {
         return $this->view;
     }
 
     /**
      * @return array
      */
-    public function getActionSettings() {
+    public function getActionSettings()
+    {
         return $this->actionSettings;
     }
 
     /**
      * @return array
      */
-    public function getControllerSettings() {
+    public function getControllerSettings()
+    {
         return $this->controllerSettings;
     }
 
@@ -263,8 +283,10 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * @return void
      * @override \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
-    public function processRequest(\TYPO3\CMS\Extbase\Mvc\RequestInterface $request, \TYPO3\CMS\Extbase\Mvc\ResponseInterface $response)
-    {
+    public function processRequest(
+        \TYPO3\CMS\Extbase\Mvc\RequestInterface $request,
+        \TYPO3\CMS\Extbase\Mvc\ResponseInterface $response
+    ) {
         try {
             parent::processRequest($request, $response);
         } catch (\Exception $exception) {
@@ -323,13 +345,19 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      */
     public function listAction()
     {
-        $itemUidList = isset($this->settings['items']) ? GeneralUtility::trimExplode(',', $this->settings['items']) : [];
+        $itemUidList = isset($this->settings['items']) ? GeneralUtility::trimExplode(',',
+            $this->settings['items']) : [];
         $items = new ObjectStorage();
         $cacheTags = [];
         foreach ($itemUidList as $itemUid) {
             if ($item = $this->shopwareClient->findById($itemUid)) {
                 $items->attach($item);
-                $cacheTags[] = $this->getCacheTagForItem($item);
+
+                $cacheTag = $this->getCacheTagForItem($item);
+                if ($cacheTag != false) {
+                    $cacheTags[] = $cacheTag;
+                }
+
                 /**
                  * only show one item if isTrialVersion
                  */
@@ -338,22 +366,25 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                 }
             }
         }
+
         $this->getTypeScriptFrontendController()->addCacheTags(array_unique($cacheTags));
         $this->view->assign('items', $items);
     }
 
     /**
      * @param \Portrino\PxShopware\Domain\Model\ShopwareModelInterface $item
-     * @return string
+     * @return bool|string
      */
     protected function getCacheTagForItem(\Portrino\PxShopware\Domain\Model\ShopwareModelInterface $item)
     {
-        switch (get_class($item)) {
-            case Article::class:
-                return ArticleClientInterface::CACHE_TAG . '_' . $item->getId();
-            case Category::class:
-                return CategoryClientInterface::CACHE_TAG . '_' . $item->getId();
+        $result = false;
+        if ($item instanceof Article) {
+            $result = ArticleClientInterface::CACHE_TAG . '_' . $item->getId();
         }
+        if ($item instanceof Category) {
+            $result = CategoryClientInterface::CACHE_TAG . '_' . $item->getId();
+        }
+        return $result;
     }
 
     /**
