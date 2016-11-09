@@ -34,6 +34,7 @@ use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurati
 use Portrino\PxShopware\Service\Shopware\MediaClientInterface;
 use Portrino\PxShopware\Service\Shopware\ShopClientInterface;
 use Portrino\PxShopware\Service\Shopware\VersionClientInterface;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
@@ -63,7 +64,6 @@ class NotificationController extends ActionController
 
     /**
      * @var \ApacheSolrForTypo3\Solr\IndexQueue\Queue
-     * @inject
      */
     protected $indexQueue;
 
@@ -98,6 +98,10 @@ class NotificationController extends ActionController
 
     protected function initializeAction()
     {
+        if (ExtensionManagementUtility::isLoaded('solr') === true) {
+            $this->indexQueue = $this->objectManager->get(\ApacheSolrForTypo3\Solr\IndexQueue\Queue::class);
+        }
+
         if ($this->request->getMethod() === 'POST') {
             $payload = json_decode(file_get_contents('php://input'), true);
             $this->request->setArgument('payload', $payload);
@@ -113,7 +117,7 @@ class NotificationController extends ActionController
     {
         foreach ($payload['data'] as $command) {
             $this->flushCacheForCommand($command['type'], intval($command['id']));
-            if (isset($command['id']) && $command['id'] !== '') {
+            if (isset($command['id']) && $command['id'] !== '' && ExtensionManagementUtility::isLoaded('solr') === true) {
                 switch ($command['action']) {
                     case self::COMMAND_CREATE;
                         $this->addItemToQueue($command['type'], intval($command['id']));
@@ -213,7 +217,7 @@ class NotificationController extends ActionController
                 break;
             case self::TYPE_CATEGORY;
                 $this->indexQueue->updateItem(self::SOLR_ITEM_TYPE_CATEGORY, $id, null,
-                    (new DateTime())->getTimestamp());
+                    (new \DateTime())->getTimestamp());
                 break;
         }
     }

@@ -20,8 +20,12 @@
 * [TASK] Add page_ts which adds the header to the newContentElement wizard
 * [TASK] In conjunction we add Pi1.html and Pi2.html into PageLayoutViewDrawItem folder for better SoC
 * [TASK] Add PxShopware.xsd for better viewhelper IDE integration
-* [TASK] Remove `WizardItems` class which registers newContentElement wizardItems via php, instead we do this completely via page_ts
-* [BUGFIX] Uses instance of instead of get_class comparison to determine the relevant cacheTag in `AbstractController`
+* [TASK] Remove `WizardItems` class which registers newContentElement wizardItems via php, instead we do this 
+   completely via page_ts
+* [BUGFIX] Uses instance of instead of get_class comparison to determine the relevant cacheTag in 
+  `AbstractController`
+* [BUGFIX] Add `if (ExtensionManagementUtility::isLoaded('solr') === true)` to `NotificationController` to prevent problems for users which are using 
+   px_shopware without `EXT:solr`
    
 2.0.0 - 2016-09-22
 ------------------
