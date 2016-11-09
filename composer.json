@@ -1,7 +1,7 @@
 {
     "name": "portrino/px_shopware",
     "description": "Shopware Integration for TYPO3",
-    "version": "2.1.0",
+    "version": "3.0.0",
     "type": "typo3-cms-extension",
     "keywords": [
         "TYPO3",
@@ -32,7 +32,7 @@
         "source": "https://github.com/portrino/px_shopware"
     },
     "require": {
-        "typo3/cms-core": ">=7.6.0,<8.0",
+        "typo3/cms-core": ">=6.2.27,<8.0",
         "php": ">=5.5.0",
         "lib-curl": "^7"
     },

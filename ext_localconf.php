@@ -170,11 +170,6 @@ $boot = function ($_EXTKEY) {
                         ]
                     );
                 }
-
-                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:px_shopware/Configuration/PageTSconfig/pxshopware_pi1.ts">');
-                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:px_shopware/Configuration/PageTSconfig/pxshopware_pi2.ts">');
-                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:px_shopware/Configuration/PageTSconfig/linkHandler.ts">');
-
             }
 
             $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][] =
@@ -265,6 +260,14 @@ $boot = function ($_EXTKEY) {
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\Portrino\PxShopware\Domain\Model\Category::class] = [
             'className' => \Portrino\PxShopware\Compatibility6\Domain\Model\Category::class
         ];
+
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\Portrino\PxShopware\Backend\Toolbar\ClearCacheMenu::class] = [
+            'className' => \Portrino\PxShopware\Compatibility6\Backend\Toolbar\ClearCacheMenu::class
+        ];
+        
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
+            'tx_pxshopware::clearCache', \Portrino\PxShopware\Backend\Hooks\Ajax::class . '->clearCache', false
+        );
     }
 
 };

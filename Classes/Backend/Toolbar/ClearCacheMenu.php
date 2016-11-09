@@ -24,12 +24,11 @@ namespace Portrino\PxShopware\Backend\Toolbar;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Lang\LanguageService;
 
 /**
@@ -37,7 +36,8 @@ use TYPO3\CMS\Lang\LanguageService;
  *
  * @package Portrino\PxShopware\Backend\Toolbar
  */
-class ClearCacheMenu implements \TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface {
+class ClearCacheMenu implements \TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface
+{
 
     /**
      * Add varnish cache clearing to clear cache menu
@@ -45,7 +45,8 @@ class ClearCacheMenu implements \TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHook
      * @param array $cacheActions
      * @param array $optionValues
      */
-    public function manipulateCacheActions(&$cacheActions, &$optionValues) {
+    public function manipulateCacheActions(&$cacheActions, &$optionValues)
+    {
 
         $backendUser = $this->getBackendUser();
         $languageService = $this->getLanguageService();
@@ -70,7 +71,8 @@ class ClearCacheMenu implements \TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHook
      *
      * @return BackendUserAuthentication
      */
-    protected function getBackendUser() {
+    protected function getBackendUser()
+    {
         return $GLOBALS['BE_USER'];
     }
 
@@ -79,7 +81,8 @@ class ClearCacheMenu implements \TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHook
      *
      * @return LanguageService
      */
-    protected function getLanguageService() {
+    protected function getLanguageService()
+    {
         return $GLOBALS['LANG'];
     }
 
@@ -88,26 +91,12 @@ class ClearCacheMenu implements \TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHook
      *
      * @return string
      */
-    protected function getIcon() {
+    protected function getIcon()
+    {
         $result = '';
 
-        /** @var array $version */
-        $version = VersionNumberUtility::convertVersionStringToArray(TYPO3_version);
-
-        /**
-         * For TYPO3 Versions newer than 7.x
-         */
-        if ($version['version_main'] >= 7) {
-            $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-            $result = $iconFactory->getIcon('px-shopware-clear-cache', Icon::SIZE_SMALL)->render();
-        }
-
-        /**
-         * For TYPO3 Versions older than 7.x
-         */
-        if ($version['version_main'] < 7) {
-            $result = '<img ' .  \TYPO3\CMS\Backend\Utility\IconUtility::skinImg($GLOBALS['BACK_PATH'], \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('px_shopware') . '/Resources/Public/Images/clear_cache.svg', 'width="16" height="16"') . ' />';
-        }
+        $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        $result = $iconFactory->getIcon('px-shopware-clear-cache', Icon::SIZE_SMALL)->render();
 
         return $result;
     }

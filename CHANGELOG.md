@@ -3,13 +3,19 @@
 3.0.0 - 2016-11-09
 ------------------
 **TYPO3 6.2 Compatibility Release**
+
 * [TASK] Add compatibility6 layer for TYPO3 6.2 legacy support
 * [TASK] Add compatibility for tt_content plugin / contentElement
 * [TASK] Add custom page_ts for TYPO3 6.2 compatibility of newContentElement wizardItems registration
 * [TASK] Transform svg to png images for some icons for 6.2 compatibility
 * [TASK] Display warning if `SuggestWizard` was used under TYPO3 < 7.6
+* [TASK] Add override if Category domain model for TYPO3 6.2 compatibility
+* [TASK] Add override of /PageLayoutViewDraw Hook class for TYPO3 6.2 compatibility
 
 **Refactoring / Improvements**
+* [FEATURE] Add PageLayoutViewDraw also for category plugin
+* [TASK] Add page_ts which adds the header to the newContentElement wizard
+* [TASK] In conjunction we add Pi1.html and Pi2.html into PageLayoutViewDrawItem folder for better SoC
 * [TASK] Add PxShopware.xsd for better viewhelper IDE integration
 * [TASK] Remove `WizardItems` class which registers newContentElement wizardItems via php, instead we do this completely via page_ts
 * [BUGFIX] Uses instance of instead of get_class comparison to determine the relevant cacheTag in `AbstractController`
