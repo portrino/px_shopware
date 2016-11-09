@@ -253,9 +253,12 @@ $boot = function ($_EXTKEY) {
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\Portrino\PxShopware\Backend\Service\ExtensionManagementService::class] = [
             'className' => \Portrino\PxShopware\Compatibility6\Backend\Service\ExtensionManagementService::class
         ];
+
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
+            '<INCLUDE_TYPOSCRIPT: source="DIR:EXT:px_shopware/Configuration/Compatibility6/PageTSconfig/" extension="ts">'
+        );
     }
-
-
+    
 };
 
 $boot($_EXTKEY);
