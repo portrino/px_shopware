@@ -249,6 +249,10 @@ $boot = function ($_EXTKEY) {
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\Portrino\PxShopware\Backend\Service\LanguageFilePrefixService::class] = [
             'className' => \Portrino\PxShopware\Compatibility6\Backend\Service\LanguageFilePrefixService::class
         ];
+
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\Portrino\PxShopware\Backend\Service\ExtensionManagementService::class] = [
+            'className' => \Portrino\PxShopware\Compatibility6\Backend\Service\ExtensionManagementService::class
+        ];
     }
 
 

@@ -7,7 +7,8 @@ $boot = function () {
 
     /** @var \Portrino\PxShopware\Backend\Service\LanguageFilePrefixService $languageFilePrefixService */
     $languageFilePrefixService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Portrino\PxShopware\Backend\Service\LanguageFilePrefixService::class);
-
+    /** @var \Portrino\PxShopware\Backend\Service\ExtensionManagementService $extensionManagementService */
+    $extensionManagementService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Portrino\PxShopware\Backend\Service\ExtensionManagementService::class);
 
     $languageFilePrefix = $languageFilePrefixService->getLanguagePrefixForExtension($extKey);
     $frontendLanguageFilePrefix = $languageFilePrefixService->getLanguagePrefixForExtension('frontend');
@@ -31,13 +32,13 @@ $boot = function () {
     foreach ($pluginSignatures as $pluginSignature) {
         
         if (\Portrino\PxShopware\Backend\Utility\ExtensionConfigurationMatcher::isFeatureEnabled([0 => 'plugin.', 1 => 'fetchAllItems'])) {
-            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+            $extensionManagementService->addPiFlexFormValue(
                 '*',
                 'FILE:EXT:' . $extKey . '/Configuration/FlexForms/FetchAllItems/'. $pluginSignature .'.xml',
                 $pluginSignature
             );
         } else {
-            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+            $extensionManagementService->addPiFlexFormValue(
                 '*',
                 'FILE:EXT:' . $extKey . '/Configuration/FlexForms/'. $pluginSignature .'.xml',
                 $pluginSignature

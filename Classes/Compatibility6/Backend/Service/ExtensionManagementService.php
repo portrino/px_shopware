@@ -43,6 +43,12 @@ class ExtensionManagementService extends \Portrino\PxShopware\Backend\Service\Ex
      */
     public function addPiFlexFormValue($piKeyToMatch, $value, $CTypeToMatch = 'list')
     {
+        $value = str_replace(
+            'FILE:EXT:px_shopware/Configuration/FlexForms/pxshopware_',
+            'FILE:EXT:px_shopware/Configuration/Compatibility6/FlexForms/pxshopware_',
+            $value
+        );
+
         parent::addPiFlexFormValue($piKeyToMatch, $value, $CTypeToMatch);
     }
 

@@ -1,0 +1,37 @@
+<T3DataStructure>
+    <meta>
+        <langDisable>1</langDisable>
+    </meta>
+    <sheets>
+        <sDEF>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxshopware_pi2.settings</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <settings.items>
+                        <TCEforms>
+                            <label></label>
+                            <config>
+                                <type>user</type>
+                                <userFunc>Portrino\PxShopware\Compatibility6\Backend\Utility\FlashMessageUtility->showNotSupportedMessage</userFunc>
+                            </config>
+                        </TCEforms>
+                    </settings.items>
+                    <settings.template>
+                        <TCEforms>
+                            <label>LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxshopware_pi2.settings.template</label>
+                            <config>
+                                <type>select</type>
+                                <items></items>
+                                <maxitems>1</maxitems>
+                                <size>1</size>
+                            </config>
+                        </TCEforms>
+                    </settings.template>
+                </el>
+            </ROOT>
+        </sDEF>
+    </sheets>
+</T3DataStructure>
