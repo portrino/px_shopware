@@ -130,7 +130,10 @@ class CacheChain implements FrontendInterface, SingletonInterface {
                     /** @var \TYPO3\CMS\Core\Log\LogManager $logger */
                     $this->logger = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class)->getLogger(__CLASS__);
                     $this->logger->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, $entryIdentifier);
-                    $this->transientMemoryCache->set($entryIdentifier, $result);
+
+                    if ($this->transientMemoryCache != null) {
+                        $this->transientMemoryCache->set($entryIdentifier, $result);
+                    }
                 }
                 break;
             }
