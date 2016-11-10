@@ -27,6 +27,9 @@
 * [BUGFIX] Add `if (ExtensionManagementUtility::isLoaded('solr') === true)` to `NotificationController` to prevent problems for users which are using 
    px_shopware without `EXT:solr`
 * [BUGFIX] Adds condition to prevent exception when not using TransientMemoryCache
+* [BUGFIX] Removes `$this->articleClient->findById(...)` from `NotificationController` to prevent filling cache with not 
+   updated data from rest api, because the postUpdate, postPersist and preRemove events which we are using in the TYPO3Connector
+   are triggered before the real persist takes place
 
 2.0.0 - 2016-09-22
 ------------------

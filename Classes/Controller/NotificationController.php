@@ -26,8 +26,6 @@ namespace Portrino\PxShopware\Controller;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Util;
-use ApacheSolrForTypo3\Solrfluid\System\Data\DateTime;
-use Portrino\PxShopware\Domain\Model\Article;
 use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
 use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurationException;
@@ -79,6 +77,11 @@ class NotificationController extends ActionController
      */
     protected $articleClient;
 
+    /**
+     * @var int
+     */
+    protected $currentTimeStamp;
+
     protected function resolveActionMethodName()
     {
         $actionMethodName = parent::resolveActionMethodName();
@@ -98,6 +101,8 @@ class NotificationController extends ActionController
 
     protected function initializeAction()
     {
+        $this->currentTimeStamp = time();
+
         if (ExtensionManagementUtility::isLoaded('solr') === true) {
             $this->indexQueue = $this->objectManager->get(\ApacheSolrForTypo3\Solr\IndexQueue\Queue::class);
         }
@@ -143,6 +148,9 @@ class NotificationController extends ActionController
         return '';
     }
 
+    /**
+     * @return string
+     */
     public function authorizationErrorAction()
     {
         $this->response->setStatus(401);
@@ -156,6 +164,7 @@ class NotificationController extends ActionController
     /**
      * @param string $type
      * @param integer $id
+     * @return void
      */
     protected function addItemToQueue($type, $id)
     {
@@ -164,13 +173,11 @@ class NotificationController extends ActionController
                 if ($this->indexQueue->containsItem(self::SOLR_ITEM_TYPE_ARTICLE, $id)) {
                     return $this->updateItemInQueue($type, $id);
                 }
-                /** @var Article $article */
-                $article = $this->articleClient->findById($id);
                 $item = [
                     'item_type' => self::SOLR_ITEM_TYPE_ARTICLE,
                     'item_uid' => $id,
                     'indexing_configuration' => self::SOLR_ITEM_TYPE_ARTICLE,
-                    'changed' => $article->getChanged()->getTimestamp()
+                    'changed' => $this->currentTimeStamp
                 ];
                 $this->addItem($item);
                 break;
@@ -182,7 +189,7 @@ class NotificationController extends ActionController
                     'item_type' => self::SOLR_ITEM_TYPE_CATEGORY,
                     'item_uid' => $id,
                     'indexing_configuration' => self::SOLR_ITEM_TYPE_CATEGORY,
-                    'changed' => (new DateTime())->getTimestamp()
+                    'changed' => $this->currentTimeStamp
                 ];
                 $this->addItem($item);
                 break;
@@ -210,14 +217,10 @@ class NotificationController extends ActionController
     {
         switch ($type) {
             case self::TYPE_ARTICLE;
-                /** @var Article $article */
-                $article = $this->articleClient->findById($id);
-                $this->indexQueue->updateItem(self::SOLR_ITEM_TYPE_ARTICLE, $id, null,
-                    $article->getChanged()->getTimestamp());
+                $this->indexQueue->updateItem(self::SOLR_ITEM_TYPE_ARTICLE, $id, null, $this->currentTimeStamp);
                 break;
             case self::TYPE_CATEGORY;
-                $this->indexQueue->updateItem(self::SOLR_ITEM_TYPE_CATEGORY, $id, null,
-                    (new \DateTime())->getTimestamp());
+                $this->indexQueue->updateItem(self::SOLR_ITEM_TYPE_CATEGORY, $id, null, $this->currentTimeStamp);
                 break;
         }
     }
