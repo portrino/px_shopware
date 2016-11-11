@@ -27,6 +27,8 @@ namespace Portrino\PxShopware\Service\Solr\Indexer;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use Portrino\PxShopware\Domain\Model\Article;
+use Portrino\PxShopware\Domain\Model\Category;
+use Portrino\PxShopware\Domain\Model\Detail;
 use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -84,6 +86,7 @@ class ArticleIndexer extends AbstractShopwareIndexer
         }
 
         $itemDocument->setField('description', trim(strip_tags($article->getDescription())));
+        $itemDocument->setField('descriptionLong', trim(strip_tags($article->getDescriptionLong())));
 
         if ($article->getFirstImage()) {
             $itemDocument->setField('image_stringS', $article->getFirstImage()->getUrl());
@@ -91,7 +94,7 @@ class ArticleIndexer extends AbstractShopwareIndexer
 
         if ($article->getCategories()->count() > 0) {
             $categoryNames = [];
-            /** @var \Portrino\PxShopware\Domain\Model\Category $category */
+            /** @var Category $category */
             foreach ($article->getCategories() as $category) {
                 if ($category->getLanguage() == $language) {
                     $categoryNames[] = $category->getName();
@@ -100,6 +103,17 @@ class ArticleIndexer extends AbstractShopwareIndexer
 
             $itemDocument->setField('category_stringM', array_unique($categoryNames));
             $itemDocument->setField('category_textM', array_unique($categoryNames));
+        }
+
+        if ($article->getDetails()->count() > 0) {
+            $detailLabels = [];
+            /** @var Detail $detail */
+            foreach ($article->getDetails() as $detail) {
+                $detailLabels[] = $detail->getNumber() . ' (' . $detail->getAdditionalText() . ')';
+            }
+
+            $itemDocument->setField('details_stringM', array_unique($detailLabels));
+            $itemDocument->setField('details_textM', array_unique($detailLabels));
         }
 
         if (is_object($article->getRaw()) && is_object($article->getRaw()->tax)) {

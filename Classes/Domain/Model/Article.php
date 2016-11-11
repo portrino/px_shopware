@@ -59,6 +59,11 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * @var string
      */
+    protected $descriptionLong = '';
+
+    /**
+     * @var string
+     */
     protected $orderNumber = null;
 
     /**
@@ -74,7 +79,12 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * @var \Portrino\PxShopware\Domain\Model\Detail
      */
-    protected $detail = [];
+    protected $detail;
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<Portrino\PxShopware\Domain\Model\Detail>
+     */
+    protected $details;
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
@@ -137,6 +147,10 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
             }
         }
 
+        if (isset($this->raw->descriptionLong) && $this->raw->descriptionLong != '') {
+            $this->setDescriptionLong($this->raw->descriptionLong);
+        }
+
         $this->initStorageObjects();
     }
 
@@ -149,6 +163,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     {
         $this->images = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
         $this->categories = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        $this->details = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
     }
 
     /**
@@ -189,6 +204,23 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     {
         $this->description = $description;
     }
+
+    /**
+     * @return string
+     */
+    public function getDescriptionLong()
+    {
+        return $this->descriptionLong;
+    }
+
+    /**
+     * @param string $descriptionLong
+     */
+    public function setDescriptionLong($descriptionLong)
+    {
+        $this->descriptionLong = $descriptionLong;
+    }
+
 
     /**
      * @return \DateTime
@@ -289,7 +321,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
              * try to get the detail object from raw
              */
             if (!isset($this->getRaw()->mainDetail)) {
-                /** @var Article $detail */
+                /** @var Article $detailedArticle */
                 $detailedArticle = $this->articleClient->findById($this->getId(), false);
                 /** @var Detail $detail */
                 $detail = $this->objectManager->get(Detail::class, $detailedArticle->raw->mainDetail, $this->token);
@@ -313,6 +345,64 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     {
         $this->detail = $detail;
     }
+
+    /**
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     */
+    public function getDetails()
+    {
+        if ($this->details->count() === 0) {
+
+                // check if raw details are available or get them from API
+            if (!isset($this->getRaw()->details)) {
+                /** @var Article $detail */
+                $detailedArticle = $this->articleClient->findById($this->getId(), false);
+                $details = (array)$detailedArticle->raw->details;
+            } else {
+                $details = (array)$this->getRaw()->details;
+            }
+                // build Detail models and add them to ObjectStorage
+            foreach ($details as $detailData) {
+                /** @var Detail $detail */
+                $detail = $this->objectManager->get(Detail::class, $detailData, $this->token);
+                $this->addDetail($detail);
+            }
+        }
+        return $this->details;
+    }
+
+    /**
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $details
+     */
+    public function setDetails($details)
+    {
+        $this->details = $details;
+    }
+
+    /**
+     * Adds a detail
+     *
+     * @param \Portrino\PxShopware\Domain\Model\Detail $detail
+     *
+     * @return void
+     */
+    public function addDetail(\Portrino\PxShopware\Domain\Model\Detail $detail)
+    {
+        $this->details->attach($detail);
+    }
+
+    /**
+     * Removes a detail
+     *
+     * @param \Portrino\PxShopware\Domain\Model\Detail $detailToRemove The detail to be removed
+     *
+     * @return void
+     */
+    public function removeDetail(\Portrino\PxShopware\Domain\Model\Detail $detailToRemove)
+    {
+        $this->details->detach($detailToRemove);
+    }
+
 
     /**
      * @param string $orderNumber

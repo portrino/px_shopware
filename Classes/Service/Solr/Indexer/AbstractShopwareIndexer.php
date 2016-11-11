@@ -195,6 +195,7 @@ class AbstractShopwareIndexer extends Indexer
         $language = 0
     ) {
         // overwrite in sub classes
+        return $itemDocument;
     }
 
     /**

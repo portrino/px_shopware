@@ -39,6 +39,11 @@ class Detail extends AbstractShopwareModel
     protected $number = '';
 
     /**
+     * @var string
+     */
+    protected $additionalText = '';
+
+    /**
      * @param object $raw
      * @param string $token
      */
@@ -48,6 +53,9 @@ class Detail extends AbstractShopwareModel
 
         if (isset($this->raw->number)) {
             $this->setNumber($this->raw->number);
+        }
+        if (isset($this->raw->additionalText)) {
+            $this->setAdditionalText($this->raw->additionalText);
         }
     }
 
@@ -65,6 +73,22 @@ class Detail extends AbstractShopwareModel
     public function setNumber($number)
     {
         $this->number = $number;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAdditionalText()
+    {
+        return $this->additionalText;
+    }
+
+    /**
+     * @param string $additionalText
+     */
+    public function setAdditionalText($additionalText)
+    {
+        $this->additionalText = $additionalText;
     }
 
 }
