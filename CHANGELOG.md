@@ -15,7 +15,7 @@
 * [TASK] Add clear_cache.png for TYPO3 6.2 compatibility
 * [TASK] Change dep for TYPO3 6.2 also in composer.json
 
-**Refactoring / Improvements**
+**Refactoring / Improvements / Bugfixes**
 * [FEATURE] Add PageLayoutViewDraw also for category plugin
 * [TASK] Add page_ts which adds the header to the newContentElement wizard
 * [TASK] In conjunction we add Pi1.html and Pi2.html into PageLayoutViewDrawItem folder for better SoC
@@ -29,7 +29,10 @@
 * [TASK] Renames `Article`- and `CategoryIntializer` 
 * [BUGFIX] Adds condition to `AbstractIntializer` to prevent exception if parent class has no `__construct()` method
 * [BUGFIX] Adds check for table to prevent sql exception if table not exists 
-   
+* [BUGFIX] Adds condition to prevent exception when not using TransientMemoryCache
+* [BUGFIX] Removes `$this->articleClient->findById(...)` from `NotificationController` to prevent filling cache with not 
+   updated data from rest api, because the postUpdate, postPersist and preRemove events which we are using in the TYPO3Connector
+   are triggered before the real persist takes place
    
 2.0.0 - 2016-09-22
 ------------------
