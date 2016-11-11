@@ -26,6 +26,10 @@
   `AbstractController`
 * [BUGFIX] Add `if (ExtensionManagementUtility::isLoaded('solr') === true)` to `NotificationController` to prevent problems for users which are using 
    px_shopware without `EXT:solr`
+* [TASK] Renames `Article`- and `CategoryIntializer` 
+* [BUGFIX] Adds condition to `AbstractIntializer` to prevent exception if parent class has no `__construct()` method
+* [BUGFIX] Adds check for table to prevent sql exception if table not exists 
+   
    
 2.0.0 - 2016-09-22
 ------------------

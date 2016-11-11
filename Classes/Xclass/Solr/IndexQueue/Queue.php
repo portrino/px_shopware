@@ -51,14 +51,17 @@ class Queue extends \ApacheSolrForTypo3\Solr\IndexQueue\Queue {
         // fetching records by table, saves us a lot of single queries
         foreach ($tableUids as $table => $uids) {
             $uidList = implode(',', $uids);
-            $records = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-                '*',
-                $table,
-                'uid IN(' . $uidList . ')',
-                '', '', '', // group, order, limit
-                'uid'
-            );
-            $tableRecords[$table] = $records;
+
+            if (isset($GLOBALS['TCA'][$table])) {
+                $records = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+                    '*',
+                    $table,
+                    'uid IN(' . $uidList . ')',
+                    '', '', '', // group, order, limit
+                    'uid'
+                );
+                $tableRecords[$table] = $records;
+            }
 
             if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'])) {
                 $params = ['table' => $table, 'uids' => $uids, 'tableRecords' => &$tableRecords];

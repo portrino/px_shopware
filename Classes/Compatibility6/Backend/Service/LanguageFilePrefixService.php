@@ -33,6 +33,8 @@ class LanguageFilePrefixService extends \Portrino\PxShopware\Backend\Service\Lan
 {
     /**
      * @param string $extension
+     *
+     * @return string
      */
     public function getLanguagePrefixForExtension($extension)
     {

@@ -25,19 +25,26 @@ namespace Portrino\PxShopware\Service\Solr\IndexQueue\Initializer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Portrino\PxShopware\Domain\Model\Category;
 use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
 
-class Category extends AbstractInitializer
+class CategoryInitializer extends AbstractInitializer
 {
 
+    /**
+     * @var string
+     */
     protected $clientClassName = CategoryClientInterface::class;
 
+    /**
+     * @return bool|\mysqli_result|object
+     */
     public function initialize()
     {
         $rowsToIndex = [];
 
         $defaultRecord = $this->getRecordDefaults();
-        /** @var \Portrino\PxShopware\Domain\Model\Category $category */
+        /** @var Category $category */
         foreach ($this->shopwareClient->findAll(false) as $category) {
             $record = $defaultRecord;
             $record['item_uid'] = $category->getId();

@@ -30,7 +30,7 @@ use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-class AbstractInitializer extends \ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer
+abstract class AbstractInitializer extends \ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer
 {
 
     /**
@@ -45,7 +45,11 @@ class AbstractInitializer extends \ApacheSolrForTypo3\Solr\IndexQueue\Initialize
 
     public function __construct()
     {
-        parent::__construct();
+        $reflection = new \ReflectionClass(self::class);
+        if ($reflection->getParentClass() !== null && $reflection->getParentClass()->getConstructor() !== null) {
+            parent::__construct();
+        }
+
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->shopwareClient = $objectManager->get($this->clientClassName);
     }

@@ -117,7 +117,8 @@ tx_pxshopware_notification_page {
             queue {
                 Portrino_PxShopware_Domain_Model_Article = 1
                 Portrino_PxShopware_Domain_Model_Article {
-                    initialization = Portrino\PxShopware\Service\Solr\IndexQueue\Initializer\Article
+                    external = 1
+                    initialization = Portrino\PxShopware\Service\Solr\IndexQueue\Initializer\ArticleInitializer
                     indexer = Portrino\PxShopware\Service\Solr\Indexer\ArticleIndexer
                     indexer {
                     }
@@ -153,7 +154,7 @@ tx_pxshopware_notification_page {
                     # deactivate for now
                 Portrino_PxShopware_Domain_Model_Category = 0
                 Portrino_PxShopware_Domain_Model_Category {
-                    initialization = Portrino\PxShopware\Service\Solr\IndexQueue\Initializer\Category
+                    initialization = Portrino\PxShopware\Service\Solr\IndexQueue\Initializer\CategoryInitializer
                     indexer = Portrino\PxShopware\Service\Solr\Indexer\CategoryIndexer
                     indexer {
                         ignoredIds = 1,3,4,51

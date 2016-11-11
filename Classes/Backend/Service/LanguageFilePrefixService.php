@@ -35,10 +35,9 @@ class LanguageFilePrefixService {
     /**
      * @param string $extension
      *
-     * @return bool
+     * @return string
      */
     public function getLanguagePrefixForExtension($extension) {
-
         switch ($extension) {
             case 'frontend':
                 $prefix = 'LLL:EXT:' . $extension . '/Resources/Private/Language/locallang_ttc.xlf:';

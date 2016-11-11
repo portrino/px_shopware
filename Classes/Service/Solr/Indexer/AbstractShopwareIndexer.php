@@ -50,7 +50,7 @@ class AbstractShopwareIndexer extends Indexer
     protected $clientClassName = AbstractShopwareApiClientInterface::class;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @var ObjectManager
      */
     protected $objectManager;
 
