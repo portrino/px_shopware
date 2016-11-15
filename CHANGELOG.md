@@ -33,6 +33,7 @@
 * [BUGFIX] Removes `$this->articleClient->findById(...)` from `NotificationController` to prevent filling cache with not 
    updated data from rest api, because the postUpdate, postPersist and preRemove events which we are using in the TYPO3Connector
    are triggered before the real persist takes place
+* [TASK] adds multiple shopware fields to solr index: EAN, additionalText, descriptionLong
 * [TASK] adds descriptionLong and details (ObjectStorage of model Detail)to article model and solr index
 * [TASK] adds $additionalText to Detail model
    

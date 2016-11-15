@@ -121,11 +121,16 @@ class ArticleIndexer extends AbstractShopwareIndexer
             $itemDocument->setField('taxName_stringS', $article->getRaw()->tax->name);
         }
 
-
         if (is_object($article->getRaw()) && is_object($article->getRaw()->mainDetail)) {
             if ($article->getRaw()->mainDetail->number) {
                 $itemDocument->setField('productNumber_stringS', $article->getRaw()->mainDetail->number);
                 $itemDocument->setField('productNumber_textS', $article->getRaw()->mainDetail->number);
+            }
+            if ($article->getRaw()->mainDetail->ean) {
+                $itemDocument->setField('ean_stringS', $article->getRaw()->mainDetail->ean);
+            }
+            if ($article->getRaw()->mainDetail->additionalText) {
+                $itemDocument->setField('additionalText_textS', $article->getRaw()->mainDetail->additionalText);
             }
             if ($article->getRaw()->mainDetail->unitId) {
                 $itemDocument->setField('unitId_stringS', $article->getRaw()->mainDetail->unitId);
