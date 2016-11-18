@@ -37,6 +37,8 @@ uneccessary API-Calls and also boost up the frontend rendering.
 * caching of API requests based on TYPO3 caching framework
 * TYPO3 menu rendering from shopware category tree
 * solr-indexer to index and display shopware articles and categories with typo3-solr
+* automatic invalidation of cache entries after modification of articles or categories on SW side
+* automatic update of solr index after modification of articles or categories on SW side
 
 **Coming-Soon**
 

@@ -100,6 +100,21 @@ You can flush the shopware cache by clicking the blue bolt in the cache menu
    :width: 300px
 .. :align: left
 
+
+.. note::
+
+   Since TYPO3Connector Plugin version **2.0.0** you can add the API-URL (http://domain.tld/?type=1471426941) from your TYPO3 PxShopware endpoint to the counterpart backend user on
+   shopware side, SW will notifiy TYPO3 about changes in articles, categories etc. an the affected cache entries will be flushed
+   then - This is a much better way than flushing all caches manually or at midnight ;-)
+
+.. figure:: ../../Images/ForAdministrators/shopware_api_url.png
+   :alt: Add API-URL to shopware backend user
+   :width: 800px
+.. :align: left
+
+   Add API-URL to shopware backend user
+
+
 More information to the caching framework of TYPO3 you could find here:
 
 * https://docs.typo3.org/typo3cms/CoreApiReference/CachingFramework/Index.html

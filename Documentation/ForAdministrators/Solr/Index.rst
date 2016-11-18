@@ -28,9 +28,9 @@ Select "Portrino_PxShopware_Domain_Model_Article" and/or "pages" and click "Queu
    Add Articles to solr index queue
 
 
-After that you need to create an indexing Task. Open Backend module "Scheduler" and search for a task named "Index Queue Worker (solr)".
+After that you need to create an indexing task. Open Backend module "Scheduler" and search for a task named "Index Queue Worker (solr)".
 If it is there and active you are finished. If not create it like described here_.
-Start the Task and you should see the first results in frontend.
+Start the task and you should see the first results in frontend.
 
 
 Configure Query
@@ -111,11 +111,24 @@ You can use any field as a solr facet, like in this example:
     }
 
 
-Shopware updates solr core
----------------------------
+Configure Shopware Plugin
+-------------------------
 
 The queuing and indexing in TYPO3 backend gets you a first search index of the current article database.
-If you use the "TYPO3-Connector" plugin from `Shopware Store`_ all article changes in Shopware backend are directly updated in your solr index too!
+If you use the "TYPO3-Connector" plugin from `Shopware Store`_ all article changes in Shopware backend are directly
+updated in your solr index too!
+
+.. note::
+
+   Since TYPO3Connector Plugin version **2.0.0** you can add the API-URL (http://domain.tld/?type=1471426941) from your TYPO3 PxShopware
+   endpoint to the counterpart backend user on shopware side
+
+.. figure:: ../../Images/ForAdministrators/shopware_api_url.png
+   :alt: Add API-URL to shopware backend user
+   :width: 800px
+.. :align: left
+
+   Add API-URL to shopware backend user
 
 .. _manual: https://docs.typo3.org/typo3cms/extensions/solr/
 .. _here: https://docs.typo3.org/typo3cms/extensions/solr/GettingStarted/IndexTheFirstTime.html#started-index

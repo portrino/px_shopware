@@ -115,11 +115,30 @@ Sie können jedes Feld im Frontend als Solr Facette benutzen um das Suchergebnis
     }
 
 
-Shopware aktualisiert den Solr Index
----------------------------
+
+Shopware Plugin konfigurieren
+-----------------------------
 
 Durch die obigen Schritte für Queue und Task erhalten Sie einen Suchindex der aktuellen Artikel.
 Wenn Sie das Plugin "TYPO3-Connector" aus dem `Shopware Store`_ verwenden, werden Ihre Änderungen im Shopware Backend direkt auch im Solr Index aktualisiert und spiegeln sich sofort im Suchergebnis wieder.
+
+.. note::
+
+   Seit Version **2.0.0** des Shopware Plugins TYPO3-Connector können sie die API-URL (http://domain.tld/?type=1471426941) ihres PxShopware Endpoints
+   im Backend User auf SW Seite eintragen, damit dieser über Änderungen in Artikeln, Kategorien usw. TYPO3 benachrichtigen kann und somit auch der
+   Solr Index aktualisiert werden kann.
+
+.. figure:: ../../Images/ForAdministrators/shopware_api_url.png
+   :alt: Hinzufügen der API-URL zum SW Backend Benutzer
+   :width: 800px
+.. :align: left
+
+   Hinzufügen der API-URL zum SW Backend Benutzer
+
+
+Shopware aktualisiert den Solr Index
+---------------------------
+
 
 .. _Dokumentation: https://docs.typo3.org/typo3cms/extensions/solr/
 .. _hier: https://docs.typo3.org/typo3cms/extensions/solr/GettingStarted/IndexTheFirstTime.html#started-index

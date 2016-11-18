@@ -43,6 +43,8 @@ gecached um unnötig häufige API-Aufrufe zu vermeiden und dadurch das Frontend-
 * Zwischenspeichern von API-Aufrufen mit Hilfe des TYPO3 Caching Frameworks
 * Rendern eines Menüs auf Basis des Shopware-Kategorie Baum
 * Solr-Indexer zum Indexieren der Shopware-Artikel und -Kategorien auf Seiten von TYPO3 zur Integration mit typo3-solr_
+* Automatisches Invalidierung von Cache Einträgen bei Änderungen von Artikeln / Kategorien auf SW Seite
+* Automatische Aktualisierung des Solr-Index bei Änderungen von Artikeln / Kategorien auf SW Seite
 
 **Coming-Soon**
 

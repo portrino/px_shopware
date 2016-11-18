@@ -25,10 +25,10 @@ Shopware-Integration für TYPO3
 
 	:Beschreibung:
 		Die Erweiterung verbindet TYPO3 mit Shopware 5 und bietet Frontend-Plugins um Shopware-Artikel und
-		Kategorien anzuzeigen.
+		Kategorien anzuzeigen. Weiterhin ermöglicht sie die Solr Indexierung von SW Artikeln auf TYPO3 Seite.
 
 	:Keywords:
-		shopware,typo3,produkte,artikel,kategorien,portrino
+		shopware,typo3,produkte,artikel,kategorien,portrino,solr
 
 	:Copyright:
 		2016

@@ -98,6 +98,19 @@ Die Konfiguration des Caching kann ebenfalls im Extension Manager vorgenommen we
    :width: 300px
 .. :align: left
 
+.. note::
+
+   Seit Version **2.0.0** des Shopware Plugins TYPO3-Connector können sie die API-URL (http://domain.tld/?type=1471426941) ihres PxShopware Endpoints
+   im Backend User auf SW Seite eintragen, damit dieser über Änderungen in Artikeln, Kategorien usw. TYPO3 benachrichtigen kann und somit betroffene
+   Cache Einträge gelöscht werden können - dieser Weg ist deutlich besser als Caches manuell zu löschen oder immer Mitternacht ;-)
+
+.. figure:: ../../Images/ForAdministrators/shopware_api_url.png
+   :alt: Hinzufügen der API-URL zum SW Backend Benutzer
+   :width: 800px
+.. :align: left
+
+   Hinzufügen der API-URL zum SW Backend Benutzer
+
 Weitere Informationen zum TYPO3-Caching finden Sie hier:
 
 * https://docs.typo3.org/typo3cms/CoreApiReference/CachingFramework/Index.html
