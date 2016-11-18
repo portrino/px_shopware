@@ -37,14 +37,14 @@ und klicken Sie "Import and Install" um die aktuellste Version zu erhalten.
 Die Extension kann auch als Zip-File unter https://typo3.org/extensions/repository/view/px_shopware heruntergeladen und anschließend installiert werden.
 
 .. figure:: ../../Images/ForAdministrators/px_shopware-install-zip-file_2.png
-    :width: 500px
-    :align: left
+   :width: 500px
+.. :align: left
 
     Bitte nutzen Sie das das Icon "*Upload Extension .t3x / .zip*" unterhalb des Dropdown-Felds um die Shopware-Extension zu installieren.
 
 .. figure:: ../../Images/ForAdministrators/px_shopware-install-zip-file_4.png
-    :width: 500px
-    :align: left
+   :width: 500px
+.. :align: left
 
     Anschließend erscheint die Status-Meldung, dass px_shopware erfolgreich installiert wurde.
 
@@ -81,5 +81,6 @@ Anschließend muss die Extension *konfiguriert* werden:
 
    ExtensionManager/Index
    TypoScript/Index
+   Solr/Index
 
 .. _composer: https://getcomposer.org/

@@ -18,9 +18,9 @@ Include Static-Template
 Please include the static typoscript first!
 
 .. figure:: ../../Images/ForAdministrators/px_shopware_ts-root-template-integration.png
-    :width: 800px
-    :align: left
-    :alt: Include static typoscript
+   :alt: Include static typoscript
+   :width: 800px
+.. :align: center
 
 
 | To include the TS directly in your TypoScript please use the following code:
@@ -32,9 +32,9 @@ Please include the static typoscript first!
 If the TypoScript configuration is missing the px_shopware toolbar will display a warning!
 
 .. figure:: ../../Images/ForAdministrators/px_shopware_ts-error.png
-    :width: 300px
-    :align: left
-    :alt: Configuration error in toolbar
+   :alt: Configuration error in toolbar
+   :width: 300px
+.. :align: left
 
 
 TypoScript Values

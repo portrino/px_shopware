@@ -17,8 +17,8 @@ Artikel anzeigen
 Zunächst muss im Page-Modus ein neues Content-Element hinzugefügt und das Article(s)-Plugin ausgewählt werden.
 
 .. figure:: ../../Images/ForUsers/px_shopware_add-plugin.png
-    :width: 500px
-    :alt: Shopware-Plugins: Artikel und Kategorien
+   :width: 500px
+   :alt: Shopware-Plugins: Artikel und Kategorien
 
     TYPO3 Frontend-Plugins zur Anzeige von Shopware Artikeln / Kategorien
 
@@ -26,14 +26,14 @@ Anschließend hat man die Möglichkeit jene Artikel über den Reiter "Plugin" au
 Frontend angezeigt werden sollen.
 
 .. figure:: ../../Images/ForUsers/px_shopware_add-shopware-articles-fetch-all-items.png
-    :width: 500px
-    :alt: Artikel auswählen im Frontend-Plugin
+   :width: 500px
+   :alt: Artikel auswählen im Frontend-Plugin
 
     Shopware-Artikel aus Liste aller Artikel des Shops auswählen
 
 .. figure:: ../../Images/ForUsers/px_shopware_add-shopware-categories-autocomplete-wizard.png
-    :width: 800px
-    :alt: Artikel via Autocomplete-Wizard auswählen
+   :width: 800px
+   :alt: Artikel via Autocomplete-Wizard auswählen
 
     Shopware-Artikel via Autocomplete-Wizard auswählen
 
@@ -67,8 +67,8 @@ ein neues Content-Element hinzugefügen und das Categories(s)-Plugin ausgewähle
 Anschließend im Reiter "Plugin" die anzuzeigenden Kategorien auswählen.
 
 .. figure:: ../../Images/ForUsers/px_shopware_add-plugin.png
-    :width: 500px
-    :alt: Shopware-Plugins: Artikel und Kategorien
+   :width: 500px
+   :alt: Shopware-Plugins: Artikel und Kategorien
 
     TYPO3 Frontend-Plugins zur Anzeige von Shopware Artikeln / Kategorien
 
@@ -76,8 +76,8 @@ Anschließend hat man die Möglichkeit jene Kategorien über den Reiter "Plugin"
 Frontend angezeigt werden sollen.
 
 .. figure:: ../../Images/ForUsers/px_shopware_add-shopware-categories-fetch-all-items.png
-    :width: 500px
-    :alt: Kategorien auswählen im Frontend-Plugin
+   :width: 500px
+   :alt: Kategorien auswählen im Frontend-Plugin
 
     Kategorien auswählen im Frontend-Plugin
 

@@ -21,9 +21,9 @@ Zunächst muss im Shopware-Backend ein Nutzer angelegt und dieser für die API-N
 (Für weiterführende Informationen zur Shopware-REST-API wird folgender Artikel empfohlen: https://developers.shopware.com/developers-guide/rest-api/ )
 
 .. figure:: ../../../Images/ForAdministrators/shopware-api-add-user.png
-    :width: 600px
-    :align: left
-    :alt: API-Nutzer in Shopware hinzufügen
+   :alt: API-Nutzer in Shopware hinzufügen
+   :width: 600px
+.. :align: left
 
     Shopware-Benutzer hinzufügen und die API-Nutzung freischalten
 
@@ -31,9 +31,9 @@ Anschließend können Sie die API-Zugangsdaten im TYPO3 Extension Manager in der
 Die Zugangsdaten sind notwendig um die Kommunikation zwischen Ihrer Shopware-Instanz und TYPO3 zu gewährleisten.
 
 .. figure:: ../../../Images/ForAdministrators/px_shopware-configure-basic-api.png
-    :width: 600px
-    :align: left
-    :alt: API-Konfiguration in der px_shopware
+   :alt: API-Konfiguration in der px_shopware
+   :width: 600px
+.. :align: left
 
 Nach dem Ändern der API-Konfiguration muss das TYPO3-Backend mit ``Strg + F5`` neu geladen werden, damit die Toolbar den
 Verbindungsstatus korrekt wieder gibt.
@@ -45,9 +45,9 @@ In der TYPO3-Toolbar wird nach erfolgreicher Installation der Extension das px_s
 wird der Verbindungsstatus farblich wieder gegeben.
 
 .. figure:: ../../../Images/ForAdministrators/toolbar-disconnected.png
-   :width: 500px
-   :align: left
    :alt: TYPO3-Toolbar Disconnected-Status
+   :width: 500px
+.. :align: left
 
    TYPO3-Toolbar zeigt Disconnected-Status in rot für px_shopware
 
@@ -55,9 +55,9 @@ Mit einem Klick auf das Icon in der Toolbar öffnet sich ein Overlay, welches we
 Shopware aufzeigt.
 
 .. figure:: ../../../Images/ForAdministrators/toolbar-trial-version.png
-   :width: 500px
-   :align: left
    :alt: TYPO3-Toolbar zeigt Connected-Status und Informationen zur Anbindung
+   :width: 500px
+.. :align: left
 
    Nachdem die Shopware-Daten korrekt eingegeben wurden, zeigt sich der Verbindungsstatus für die Trial-Version in gelb.
 
@@ -81,9 +81,9 @@ Die API-Aufrufe werden über das interne Caching-Framework gecached um die Perfo
 Die Konfiguration des Caching kann ebenfalls im Extension Manager vorgenommen werden.
 
 .. figure:: ../../../Images/ForAdministrators/px_shopware-configure-cache.png
-   :width: 600px
-   :align: left
    :alt: Caching für px_shopware konfigurieren
+   :width: 600px
+.. :align: left
 
 **Einstellungen:**
 
@@ -94,9 +94,9 @@ Die Konfiguration des Caching kann ebenfalls im Extension Manager vorgenommen we
 Über das Blitz-Symbol in der TYPO3-Toolbar kann der Shopware-Cache komplett geleert werden.
 
 .. figure:: ../../../Images/ForAdministrators/px_shopware-flush-cache.png
-   :width: 300px
-   :align: left
    :alt: px_shopware Cache leeren
+   :width: 300px
+.. :align: left
 
 Weitere Informationen zum TYPO3-Caching finden Sie hier:
 
@@ -110,9 +110,9 @@ Geloggt wird in den TYPO3 Systemlog_ und via Logging-API_ in das Logfile der px_
 Das Logging von Backend-Fehlern kann ebenfalls über den Extension Manager deaktiviert (oder aktiviert) werden.
 
 .. figure:: ../../../Images/ForAdministrators/px_shopware-configure-logging.png
-   :width: 600px
-   :align: left
    :alt: Logging für px_shopware konfigurieren
+   :width: 600px
+.. :align: left
 
 .. _Systemlog: https://docs.typo3.org/typo3cms/CoreApiReference/ApiOverview/SystemLog/Index.html
 .. _Logging-API: https://docs.typo3.org/typo3cms/CoreApiReference/ApiOverview/Logging/Index.html

@@ -28,14 +28,14 @@ From TER (Classic Mode)
 The extension could also be downloaded and installed from https://typo3.org/extensions/repository/view/px_shopware
 
 .. figure:: ../Images/ForAdministrators/px_shopware-install-zip-file_2.png
-    :width: 500px
-    :align: left
+   :width: 500px
+.. :align: left
 
     Please use the icon "*Upload Extension .t3x / .zip*" above the dropdown.
 
 .. figure:: ../Images/ForAdministrators/px_shopware-install-zip-file_4.png
-    :width: 500px
-    :align: left
+   :width: 500px
+.. :align: left
 
     After that a flash message that shopware extension was installed successfully should be visble.
 
@@ -65,5 +65,6 @@ After the installation is finished open the Extension Configuration by clicking 
 
    ExtensionManager/Index
    TypoScript/Index
+   Solr/Index
 
 .. _composer: https://getcomposer.org/

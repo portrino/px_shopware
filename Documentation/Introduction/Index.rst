@@ -17,8 +17,8 @@ the implementation of the frontend plugins. Shopware data will be cached via TYP
 uneccessary API-Calls and also boost up the frontend rendering.
 
 .. figure:: ../Images/shopware-add-products-and-categories.png
-    :width: 500px
-    :alt: Shopware-Plugins: Artikel und Kategorien hinzufügen
+   :alt: Shopware-Plugins: add Articel und Categories
+   :width: 500px
 
     PxShopware provides new content elements to show articles, categories etc. from shopware
 
@@ -36,10 +36,10 @@ uneccessary API-Calls and also boost up the frontend rendering.
 * autosuggest wizard to search shopware articles and categories from TYPO3-Backend
 * caching of API requests based on TYPO3 caching framework
 * TYPO3 menu rendering from shopware category tree
+* solr-indexer to index and display shopware articles and categories with typo3-solr
 
 **Coming-Soon**
 
-* solr-indexer to index and display shopware articles and categories with typo3-solr
 * list and show more shopware resources like manufacturers
 * adding more unit tests to increase quality
 

@@ -42,10 +42,10 @@ gecached um unnötig häufige API-Aufrufe zu vermeiden und dadurch das Frontend-
 * Autosuggest-Wizard um beim Anlegen eines Frontend-Plugins schnell Artikel / Kategorien im Shopware zu suchen
 * Zwischenspeichern von API-Aufrufen mit Hilfe des TYPO3 Caching Frameworks
 * Rendern eines Menüs auf Basis des Shopware-Kategorie Baum
+* Solr-Indexer zum Indexieren der Shopware-Artikel und -Kategorien auf Seiten von TYPO3 zur Integration mit typo3-solr_
 
 **Coming-Soon**
 
-* Solr-Indexer zum Indexieren der Shopware-Artikel und -Kategorien auf Seiten von TYPO3 zur Integration mit typo3-solr_
 * Anzeigen und Auflisten weiterer Resourcen wie Lieferanten etc.
 * Weitere Unit Tests um die Qualität zu erhöhen
 

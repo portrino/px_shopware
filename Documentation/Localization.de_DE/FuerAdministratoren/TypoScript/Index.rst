@@ -22,7 +22,7 @@ zu den "Include static (from extensions)" hinzufügen
 
 .. figure:: ../../../Images/ForAdministrators/px_shopware_ts-root-template-integration.png
    :width: 800px
-   :align: left
+.. :align: left
    :alt: px_shopware ins Root Template integrieren
 
 | Um px_shopware direkt in Ihr Template Setup zu integrieren nutzen Sie bitte folgenden Code:
@@ -33,9 +33,9 @@ zu den "Include static (from extensions)" hinzufügen
 Sofern das TypoScript nicht richtig konfiguriert wurde, erscheint in der px_shopware-Topbar folgende Fehlermeldung:
 
 .. figure:: ../../../Images/ForAdministrators/px_shopware_ts-error.png
-   :width: 300px
-   :align: left
    :alt: Warning wenn TypoScript Konfiguration fehlt
+   :width: 300px
+.. :align: left
 
 
 TypoScript Werte

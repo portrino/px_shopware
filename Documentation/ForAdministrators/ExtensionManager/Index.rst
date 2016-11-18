@@ -21,19 +21,21 @@ First of all you have create a backend user and enable the API access
 (For more information about the shopware REST-API we recommend this article: https://developers.shopware.com/developers-guide/rest-api/
 
 .. figure:: ../../Images/ForAdministrators/shopware-api-add-user.png
-    :width: 600px
-    :align: left
-    :alt: Add API user in shopware
+   :alt: Add API user in shopware
+   :width: 600px
+.. :align: center
+.. :name: Add API user in shopware
 
-    Add API user in shopware and enable API access
+   Add API user in shopware and enable API access
 
 Finally you can copy the API credentials and put them into the extension configuration of px_shopware
 The credentials are necessary to communicate with the shopware instance.
 
 .. figure:: ../../Images/ForAdministrators/px_shopware-configure-basic-api.png
-    :width: 600px
-    :align: left
-    :alt: API-Konfiguration in der px_shopware
+   :alt: API-Konfiguration in der px_shopware
+   :width: 600px
+.. :align: center
+.. :name: API-Konfiguration in der px_shopware
 
 After changing the API configuration you should refresh your backend by pressing ``Strg + F5`` to see the connection
 state in the toolbar on top.
@@ -44,18 +46,18 @@ Shopware-Connector: Toolbar
 Within the TYPO3 toolbar the connection state and some other information will be displayed.
 
 .. figure:: ../../Images/ForAdministrators/toolbar-disconnected.png
-   :width: 500px
-   :align: left
    :alt: TYPO3 toolbar state "disconnected"
+   :width: 500px
+.. :align: left
 
    TYPO3 toolbar shows state "disconnected"
 
 By clicking the toolbar icon the overlay with some information about the connected shop will be opened.
 
 .. figure:: ../../Images/ForAdministrators/toolbar-trial-version.png
-   :width: 500px
-   :align: left
    :alt: TYPO3 toolbar shows state "connected"
+   :width: 500px
+.. :align: left
 
    After you enter the correct shopware API credentials the connection state should display "connected"
 
@@ -81,9 +83,9 @@ categories etc.
 The caching configuration could be done in extension manager configuration.
 
 .. figure:: ../../Images/ForAdministrators/px_shopware-configure-cache.png
-   :width: 600px
-   :align: left
    :alt: Configure Caching in extension manager
+   :width: 600px
+.. :align: center
 
 **Settings:**
 
@@ -94,9 +96,9 @@ The caching configuration could be done in extension manager configuration.
 You can flush the shopware cache by clicking the blue bolt in the cache menu
 
 .. figure:: ../../Images/ForAdministrators/px_shopware-flush-cache.png
-   :width: 300px
-   :align: left
    :alt: flush shopware caches
+   :width: 300px
+.. :align: left
 
 More information to the caching framework of TYPO3 you could find here:
 
@@ -112,9 +114,9 @@ The extension uses the TYPO3 Systemlog_ und the Logging-API_. Logfile from Loggi
 The logging of backend errors yould be disabled in extension manager.
 
 .. figure:: ../../Images/ForAdministrators/px_shopware-configure-logging.png
-   :width: 600px
-   :align: left
    :alt: Configure logging
+   :width: 600px
+.. :align: center
 
 .. _Systemlog: https://docs.typo3.org/typo3cms/CoreApiReference/ApiOverview/SystemLog/Index.html
 .. _Logging-API: https://docs.typo3.org/typo3cms/CoreApiReference/ApiOverview/Logging/Index.html
