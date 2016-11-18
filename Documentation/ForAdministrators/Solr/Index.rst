@@ -47,7 +47,7 @@ You need to configure the fields your search uses and the importance of those fi
         }
     }
 
-Most textfields are available as "*_stringS" (case sensitive) and "*_textS" (case insensitive) to provide maximum flexibility for your search configuration.
+Most textfields are available as ``*_stringS`` (case sensitive) and ``*_textS`` (case insensitive) to provide maximum flexibility for your search configuration.
 
 To boost Shopware Articles to the front of your search results use this TS:
 

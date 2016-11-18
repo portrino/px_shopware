@@ -16,7 +16,7 @@ Wenn Sie das Statische Typoscript hinzugefügt haben (:ref:`typoscript-configura
 
 
 Indexierung starten
------------------
+---------------------------
 
 Sie müssen nun die Artikel zur Solr Index Queue hinzufügen. Dazu öffnen Sie das Backend Modul "Suche" und wählen dort "Index Queue" im linken Inhaltsverzeichnis.
 Wählen Sie nun "Portrino_PxShopware_Domain_Model_Article" und/oder "pages" aus und klicken auf "Queue Selected Content for Indexing".
@@ -49,8 +49,7 @@ Welche Felder des Index durchsucht und wie diese gewichtet werden, kann im TypoS
         }
     }
 
-Die meisten Textfelder werden in 2 Version gespeichert: als "*_stringS" (case sensitive) und "*_textS" (case insensitive)
-Most textfields are available as "*_stringS" (Groß- und Kleinschreibung wird beachtet) and "*_textS" (Groß- und Kleinschreibung wird NICHT beachtet).
+Die meisten Textfelder werden in 2 Version gespeichert: als ``*_stringS`` (Groß- und Kleinschreibung wird beachtet) und ``*_textS`` (Groß- und Kleinschreibung wird NICHT beachtet)
 So besitzen Sie maximale Flexibilität für Ihre Suchanfrage.
 
 Um Shopware Artikel immer am Anfang der Suchergebnisse anzuzeigen, hilft dieses TypoScript:
@@ -128,7 +127,7 @@ Wenn Sie das Plugin "TYPO3-Connector" aus dem `Shopware Store`_ verwenden, werde
    im Backend User auf SW Seite eintragen, damit dieser über Änderungen in Artikeln, Kategorien usw. TYPO3 benachrichtigen kann und somit auch der
    Solr Index aktualisiert werden kann.
 
-.. figure:: ../../Images/ForAdministrators/shopware_api_url.png
+.. figure:: ../../../Images/ForAdministrators/shopware_api_url.png
    :alt: Hinzufügen der API-URL zum SW Backend Benutzer
    :width: 800px
 .. :align: left
@@ -137,7 +136,7 @@ Wenn Sie das Plugin "TYPO3-Connector" aus dem `Shopware Store`_ verwenden, werde
 
 
 Shopware aktualisiert den Solr Index
----------------------------
+--------------------------------------
 
 
 .. _Dokumentation: https://docs.typo3.org/typo3cms/extensions/solr/

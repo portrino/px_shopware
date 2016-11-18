@@ -104,7 +104,7 @@ Die Konfiguration des Caching kann ebenfalls im Extension Manager vorgenommen we
    im Backend User auf SW Seite eintragen, damit dieser über Änderungen in Artikeln, Kategorien usw. TYPO3 benachrichtigen kann und somit betroffene
    Cache Einträge gelöscht werden können - dieser Weg ist deutlich besser als Caches manuell zu löschen oder immer Mitternacht ;-)
 
-.. figure:: ../../Images/ForAdministrators/shopware_api_url.png
+.. figure:: ../../../Images/ForAdministrators/shopware_api_url.png
    :alt: Hinzufügen der API-URL zum SW Backend Benutzer
    :width: 800px
 .. :align: left
