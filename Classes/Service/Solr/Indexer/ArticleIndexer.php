@@ -86,7 +86,7 @@ class ArticleIndexer extends AbstractShopwareIndexer
         }
 
         $itemDocument->setField('description', trim(strip_tags($article->getDescription())));
-        $itemDocument->setField('descriptionLong', trim(strip_tags($article->getDescriptionLong())));
+        $itemDocument->setField('descriptionLong_textS', trim(strip_tags($article->getDescriptionLong())));
 
         if ($article->getFirstImage()) {
             $itemDocument->setField('image_stringS', $article->getFirstImage()->getUrl());
