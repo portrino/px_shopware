@@ -583,8 +583,19 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
     public function findAll($doCacheRequest = true, $params = [])
     {
         $shopwareModels = new ObjectStorage();
+        $total = 0;
+
+        if (!isset($params['limit'])) {
+            $params['limit'] = 1000;
+        }
+        if (!isset($params['start'])) {
+            $params['start'] = 0;
+        }
+
+            // first request has default limit of 1000
         $result = $this->get($this->getValidEndpoint(), $params, $doCacheRequest);
         if ($result) {
+
             $token = (isset($result->pxShopwareTypo3Token)) ? (bool)$result->pxShopwareTypo3Token : false;
             if (isset($result->data) && is_array($result->data)) {
                 foreach ($result->data as $data) {
@@ -594,6 +605,34 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
                         if ($shopwareModel != null) {
                             $shopwareModels->attach($shopwareModel);
                         }
+                    }
+                }
+                $total = $result->total;
+
+                    // shop has more items than first request returned? poll again!
+                if ($total > 0 && $total > $shopwareModels->count() + $params['start']) {
+
+                    $i = 0;
+                        // safety break
+                    while ($i < 99) {
+                            // increase offset (called start in shopware)
+                        $params['start'] = $params['start'] + $params['limit'];
+                            // get API result
+                        $additionalResults = $this->findByParams($params, false);
+                        foreach ($additionalResults as $additionalResult) {
+                                // add new items to original ObjectStorage
+                            $shopwareModels->attach($additionalResult);
+                        }
+
+                            // stop if API returns empty
+                        if ($additionalResults->count() == 0) {
+                            break;
+                        }
+                            // stop if total count is reached
+                        if ($shopwareModels->count() >= $total) {
+                            break;
+                        }
+                        $i++;
                     }
                 }
             }
