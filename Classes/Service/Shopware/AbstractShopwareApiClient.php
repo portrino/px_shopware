@@ -582,15 +582,10 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
      */
     public function findAll($doCacheRequest = true, $params = [])
     {
-        $shopwareModels = new ObjectStorage();
-        $total = 0;
+        $shopwareModelArray = [];
 
-        if (!isset($params['limit'])) {
-            $params['limit'] = 1000;
-        }
-        if (!isset($params['start'])) {
-            $params['start'] = 0;
-        }
+        $params['limit'] = isset($params['limit']) ? $params['limit'] : 1000;
+        $params['start'] = isset($params['start']) ? $params['start'] : 0;
 
             // first request has default limit of 1000
         $result = $this->get($this->getValidEndpoint(), $params, $doCacheRequest);
@@ -603,14 +598,14 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
                         /** @var \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $shopwareModel */
                         $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $data, $token);
                         if ($shopwareModel != null) {
-                            $shopwareModels->attach($shopwareModel);
+                            $shopwareModelArray[$shopwareModel->getId()] = $shopwareModel;
                         }
                     }
                 }
                 $total = $result->total;
 
                     // shop has more items than first request returned? poll again!
-                if ($total > 0 && $total > $shopwareModels->count() + $params['start']) {
+                if ($total > 0 && $total > count($shopwareModelArray) + $params['start']) {
 
                     $i = 0;
                         // safety break
@@ -618,10 +613,12 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
                             // increase offset (called start in shopware)
                         $params['start'] = $params['start'] + $params['limit'];
                             // get API result
-                        $additionalResults = $this->findByParams($params, false);
+                        $additionalResults = $this->findByParams($params, $doCacheRequest);
                         foreach ($additionalResults as $additionalResult) {
-                                // add new items to original ObjectStorage
-                            $shopwareModels->attach($additionalResult);
+                                // add new items to original array, if not already there
+                            if (!array_key_exists($additionalResult->getId(), $shopwareModelArray)) {
+                                $shopwareModelArray[$additionalResult->getId()] = $additionalResult;
+                            }
                         }
 
                             // stop if API returns empty
@@ -629,13 +626,19 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
                             break;
                         }
                             // stop if total count is reached
-                        if ($shopwareModels->count() >= $total) {
+                        if (count($shopwareModelArray) >= $total) {
                             break;
                         }
                         $i++;
                     }
                 }
             }
+        }
+
+            // transform array of models to ObjectStorage
+        $shopwareModels = new ObjectStorage();
+        foreach ($shopwareModelArray as $shopwareModel) {
+            $shopwareModels->attach($shopwareModel);
         }
         return $shopwareModels;
     }
