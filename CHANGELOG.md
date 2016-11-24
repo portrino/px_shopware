@@ -36,6 +36,7 @@
 * [TASK] adds multiple shopware fields to solr index: EAN, additionalText, descriptionLong
 * [TASK] adds descriptionLong and details (ObjectStorage of model Detail)to article model and solr index
 * [TASK] adds $additionalText to Detail model
+* [BUGFIX] updates AbstractShopwareApiClient->findAll to allow more than 1000 items (shopware api default limit)
    
 2.0.0 - 2016-09-22
 ------------------
