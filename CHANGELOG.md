@@ -1,5 +1,10 @@
 # PxShopware Change log
 
+3.0.1 - 2017-01-24
+------------------
+* [BUGFIX] updates AbstractShopwareApiClient->findAll to allow more than 1000 items (shopware api default limit)
+* [BUGFIX] change EAN field from _stringS to _textS
+
 3.0.0 - 2016-11-09
 ------------------
 **TYPO3 6.2 Compatibility Release**
@@ -36,8 +41,6 @@
 * [TASK] adds multiple shopware fields to solr index: EAN, additionalText, descriptionLong
 * [TASK] adds descriptionLong and details (ObjectStorage of model Detail)to article model and solr index
 * [TASK] adds $additionalText to Detail model
-* [BUGFIX] updates AbstractShopwareApiClient->findAll to allow more than 1000 items (shopware api default limit)
-* [BUGFIX] change EAN field from _stringS to _textS
    
 2.0.0 - 2016-09-22
 ------------------
