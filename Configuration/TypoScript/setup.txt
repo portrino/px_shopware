@@ -135,7 +135,7 @@ tx_pxshopware_notification_page {
                         purchaseUnit_tdoubleS = purchaseUnit
                         referenceUnit_tdoubleS = referenceUnit
                         productNumber_textS = number
-                        ean_stringS = ean
+                        ean_textS = ean
                         additionalText_textS = additionalTextcategory
                         supplier_textS = supplier
                         category_textM = SOLR_MULTIVALUE

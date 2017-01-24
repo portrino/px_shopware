@@ -45,7 +45,7 @@ Welche Felder des Index durchsucht und wie diese gewichtet werden, kann im TypoS
     plugin.tx_solr {
         search {
             ## qf parameter http://wiki.apache.org/solr/DisMaxQParserPlugin#qf_.28Query_Fields.29
-            queryFields = productNumber_textS^49.0, title^25.0, descriptionLong_textS^15.0, content^10.0, keywords^2.0, tagsH1^5.0, tagsH2H3^3.0, tagsH4H5H6^2.0, tagsInline^1.0, details_textM^3.0, ean_stringS^3.0, category_textM^3.0, details_textM^3.0, compatibleProducer_textM^2.0, supplier_textS^5.0
+            queryFields = productNumber_textS^49.0, title^25.0, descriptionLong_textS^15.0, content^10.0, keywords^2.0, tagsH1^5.0, tagsH2H3^3.0, tagsH4H5H6^2.0, tagsInline^1.0, details_textM^3.0, ean_textS^3.0, category_textM^3.0, details_textM^3.0, compatibleProducer_textM^2.0, supplier_textS^5.0
         }
     }
 

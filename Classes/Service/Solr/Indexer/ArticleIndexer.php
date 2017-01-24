@@ -127,7 +127,7 @@ class ArticleIndexer extends AbstractShopwareIndexer
                 $itemDocument->setField('productNumber_textS', $article->getRaw()->mainDetail->number);
             }
             if ($article->getRaw()->mainDetail->ean) {
-                $itemDocument->setField('ean_stringS', $article->getRaw()->mainDetail->ean);
+                $itemDocument->setField('ean_textS', $article->getRaw()->mainDetail->ean);
             }
             if ($article->getRaw()->mainDetail->additionalText) {
                 $itemDocument->setField('additionalText_textS', $article->getRaw()->mainDetail->additionalText);
