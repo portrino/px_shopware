@@ -1,5 +1,9 @@
 # PxShopware Change log
 
+3.0.2 - 2017-01-24
+------------------
+* [BUGFIX] do not throw exceptions in TYPO3_MODE "FE"
+
 3.0.1 - 2017-01-24
 ------------------
 * [BUGFIX] updates AbstractShopwareApiClient->findAll to allow more than 1000 items (shopware api default limit)

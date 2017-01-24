@@ -140,13 +140,7 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
             $this->username = $this->configurationService->getApiUsername();
             $this->apiKey = $this->configurationService->getApiKey();
         } catch (ShopwareApiClientConfigurationException $exception) {
-            if (TYPO3_MODE === 'BE') {
-                $this->logException($exception);
-            } else {
-                if (TYPO3_MODE === 'FE') {
-                    throw $exception;
-                }
-            }
+            $this->logException($exception);
         }
 
         /**
@@ -256,13 +250,7 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
             return $result;
 
         } catch (ShopwareApiClientException $exception) {
-            if (TYPO3_MODE === 'BE') {
-                $this->logException($exception);
-            } else {
-                if (TYPO3_MODE === 'FE') {
-                    throw $exception;
-                }
-            }
+            $this->logException($exception);
         }
     }
 
@@ -439,13 +427,7 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
                 $result = ($response->success);
             }
         } catch (ShopwareApiClientException $exception) {
-            if (TYPO3_MODE === 'BE') {
-                $this->logException($exception);
-            } else {
-                if (TYPO3_MODE === 'FE') {
-                    throw $exception;
-                }
-            }
+            $this->logException($exception);
             $result = false;
         } finally {
             return $result;
@@ -478,13 +460,7 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
                 }
             }
         } catch (ShopwareApiClientException $exception) {
-            if (TYPO3_MODE === 'BE') {
-                $this->logException($exception);
-            } else {
-                if (TYPO3_MODE === 'FE') {
-                    throw $exception;
-                }
-            }
+            $this->logException($exception);
             $result = self::STATUS_DISCONNECTED;
         } finally {
             return $result;
