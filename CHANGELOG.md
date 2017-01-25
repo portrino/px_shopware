@@ -1,5 +1,9 @@
 # PxShopware Change log
 
+3.0.3 - 2017-01-25
+------------------
+* [BUGFIX] remove deleted item from IndexQueue AND core index, to prevent dead entries 
+
 3.0.2 - 2017-01-24
 ------------------
 * [BUGFIX] do not throw exceptions in TYPO3_MODE "FE"

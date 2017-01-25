@@ -11,8 +11,16 @@ call_user_func(function ($_EXTKEY) {
         '<INCLUDE_TYPOSCRIPT: source="DIR:EXT:px_shopware/Configuration/PageTSconfig/" extension="ts">'
     );
 
-    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'][] =
-        Portrino\PxShopware\Service\Solr\Hooks\Queue::class . '->postProcessFetchRecordsForIndexQueueItem';
+
+    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'][] =
+            Portrino\PxShopware\Service\Solr\Hooks\Queue::class . '->postProcessFetchRecordsForIndexQueueItem';
+
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\ApacheSolrForTypo3\Solr\IndexQueue\Queue::class] = [
+            'className' => \Portrino\PxShopware\Xclass\Solr\IndexQueue\Queue::class
+        ];
+    }
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typolinkLinkHandler']['shopware_article'] =
         Portrino\PxShopware\LinkResolver\ArticleLinkResolver::class;
@@ -191,12 +199,6 @@ call_user_func(function ($_EXTKEY) {
             $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem'][] =
                 \Portrino\PxShopware\Backend\Hooks\PageLayoutViewDraw::class;
 
-
-            if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {
-                $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\ApacheSolrForTypo3\Solr\IndexQueue\Queue::class] = [
-                    'className' => \Portrino\PxShopware\Xclass\Solr\IndexQueue\Queue::class
-                ];
-            }
 
             /**
              * log all PxShopware errors into separate file

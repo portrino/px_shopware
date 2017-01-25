@@ -25,6 +25,7 @@ namespace Portrino\PxShopware\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\Util;
 use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
 use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
@@ -33,6 +34,7 @@ use Portrino\PxShopware\Service\Shopware\MediaClientInterface;
 use Portrino\PxShopware\Service\Shopware\ShopClientInterface;
 use Portrino\PxShopware\Service\Shopware\VersionClientInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
@@ -86,6 +88,7 @@ class NotificationController extends ActionController
     {
         $actionMethodName = parent::resolveActionMethodName();
         $authorizationHeader = $_SERVER['HTTP_AUTHORIZATION'];
+
         preg_match('/SW-TOKEN apikey="(?P<apikey>\w+)"/', $authorizationHeader, $matches);
 
         try {
@@ -123,6 +126,7 @@ class NotificationController extends ActionController
         foreach ($payload['data'] as $command) {
             $this->flushCacheForCommand($command['type'], intval($command['id']));
             if (isset($command['id']) && $command['id'] !== '' && ExtensionManagementUtility::isLoaded('solr') === true) {
+
                 switch ($command['action']) {
                     case self::COMMAND_CREATE;
                         $this->addItemToQueue($command['type'], intval($command['id']));
@@ -131,7 +135,7 @@ class NotificationController extends ActionController
                         $this->updateItemInQueue($command['type'], intval($command['id']));
                         break;
                     case self::COMMAND_DELETE;
-                        $this->deleteItemFromQueue($command['type'], intval($command['id']));
+                        $this->deleteItemFromQueueAndCore($command['type'], intval($command['id']));
                         break;
                     default:
                         $this->response->setStatus(400);
@@ -229,14 +233,20 @@ class NotificationController extends ActionController
      * @param string $type
      * @param integer $id
      */
-    protected function deleteItemFromQueue($type, $id)
+    protected function deleteItemFromQueueAndCore($type, $id)
     {
+        /** @var GarbageCollector $garbageCollector */
+        $garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
+
         switch ($type) {
             case self::TYPE_ARTICLE;
-                $this->indexQueue->deleteItem(self::SOLR_ITEM_TYPE_ARTICLE, $id);
+                $garbageCollector->collectGarbage(self::SOLR_ITEM_TYPE_ARTICLE, $id);
                 break;
             case self::TYPE_CATEGORY;
-                $this->indexQueue->deleteItem(self::SOLR_ITEM_TYPE_CATEGORY, $id);
+                $garbageCollector->collectGarbage(self::SOLR_ITEM_TYPE_CATEGORY, $id);
+                break;
+            default:
+                $garbageCollector->collectGarbage($type, $id);
                 break;
         }
     }
