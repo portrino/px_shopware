@@ -267,9 +267,9 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
 
             $jsonErrors = [
                 JSON_ERROR_NONE => 'No error occurred',
-                JSON_ERROR_DEPTH => 'The maximum stack depth has been reached',
-                JSON_ERROR_CTRL_CHAR => 'Control character issue, maybe wrong encoded',
-                JSON_ERROR_SYNTAX => 'Syntaxerror',
+                JSON_ERROR_DEPTH => 'The maximum stack depth has been reached - Original Response:' . $result,
+                JSON_ERROR_CTRL_CHAR => 'Control character issue, maybe wrong encoded - Original Response:' . $result,
+                JSON_ERROR_SYNTAX => 'Syntaxerror - Original Response:' . $result,
             ];
 
             throw new ShopwareApiClientJsonException($jsonErrors[json_last_error()], 1458808216);
