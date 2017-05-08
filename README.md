@@ -1,4 +1,4 @@
-# px_shopware 3.0.3 (stable)
+# px_shopware 3.0.4 (stable)
 Shopware Integration for TYPO3
 
 This extension connects [Shopware](https://www.shopware.com "Shopware") with [TYPO3 CMS](https://typo3.org/ "TYPO3"). 

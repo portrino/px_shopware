@@ -1,5 +1,9 @@
 # PxShopware Change log
 
+3.0.4 - 2017-05-08
+------------------
+* [BUGFIX] fix BE suggest after T3 core update to 7.6.18
+
 3.0.3 - 2017-01-25
 ------------------
 * [BUGFIX] remove deleted item from IndexQueue AND core index, to prevent dead entries 

@@ -16,7 +16,6 @@
  * Functionality to load suggest functionality
  */
 define(['jquery', 'jquery/autocomplete', 'TYPO3/CMS/Backend/FormEngine'], function ($) {
-
     $(document).ready(function() {
         TYPO3.FormEngine.reinitialize();
         require(['TYPO3/CMS/PxShopware/FormEngineSuggest'], function(PxShopwareSuggest) {
@@ -40,6 +39,16 @@ define(['jquery', 'jquery/autocomplete', 'TYPO3/CMS/Backend/FormEngine'], functi
             params = {
                 'type': type,
                 'language': language
+            },
+            insertValue = function(element) {
+                var insertData = $(element).data('uid');
+
+                var formEl = $searchField.data('fieldname');
+                var labelEl = $('<div>').html($(element).data('label'));
+                var label = labelEl.text();
+                var title = labelEl.find('span').attr('title') || label;
+                setFormValueFromBrowseWin(formEl, insertData, label, title);
+                // TBE_EDITOR.fieldChanged(table, uid, field, formEl);
             };
 
         var timeoutId = 0;
@@ -110,27 +119,18 @@ define(['jquery', 'jquery/autocomplete', 'TYPO3/CMS/Backend/FormEngine'], functi
                 container.attr('style', '');
                 $containerElement.addClass('open');
             },
+            onSelect: function() {
+                insertValue($containerElement.find('.autocomplete-selected a')[0]);
+            },
             onHide: function() {
                 $containerElement.removeClass('open');
             }
         });
 
         $searchField.autocomplete('disable');
-
         // set up the events
         $containerElement.on('click', '.autocomplete-suggestion-link', function(evt) {
             evt.preventDefault();
-            var insertData = '';
-            insertData = $(this).data('uid');
-
-
-
-            var formEl = $searchField.data('fieldname');
-            var labelEl = $('<div>').html($(this).data('label'));
-            var label = labelEl.text();
-            var title = labelEl.find('span').attr('title') || label;
-            setFormValueFromBrowseWin(formEl, insertData, label, title);
-            // TBE_EDITOR.fieldChanged(table, uid, field, formEl);
         });
     };
 
