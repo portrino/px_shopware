@@ -1,4 +1,8 @@
-# PxShopware Change log
+# PxShopware Changelog
+
+3.0.5 - 2017-06-21
+------------------
+* [BUGFIX] removes hard-coded field name in ItemsProcFunc->getItemsSelected() 
 
 3.0.4 - 2017-05-08
 ------------------

@@ -69,6 +69,7 @@ class ItemsProcFunc {
     /**
      * @param array $config
      * @param string $key
+     * @throws ShopwareApiClientConfigurationException
      */
     public function getItemsSelected(array &$config, $key) {
         $params = isset($config['config']['itemsProcFunc_params']) ? $config['config']['itemsProcFunc_params'] : [];
@@ -93,7 +94,7 @@ class ItemsProcFunc {
         $shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
 
         /** @var array $selectedItems */
-        $selectedItems = isset($config['row']['settings.items']) ? GeneralUtility::trimExplode(',', $config['row']['settings.items'], TRUE) : [];
+        $selectedItems = isset($config['row'][$config['field']]) ? GeneralUtility::trimExplode(',', $config['row'][$config['field']], TRUE) : [];
         foreach ($selectedItems as $item) {
             /** @var ItemEntryInterface $selectedItem */
             $selectedItem = $shopwareApiClient->findById($item, FALSE, ['language' => $shopId]);
@@ -110,6 +111,7 @@ class ItemsProcFunc {
     /**
      * @param array $config
      * @param string $key
+     * @throws ShopwareApiClientConfigurationException
      */
     public function getAllItems(array &$config, $key) {
 
