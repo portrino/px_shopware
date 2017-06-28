@@ -89,6 +89,7 @@ class SuggestWizard {
      * @param AbstractFormElement $pObj
      *
      * @return string The HTML code for the selector
+     * @throws ShopwareApiClientConfigurationException
      */
     public function renderSuggestSelector($params, $pObj) {
         $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/PxShopware/FormEngineSuggest');
@@ -153,6 +154,7 @@ class SuggestWizard {
      * @param ResponseInterface $response
      *
      * @return ResponseInterface
+     * @throws ShopwareApiClientConfigurationException
      */
     public function searchAction(ServerRequestInterface $request, ResponseInterface $response) {
         $parsedBody = $request->getParsedBody();
@@ -184,7 +186,7 @@ class SuggestWizard {
         $shopwareApiClient = $this->objectManager->get($shopwareApiClientClass);
 
         $shopId = $this->localeToShopMappingService->getShopIdBySysLanguageUid($language);
-        $results = $shopwareApiClient->findByTerm($search, 8, TRUE, ['language' => $shopId]);
+        $results = $shopwareApiClient->findByTerm($search, 8, true, ['language' => $shopId]);
 
         /** @var SuggestEntryInterface $result */
         foreach ($results as $result) {
