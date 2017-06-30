@@ -37,7 +37,12 @@
                     WARNING: If you have many products in your shop this option may decrease your performance! Use default "Autosuggest Wizard" instead!
                 </source>
             </trans-unit>
-
+            <trans-unit id="ext_conf_template.plugin.fetchFrontendArticleDetailsAsJson">
+                <source>
+                    Fetch frontend article details as JSON stream: Additionally allow to fetch the Shopware article details view as JSON stream, that has already been fetched via REST API. The JSON data contains the Shopware article model of the detail view as JSON stream, which differs from the REST API.
+                    WARNING: Port1JsonView plugin must be installed in Shopware!
+                </source>
+            </trans-unit>
             <trans-unit id="toolbar_items.shopware_connector_information">
                 <source>Shopware Connector Information</source>
             </trans-unit>

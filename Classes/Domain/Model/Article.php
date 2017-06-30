@@ -87,6 +87,11 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     protected $details;
 
     /**
+     * @var object
+     */
+    protected $frontendDetails;
+
+    /**
      * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
      * @inject
      */
@@ -401,6 +406,23 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     public function removeDetail(\Portrino\PxShopware\Domain\Model\Detail $detailToRemove)
     {
         $this->details->detach($detailToRemove);
+    }
+
+    /**
+     * @return null|object
+     */
+    public function getFrontendDetails()
+    {
+        $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['px_shopware']);
+        if ($this->frontendDetails === null && (bool)$extConf['plugin.']['fetchFrontendArticleDetailsAsJson'] === true) {
+            $response = $this->articleClient->get($this->getUri(), ['format' => 'json'], false);
+            if ($response->data) {
+                $this->frontendDetails = $response->data;
+            }
+        }
+        unset($extConf);
+
+        return $this->frontendDetails;
     }
 
 

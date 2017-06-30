@@ -204,7 +204,7 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
         $queryString = http_build_query($params);
 
         $url = rtrim($endpoint, '?') . '?';
-        $url = $this->apiUrl . $url . $queryString;
+        $url = (strpos($endpoint, '://') !== false ? '' : $this->apiUrl) . $url . $queryString;
 
         /**
          * only cache when:

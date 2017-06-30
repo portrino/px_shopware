@@ -18,3 +18,6 @@ logging.disable = 0
 
 # cat=Plugin/010; type=boolean; label=LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:ext_conf_template.plugin.fetchAllItems
 plugin.fetchAllItems = 0
+
+# cat=Plugin/020; type=boolean; label=LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:ext_conf_template.plugin.fetchFrontendArticleDetailsAsJson
+plugin.fetchFrontendArticleDetailsAsJson = 0
