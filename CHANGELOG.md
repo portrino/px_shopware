@@ -4,6 +4,7 @@
 ------------------
 * [TASK] updates dependencies in composer.json and ext_emconf.php for TYPO3 8.7
 * [TASK] updates license in composer.json for packagist compatibility
+* [TASK] updates Cache/CacheChain.php with new method for TYPO3 8.7
 
 3.0.5 - 2017-06-21
 ------------------

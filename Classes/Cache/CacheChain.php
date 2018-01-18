@@ -212,6 +212,22 @@ class CacheChain implements FrontendInterface, SingletonInterface {
         }
     }
 
+    /**
+     * Removes all cache entries of this cache which are tagged by any of the specified tags.
+     *
+     * @param string[] $tags
+     * @throws \InvalidArgumentException
+     */
+    public function flushByTags(array $tags)
+    {
+        /**
+         * @var FrontendInterface $cache
+         */
+        foreach ($this->chain as $cache) {
+            $cache->flushByTags($tags);
+        }
+    }
+
     public function collectGarbage() {
         /**
          * @var FrontendInterface $cache
