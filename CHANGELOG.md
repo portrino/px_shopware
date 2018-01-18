@@ -3,6 +3,7 @@
 3.1.0 - 2018-01-18
 ------------------
 * [TASK] updates dependencies in composer.json and ext_emconf.php for TYPO3 8.7
+* [TASK] updates license in composer.json for packagist compatibility
 
 3.0.5 - 2017-06-21
 ------------------
