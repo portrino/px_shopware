@@ -1,5 +1,9 @@
 # PxShopware Changelog
 
+3.1.0 - 2018-01-18
+------------------
+* [TASK] updates dependencies in composer.json and ext_emconf.php for TYPO3 8.7
+
 3.0.5 - 2017-06-21
 ------------------
 * [BUGFIX] removes hard-coded field name in ItemsProcFunc->getItemsSelected() 
