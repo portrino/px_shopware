@@ -24,6 +24,7 @@ namespace Portrino\PxShopware\Backend\Toolbar;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Imaging\Icon;
@@ -47,21 +48,34 @@ class ClearCacheMenu implements \TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHook
      */
     public function manipulateCacheActions(&$cacheActions, &$optionValues)
     {
+        if ($this->getBackendUser()->isAdmin()) {
+            if (version_compare(TYPO3_version, '8.7', '>=')) {
+                /** @var UriBuilder $uriBuilder */
+                $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+                $routeIdentifier = 'ajax_tx_pxshopware::clearCache';
+                $uri = $uriBuilder->buildUriFromRoute($routeIdentifier);
+                $cacheActions[] = [
+                    'id' => 'px_shopware',
+                    'title' => 'LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:clear_cache_menu.title',
+                    'description' => 'LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:clear_cache_menu.description',
+                    'href' => (string)$uri,
+                    'iconIdentifier' => 'px-shopware-clear-cache'
+                ];
+            } else {
+                // TYPO3 7.6
+                $languageService = $this->getLanguageService();
+                $title = $languageService->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:clear_cache_menu.title');
+                $description = $languageService->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:clear_cache_menu.description');
 
-        $backendUser = $this->getBackendUser();
-        $languageService = $this->getLanguageService();
+                $cacheActions[] = [
+                    'id' => 'px_shopware',
+                    'title' => $title,
+                    'description' => $description,
+                    'href' => BackendUtility::getAjaxUrl('tx_pxshopware::clearCache'),
+                    'icon' => $this->getIcon()
+                ];
 
-        if ($backendUser->isAdmin()) {
-            $title = $languageService->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:clear_cache_menu.title');
-            $description = $languageService->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:clear_cache_menu.description');
-
-            $cacheActions[] = [
-                'id' => 'px_shopware',
-                'title' => $title,
-                'description' => $description,
-                'href' => BackendUtility::getAjaxUrl('tx_pxshopware::clearCache'),
-                'icon' => $this->getIcon()
-            ];
+            }
             $optionValues[] = 'tx_pxshopware::clearCache';
         }
     }
