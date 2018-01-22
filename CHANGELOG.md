@@ -7,6 +7,7 @@
 * [TASK] updates Cache/CacheChain.php with new method for TYPO3 8.7
 * [TASK] updates Backend/Toolbar/ClearCacheMenu for TYPO3 8.7
 * [TASK] adds Backend CSS for TYPO3 8.7
+* [TASK] renames default Layout to fix bug in TYPO3 8.7 InsertRecord rendering
 
 3.0.5 - 2017-06-21
 ------------------
