@@ -68,7 +68,7 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
                     'value' => '%' . $term . '%'
                 ],
                 [
-                    'operator' => 'OR',
+                    'operator' => '1',
                     'property' => 'mainDetail.number',
                     'expression' => 'LIKE',
                     'value' => '%' . $term . '%'

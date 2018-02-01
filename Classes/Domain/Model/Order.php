@@ -26,6 +26,7 @@ namespace Portrino\PxShopware\Domain\Model;
  ***************************************************************/
 use Portrino\PxShopware\Backend\Form\Wizard\SuggestEntryInterface;
 use Portrino\PxShopware\Backend\Hooks\ItemEntryInterface;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 
 /**
  * Class Order
@@ -159,23 +160,26 @@ class Order extends AbstractShopwareModel implements SuggestEntryInterface, Item
      */
     public function getCustomer()
     {
-        if (!$this->customer) {
+        if (!$this->customer || ($this->customer instanceof Customer) === false) {
             /**
              * try to get the customer object from raw
              */
-            if (!isset($this->getRaw()->customer)) {
+            if (!isset($this->getRaw()->customer) && (int)$this->getRaw()->customerId > 0) {
                 /** @var Customer $customer */
                 $customer = $this->customerClient->findById($this->getRaw()->customerId, false);
                 $this->setCustomer($customer);
             } else {
                 if (isset($this->getRaw()->customer)) {
-                    /** @var Customer $customer */
-                    $customer = $this->objectManager->get(Customer::class, $this->getRaw()->customer, $this->token);
+                    if ($this->getRaw()->customer instanceof \stdClass) {
+                        $customer = $this->customerClient->findById($this->getRaw()->customer->id, false);
+                    } else {
+                        /** @var Customer $customer */
+                        $customer = $this->objectManager->get(Customer::class, $this->getRaw()->customer, $this->token);
+                    }
                     $this->setCustomer($customer);
                 }
             }
         }
-
         return $this->customer;
     }
 
@@ -321,9 +325,8 @@ class Order extends AbstractShopwareModel implements SuggestEntryInterface, Item
      */
     public function getSuggestDescription()
     {
-
         return $this->getOrderTime()->format('d.m.Y H:i') . ' - ' .
-            $this->getCustomer()->getName() . '(' . $this->getCustomer()->getEmail() . ')';
+            $this->getCustomer()->getName() . ' (' . $this->getCustomer()->getEmail() . ')';
     }
 
     /**

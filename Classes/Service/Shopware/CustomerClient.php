@@ -32,7 +32,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-class CustomerClient extends AbstractShopwareApiClient implements OrderClientInterface
+class CustomerClient extends AbstractShopwareApiClient implements CustomerClientInterface
 {
 
     /**
@@ -57,7 +57,7 @@ class CustomerClient extends AbstractShopwareApiClient implements OrderClientInt
                     'value' => $term
                 ],
                 [
-                    'operator' => 'OR',
+                    'operator' => '1',
                     'property' => 'number',
                     'expression' => 'LIKE',
                     'value' => '%' . $term . '%'

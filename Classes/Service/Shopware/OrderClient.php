@@ -57,7 +57,7 @@ class OrderClient extends AbstractShopwareApiClient implements OrderClientInterf
                     'value' => $term
                 ],
                 [
-                    'operator' => 'OR',
+                    'operator' => '1',
                     'property' => 'number',
                     'expression' => 'LIKE',
                     'value' => '%' . $term . '%'
@@ -71,13 +71,13 @@ class OrderClient extends AbstractShopwareApiClient implements OrderClientInterf
                     'value' => '%' . $term . '%'
                 ],
                 [
-                    'operator' => 'OR',
+                    'operator' => '1',
                     'property' => 'customer.firstname',
                     'expression' => 'LIKE',
                     'value' => '%' . $term . '%'
                 ],
                 [
-                    'operator' => 'OR',
+                    'operator' => '1',
                     'property' => 'customer.lastname',
                     'expression' => 'LIKE',
                     'value' => '%' . $term . '%'
