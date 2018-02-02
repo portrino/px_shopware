@@ -38,7 +38,7 @@ class VersionClient extends AbstractShopwareApiClient implements VersionClientIn
      */
     public function getEndpoint()
     {
-        return self::ENDPOINT;
+        return VersionClientInterface::ENDPOINT;
     }
 
     /**
@@ -46,7 +46,6 @@ class VersionClient extends AbstractShopwareApiClient implements VersionClientIn
      */
     public function getEntityClassName()
     {
-        return self::ENTITY_CLASS_NAME;
+        return VersionClientInterface::ENTITY_CLASS_NAME;
     }
-
 }

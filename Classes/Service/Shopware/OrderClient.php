@@ -41,6 +41,7 @@ class OrderClient extends AbstractShopwareApiClient implements OrderClientInterf
      * @param bool $doCacheRequest
      * @param array $params
      * @return ObjectStorage
+     * @throws Exceptions\ShopwareApiClientException
      */
     public function findByTerm($term, $limit = -1, $doCacheRequest = true, $params = [])
     {
@@ -120,7 +121,7 @@ class OrderClient extends AbstractShopwareApiClient implements OrderClientInterf
      */
     public function getEndpoint()
     {
-        return self::ENDPOINT;
+        return OrderClientInterface::ENDPOINT;
     }
 
     /**
@@ -128,6 +129,6 @@ class OrderClient extends AbstractShopwareApiClient implements OrderClientInterf
      */
     public function getEntityClassName()
     {
-        return self::ENTITY_CLASS_NAME;
+        return OrderClientInterface::ENTITY_CLASS_NAME;
     }
 }

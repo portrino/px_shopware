@@ -31,10 +31,13 @@ use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException;
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-interface AbstractShopwareApiClientInterface {
+interface AbstractShopwareApiClientInterface
+{
 
     const STATUS_CONNECTED_FULL = 'status_connected_full';
+
     const STATUS_CONNECTED_TRIAL = 'status_connected_trial';
+
     const STATUS_DISCONNECTED = 'status_disconnected';
 
     /**
@@ -66,7 +69,7 @@ interface AbstractShopwareApiClientInterface {
      *
      * @return \Portrino\PxShopware\Domain\Model\ShopwareModelInterface
      */
-    public function findById($id, $doCacheRequest = TRUE, $params = []);
+    public function findById($id, $doCacheRequest = true, $params = []);
 
     /**
      * @param $term
@@ -76,7 +79,7 @@ interface AbstractShopwareApiClientInterface {
      *
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
-    public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE, $params = []);
+    public function findByTerm($term, $limit = -1, $doCacheRequest = true, $params = []);
 
     /**
      * @param bool $doCacheRequest
@@ -84,14 +87,13 @@ interface AbstractShopwareApiClientInterface {
      *
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
-    public function findAll($doCacheRequest = TRUE, $params = []);
+    public function findAll($doCacheRequest = true, $params = []);
 
     /**
      * @param array $params
      * @param bool $doCacheRequest
-     * 
+     *
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
      */
-    public function findByParams($params = [], $doCacheRequest = TRUE);
-
+    public function findByParams($params = [], $doCacheRequest = true);
 }

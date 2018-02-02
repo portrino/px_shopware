@@ -35,7 +35,8 @@ interface OrderClientInterface extends AbstractShopwareApiClientInterface
 {
 
     const ENDPOINT = 'orders';
-    const CACHE_TAG = 'showpare_order';
-    const ENTITY_CLASS_NAME = Order::class;
 
+    const CACHE_TAG = 'showpare_order';
+
+    const ENTITY_CLASS_NAME = Order::class;
 }

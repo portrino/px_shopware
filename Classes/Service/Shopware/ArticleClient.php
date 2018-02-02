@@ -41,6 +41,7 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
      * @param bool $doCacheRequest
      * @param array $params
      * @return ObjectStorage
+     * @throws Exceptions\ShopwareApiClientException
      */
     public function findByTerm($term, $limit = -1, $doCacheRequest = true, $params = [])
     {
@@ -110,7 +111,7 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
      */
     public function getEndpoint()
     {
-        return self::ENDPOINT;
+        return ArticleClientInterface::ENDPOINT;
     }
 
     /**
@@ -118,7 +119,6 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
      */
     public function getEntityClassName()
     {
-        return self::ENTITY_CLASS_NAME;
+        return ArticleClientInterface::ENTITY_CLASS_NAME;
     }
-
 }

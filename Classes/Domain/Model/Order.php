@@ -26,7 +26,6 @@ namespace Portrino\PxShopware\Domain\Model;
  ***************************************************************/
 use Portrino\PxShopware\Backend\Form\Wizard\SuggestEntryInterface;
 use Portrino\PxShopware\Backend\Hooks\ItemEntryInterface;
-use TYPO3\CMS\Core\Utility\DebugUtility;
 
 /**
  * Class Order
@@ -353,5 +352,4 @@ class Order extends AbstractShopwareModel implements SuggestEntryInterface, Item
         $result = $this->getNumber() . ' [' . $this->getId() . ']';
         return $result;
     }
-
 }

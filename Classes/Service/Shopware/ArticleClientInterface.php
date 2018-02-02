@@ -35,7 +35,8 @@ interface ArticleClientInterface extends AbstractShopwareApiClientInterface
 {
 
     const ENDPOINT = 'articles';
-    const CACHE_TAG = 'showpare_article';
-    const ENTITY_CLASS_NAME = Article::class;
 
+    const CACHE_TAG = 'showpare_article';
+
+    const ENTITY_CLASS_NAME = Article::class;
 }

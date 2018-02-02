@@ -38,7 +38,7 @@ class MediaClient extends AbstractShopwareApiClient implements MediaClientInterf
      */
     public function getEndpoint()
     {
-        return self::ENDPOINT;
+        return MediaClientInterface::ENDPOINT;
     }
 
     /**
@@ -46,7 +46,6 @@ class MediaClient extends AbstractShopwareApiClient implements MediaClientInterf
      */
     public function getEntityClassName()
     {
-        return self::ENTITY_CLASS_NAME;
+        return MediaClientInterface::ENTITY_CLASS_NAME;
     }
-
 }
