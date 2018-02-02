@@ -1,5 +1,10 @@
 # PxShopware Changelog
 
+3.1.0 - 2018-02-01
+------------------
+* [FEATURE] adds Customer and Order models and their respective Shopware clients
+* [CLEANUP] adapts operator filter values in Shopware clients to the Shopware >=v5.2 REST API requirements 
+
 3.0.5 - 2017-06-21
 ------------------
 * [BUGFIX] removes hard-coded field name in ItemsProcFunc->getItemsSelected() 

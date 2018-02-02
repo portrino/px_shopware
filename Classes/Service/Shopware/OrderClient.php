@@ -4,7 +4,7 @@ namespace Portrino\PxShopware\Service\Shopware;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2016 Andre Wuttig <wuttig@portrino.de>, portrino GmbH
+ *  (c) (c) 2017 Axel Boeswetter <boeswetter@portrino.de>, portrino GmbH
  *
  *  All rights reserved
  *
@@ -28,11 +28,11 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
- * Class ArticleClient
+ * Class OrderClient
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-class ArticleClient extends AbstractShopwareApiClient implements ArticleClientInterface
+class OrderClient extends AbstractShopwareApiClient implements OrderClientInterface
 {
 
     /**
@@ -51,26 +51,35 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
          * only search for id if term is integer
          */
         if (is_numeric($term)) {
-
             $filter = [
                 [
                     'property' => 'id',
                     'expression' => '=',
                     'value' => $term
                 ],
+                [
+                    'operator' => '1',
+                    'property' => 'number',
+                    'expression' => 'LIKE',
+                    'value' => '%' . $term . '%'
+                ],
             ];
-
         } else {
-
             $filter = [
                 [
-                    'property' => 'name',
+                    'property' => 'customer.email',
                     'expression' => 'LIKE',
                     'value' => '%' . $term . '%'
                 ],
                 [
                     'operator' => '1',
-                    'property' => 'mainDetail.number',
+                    'property' => 'customer.firstname',
+                    'expression' => 'LIKE',
+                    'value' => '%' . $term . '%'
+                ],
+                [
+                    'operator' => '1',
+                    'property' => 'customer.lastname',
                     'expression' => 'LIKE',
                     'value' => '%' . $term . '%'
                 ]
@@ -81,8 +90,8 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
             'limit' => $limit,
             'sort' => [
                 [
-                    'property' => 'name',
-                    'direction' => 'ASC'
+                    'property' => 'number',
+                    'direction' => 'DESC'
                 ]
             ],
             'filter' => $filter
@@ -103,6 +112,7 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
                 }
             }
         }
+
         return $shopwareModels;
     }
 
@@ -111,7 +121,7 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
      */
     public function getEndpoint()
     {
-        return ArticleClientInterface::ENDPOINT;
+        return OrderClientInterface::ENDPOINT;
     }
 
     /**
@@ -119,6 +129,6 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
      */
     public function getEntityClassName()
     {
-        return ArticleClientInterface::ENTITY_CLASS_NAME;
+        return OrderClientInterface::ENTITY_CLASS_NAME;
     }
 }

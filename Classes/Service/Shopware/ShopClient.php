@@ -38,7 +38,7 @@ class ShopClient extends AbstractShopwareApiClient implements ShopClientInterfac
      */
     public function getEndpoint()
     {
-        return self::ENDPOINT;
+        return ShopClientInterface::ENDPOINT;
     }
 
     /**
@@ -46,7 +46,6 @@ class ShopClient extends AbstractShopwareApiClient implements ShopClientInterfac
      */
     public function getEntityClassName()
     {
-        return self::ENTITY_CLASS_NAME;
+        return ShopClientInterface::ENTITY_CLASS_NAME;
     }
-
 }

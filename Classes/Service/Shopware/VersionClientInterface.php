@@ -35,7 +35,8 @@ interface VersionClientInterface extends AbstractShopwareApiClientInterface
 {
 
     const ENDPOINT = 'version';
-    const CACHE_TAG = 'showpare_version';
-    const ENTITY_CLASS_NAME = Version::class;
 
+    const CACHE_TAG = 'showpare_version';
+
+    const ENTITY_CLASS_NAME = Version::class;
 }

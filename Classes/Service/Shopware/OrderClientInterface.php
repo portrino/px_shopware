@@ -4,7 +4,7 @@ namespace Portrino\PxShopware\Service\Shopware;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2016 Andre Wuttig <wuttig@portrino.de>, portrino GmbH
+ *  (c) (c) 2017 Axel Boeswetter <boeswetter@portrino.de>, portrino GmbH
  *
  *  All rights reserved
  *
@@ -24,28 +24,19 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use Portrino\PxShopware\Domain\Model\Order;
 
 /**
- * Class VersionClient
+ * Interface OrderClientInterface
  *
  * @package Portrino\PxShopware\Service\Shopware
  */
-class VersionClient extends AbstractShopwareApiClient implements VersionClientInterface
+interface OrderClientInterface extends AbstractShopwareApiClientInterface
 {
 
-    /**
-     * @return string
-     */
-    public function getEndpoint()
-    {
-        return VersionClientInterface::ENDPOINT;
-    }
+    const ENDPOINT = 'orders';
 
-    /**
-     * @return string
-     */
-    public function getEntityClassName()
-    {
-        return VersionClientInterface::ENTITY_CLASS_NAME;
-    }
+    const CACHE_TAG = 'showpare_order';
+
+    const ENTITY_CLASS_NAME = Order::class;
 }

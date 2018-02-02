@@ -39,6 +39,7 @@ class CategoryClient extends AbstractShopwareApiClient implements CategoryClient
      *
      * @param int $parentId
      * @return ObjectStorage <\Portrino\PxShopware\Domain\Model\Category>
+     * @throws Exceptions\ShopwareApiClientException
      */
     public function findByParent($parentId)
     {
@@ -81,7 +82,7 @@ class CategoryClient extends AbstractShopwareApiClient implements CategoryClient
      */
     public function getEndpoint()
     {
-        return self::ENDPOINT;
+        return CategoryClientInterface::ENDPOINT;
     }
 
     /**
@@ -89,7 +90,6 @@ class CategoryClient extends AbstractShopwareApiClient implements CategoryClient
      */
     public function getEntityClassName()
     {
-        return self::ENTITY_CLASS_NAME;
+        return CategoryClientInterface::ENTITY_CLASS_NAME;
     }
-
 }

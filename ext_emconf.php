@@ -14,14 +14,14 @@ $EM_CONF[$_EXTKEY] = array (
     'title' => 'Shopware Client for TYPO3',
     'description' => 'Provides frontend plugins to render articles, products from shopware systems',
     'category' => 'plugin',
-    'author' => 'André Wuttig, Sascha Nowak',
-    'author_email' => 'support@portrino.de, sascha.nowak@netlogix.de',
+    'author' => 'André Wuttig, Axel Boeswetter, Sascha Nowak',
+    'author_email' => 'support@portrino.de, boeswetter@portrino.de, sascha.nowak@netlogix.de',
     'author_company' => 'portrino, netlogix',
     'state' => 'stable',
     'uploadfolder' => false,
     'createDirs' => '',
     'clearCacheOnLoad' => 0,
-    'version' => '3.0.5',
+    'version' => '3.1.0',
     'constraints' =>
     array (
         'depends' =>
