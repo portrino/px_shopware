@@ -33,22 +33,30 @@ call_user_func(function ($_EXTKEY) {
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
                 'Portrino.' . $_EXTKEY,
                 'Pi1',
-                ['Article' => 'list'],
+                [
+                    'Article' => 'list, listByCategories'
+                ],
                 []
             );
 
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
                 'Portrino.' . $_EXTKEY,
                 'Pi2',
-                ['Category' => 'list'],
+                [
+                    'Category' => 'list'
+                ],
                 []
             );
 
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
                 'Portrino.' . $_EXTKEY,
                 'Notification',
-                ['Notification' => 'index'],
-                ['Notification' => 'index']
+                [
+                    'Notification' => 'index'
+                ],
+                [
+                    'Notification' => 'index'
+                ]
             );
 
             /**

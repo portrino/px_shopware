@@ -5,6 +5,7 @@ namespace Portrino\PxShopware\Controller;
  *  Copyright notice
  *
  *  (c) 2016 Andre Wuttig <wuttig@portrino.de>, portrino GmbH
+ *      2018 Axel Boeswetter <boeswetter@portrino.de>, portrino GmbH
  *
  *  All rights reserved
  *
@@ -25,12 +26,16 @@ namespace Portrino\PxShopware\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+
 /**
  * Class ArticleController
  *
  * @package Portrino\PxShopware\Controller
  */
-class ArticleController extends AbstractController {
+class ArticleController extends AbstractController
+{
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\ArticleClientInterface
@@ -38,4 +43,30 @@ class ArticleController extends AbstractController {
      */
     protected $shopwareClient;
 
+    /**
+     * @return void
+     */
+    public function listByCategoriesAction()
+    {
+        $categoryIdList = isset($this->settings['categories']) ?
+            GeneralUtility::trimExplode(',', $this->settings['categories']) :
+            [];
+        $filter = [];
+        $items = new ObjectStorage();
+
+        if (is_array($categoryIdList)) {
+            foreach ($categoryIdList as $categoryId) {
+                $filter[] = [
+                    'property' => 'categories.id',
+                    'value' => $categoryId
+                ];
+            }
+            $articles = $this->shopwareClient->findByParams($filter, false);
+            foreach ($articles as $article) {
+                $items->attach($article);
+            }
+        }
+
+        $this->view->assign('items', $items);
+    }
 }

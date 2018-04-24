@@ -125,13 +125,16 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * common.
      *
      * @return void
+     * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
      */
     protected function initializeAction()
     {
         parent::initializeAction();
         $this->applicationContext = GeneralUtility::getApplicationContext();
         $this->dateTime = new \DateTime('now', new \DateTimeZone('Europe/Berlin'));
-        $this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)]);
+        $this->extConf = unserialize(
+            $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)]
+        );
         $this->extbaseFrameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $this->controllerSettings = $this->settings['controllers'][$this->request->getControllerName()];
         $this->actionSettings = $this->controllerSettings['actions'][$this->request->getControllerActionName()];
@@ -202,6 +205,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * @param bool $absolute
      * @param bool $addQueryString
      * @param array $argumentsToBeExcludedFromQueryString
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
     protected function redirectToPage(
         $pageUid = null,

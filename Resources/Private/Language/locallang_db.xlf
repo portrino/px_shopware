@@ -157,8 +157,20 @@
             <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings">
                 <source>Settings</source>
             </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.switchable_controller_actions">
+                <source>Type</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.switchable_controller_actions.list">
+                <source>List selected articles</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.switchable_controller_actions.list_by_categories">
+                <source>List articles of selected categories</source>
+            </trans-unit>
             <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.items">
                 <source>Articles</source>
+            </trans-unit>
+            <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.categories">
+                <source>Categories</source>
             </trans-unit>
             <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings.template">
                 <source>Template</source>

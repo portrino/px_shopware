@@ -221,9 +221,9 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
     }
 
     /**
-     * Gets the Shop Status
+     * Gets the shop status
      *
-     * @return void
+     * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
      */
     protected function getShopStatus()
     {
