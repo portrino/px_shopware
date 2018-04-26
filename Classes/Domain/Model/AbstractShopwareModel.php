@@ -118,4 +118,18 @@ abstract class AbstractShopwareModel implements ShopwareModelInterface
     {
         $this->token = $token;
     }
+
+    /**
+     * @param $name
+     * @return mixed
+     * @throws \BadMethodCallException
+     */
+    public function __get($name)
+    {
+        if (property_exists($name, $this->raw)) {
+            return $this->raw->$name;
+        }
+
+        throw new \BadMethodCallException('Requested property "' . $name .'" not found in "' . get_class($this) . '"');
+    }
 }
