@@ -191,7 +191,7 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
         foreach ($selectedItemsArray as $item) {
             $language = $this->languageToShopMappingService->getShopIdBySysLanguageUid($row['sys_language_uid']);
             /** @var ItemEntryInterface $selectedItem */
-            $selectedItem = $this->shopwareClient->findById($item, false, ['language' => $language]);
+            $selectedItem = $this->shopwareClient->findById($item, true, ['language' => $language]);
 
             if ($selectedItem) {
                 $selectedItems->attach($selectedItem);

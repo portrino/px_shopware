@@ -35,7 +35,7 @@ interface CategoryClientInterface extends AbstractShopwareApiClientInterface
 {
 
     const ENDPOINT = 'categories';
-    const CACHE_TAG = 'showpare_category';
+    const CACHE_TAG = 'shopware_category';
     const ENTITY_CLASS_NAME = Category::class;
 
     /**

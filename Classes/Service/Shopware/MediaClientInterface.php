@@ -35,7 +35,7 @@ interface MediaClientInterface extends AbstractShopwareApiClientInterface
 {
 
     const ENDPOINT = 'media';
-    const CACHE_TAG = 'showpare_media';
+    const CACHE_TAG = 'shopware_media';
     const ENTITY_CLASS_NAME = Media::class;
 
 }

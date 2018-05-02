@@ -93,7 +93,7 @@ class SuggestWizard {
     public function renderSuggestSelector($params, $pObj) {
         $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/PxShopware/FormEngineSuggest');
         $this->pageRenderer->addCssFile(
-            ExtensionManagementUtility::extRelPath('px_shopware') . 'Resources/Public/Css/backend.css'
+            ExtensionManagementUtility::extRelPath('px_shopware') . 'Resources/Public/Css/autocomplete.css'
         );
 
         /**
