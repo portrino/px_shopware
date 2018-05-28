@@ -1,4 +1,4 @@
-# px_shopware 3.0.4 (stable)
+# px_shopware 3.1.0 (stable)
 [![Latest Stable Version](https://poser.pugx.org/portrino/px_shopware/v/stable)](https://packagist.org/packages/portrino/px_shopware)
 [![Total Downloads](https://poser.pugx.org/portrino/px_shopware/downloads)](https://packagist.org/packages/portrino/px_shopware)
 

@@ -314,7 +314,7 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
                 $cacheTag = VersionClientInterface::CACHE_TAG;
                 break;
             default:
-                $cacheTag = 'showpare_' . $urlParts[0];
+                $cacheTag = 'shopware_' . $urlParts[0];
         }
 
         if (isset($urlParts[1]) && MathUtility::canBeInterpretedAsInteger($urlParts[1])) {
