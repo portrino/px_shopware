@@ -78,6 +78,7 @@ class AbstractShopwareIndexer extends Indexer
      * @param Item $item An index queue item to index.
      * @param integer $language The language to use.
      * @return boolean TRUE if item was indexed successfully, FALSE on failure
+     * @throws \Apache_Solr_HttpTransportException
      */
     protected function indexItem(Item $item, $language = 0)
     {
@@ -87,18 +88,18 @@ class AbstractShopwareIndexer extends Indexer
         $itemRecord = $this->getShopwareRecord($item, $language);
 
         // In this case we have no item for the current language and skip indexing
-        if ($itemRecord === NULL) {
+        if ($itemRecord === null) {
             return true;
         }
 
-        // get general fields
-        /** @var \Apache_Solr_Document $itemDocument */
-        $itemDocument = $this->getBaseDocument($item, $itemRecord);
-
-        $itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
-
         // get raw item data as array, needed for Solr core functions
         $itemDataRaw = json_decode(json_encode($itemRecord->getRaw()), true);
+
+        // get general fields
+        /** @var \Apache_Solr_Document $itemDocument */
+        $itemDocument = $this->getBaseDocument($item, $itemDataRaw);
+
+        $itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
 
         // process TS config for additional fields
         $itemDocument = $this->addDocumentFieldsFromTyposcript($itemDocument, $itemIndexingConfiguration, $itemDataRaw);
@@ -108,7 +109,6 @@ class AbstractShopwareIndexer extends Indexer
 
         // check if item should be indexed
         if ($this->itemIsValid($itemRecord)) {
-
             $documents[] = $itemDocument;
 
             // allow indexItemAddDocuments Hooks
@@ -158,9 +158,9 @@ class AbstractShopwareIndexer extends Indexer
             $result = false;
         }
         // check if item should be ignored
-        if ($this->options['ignoredIds'] != '') {
-            $ignoredIds = GeneralUtility::trimExplode(',', $this->options['ignoredIds'], true);
-            if (in_array($itemRecord->getId(), $ignoredIds)) {
+        if ($this->options['ignoredIds'] !== '') {
+            $ignoredIds = GeneralUtility::intExplode(',', $this->options['ignoredIds'], true);
+            if (\in_array($itemRecord->getId(), $ignoredIds, true)) {
                 $result = false;
             }
         }
@@ -202,10 +202,10 @@ class AbstractShopwareIndexer extends Indexer
      * Creates a Solr document with the basic / core fields set already.
      *
      * @param Item $item The item to index
-     * @param AbstractShopwareModel $itemRecord The record to use to build the base document
+     * @param array $itemRecord The record to use to build the base document
      * @return \Apache_Solr_Document A basic Solr document
      */
-    protected function getBaseDocument(Item $item, AbstractShopwareModel $itemRecord)
+    protected function getBaseDocument(Item $item, array $itemRecord)
     {
         $site = GeneralUtility::makeInstance(Site::class, $item->getRootPageUid());
 
@@ -216,7 +216,7 @@ class AbstractShopwareIndexer extends Indexer
         $document->setField('id', Util::getDocumentId(
             $item->getType(),
             $item->getRootPageUid(),
-            $itemRecord->getId()
+            $itemRecord['id']
         ));
         $document->setField('type', $item->getType());
         $document->setField('appKey', 'EXT:solr');
@@ -226,21 +226,20 @@ class AbstractShopwareIndexer extends Indexer
         $document->setField('siteHash', $site->getSiteHash());
 
         // uid, pid
-        $document->setField('uid', $itemRecord->getId());
+        $document->setField('uid', $itemRecord['id']);
         // TODO: pid for shopware models ??
 //        $document->setField('pid', $itemRecord['pid']);
 
         // created and changed, get TimeStamps from ISO strings
-        if (is_object($itemRecord->getRaw()) && is_string($itemRecord->getRaw()->added) && $itemRecord->getRaw()->added != '') {
-            $added = new \DateTime($itemRecord->getRaw()->added);
+        if (array_key_exists('added', $itemRecord) && $itemRecord['added'] !== '') {
+            $added = new \DateTime($itemRecord['added']);
             $document->setField('created', $added->getTimestamp());
         }
-        if (is_object($itemRecord->getRaw()) && is_string($itemRecord->getRaw()->changed) && $itemRecord->getRaw()->changed != '') {
-            $changed = new \DateTime($itemRecord->getRaw()->changed);
+        if (array_key_exists('changed', $itemRecord) && $itemRecord['changed'] !== '') {
+            $changed = new \DateTime($itemRecord['changed']);
             $document->setField('changed', $changed->getTimestamp());
         }
 
         return $document;
     }
-
 }
