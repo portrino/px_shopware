@@ -128,23 +128,31 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
 
     /**
      * @param string $CType
+     * @throws \TYPO3\CMS\Fluid\View\Exception\InvalidTemplateResourceException
      */
-    protected function initializeView($CType) {
-
+    protected function initializeView($CType)
+    {
         $templateName = str_replace('Pxshopware', '', GeneralUtility::underscoredToUpperCamelCase($CType));
 
-        $this->view->setTemplateRootPaths([0 => 'EXT:' . $this->extensionKey . '/Resources/Private/Templates/Backend/PageLayoutViewDrawItem/']);
+        $this->view->setTemplateRootPaths(
+            [0 => 'EXT:' . $this->extensionKey . '/Resources/Private/Templates/Backend/PageLayoutViewDrawItem/']
+        );
         $this->view->setTemplate($templateName);
     }
 
     /**
      * @param string $CType
+     * @param array $switchableControllerActions
      */
-    protected function initializeShopwareClient($CType) {
-
+    protected function initializeShopwareClient($CType, $switchableControllerActions)
+    {
         switch ($CType) {
             case 'pxshopware_pi1':
-                $this->shopwareClient = GeneralUtility::makeInstance(ArticleClient::class);
+                if (\in_array('Article->listByCategories', $switchableControllerActions, true)) {
+                    $this->shopwareClient = GeneralUtility::makeInstance(CategoryClient::class);
+                } else {
+                    $this->shopwareClient = GeneralUtility::makeInstance(ArticleClient::class);
+                }
                 break;
             case 'pxshopware_pi2':
                 $this->shopwareClient = GeneralUtility::makeInstance(CategoryClient::class);
@@ -162,6 +170,7 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
      * @param array $row Record row of tt_content
      *
      * @return void
+     * @throws \TYPO3\CMS\Fluid\View\Exception\InvalidTemplateResourceException
      */
     public function preProcess(
         PageLayoutView &$parentObject,
@@ -173,20 +182,35 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
         /** @var string $CType */
         $CType = $row['CType'];
 
-        if (in_array($CType, ['pxshopware_pi1', 'pxshopware_pi2'], true) == false) {
+        if (\in_array($CType, ['pxshopware_pi1', 'pxshopware_pi2'], true) === false) {
             return;
         }
 
+        /** @var array $flexFormConfiguration */
+        $flexFormConfiguration = $this->flexFormService->convertFlexFormContentToArray($row['pi_flexform']);
+        $switchableControllerActions = [];
+        if (array_key_exists('switchableControllerActions', $flexFormConfiguration)) {
+            $switchableControllerActions = GeneralUtility::trimExplode(
+                ';',
+                $flexFormConfiguration['switchableControllerActions'],
+                true
+            );
+        }
+
         $this->initializeView($CType);
-
-        $this->initializeShopwareClient($CType);
-
-        /** @var array $flexformConfiguration */
-        $flexformConfiguration = $this->flexFormService->convertFlexFormContentToArray($row['pi_flexform']);
+        $this->initializeShopwareClient($CType, $switchableControllerActions);
 
         /** @var ObjectStorage $selectedItems */
         $selectedItems = new ObjectStorage();
-        $selectedItemsArray = isset($flexformConfiguration['settings']['items']) ? GeneralUtility::trimExplode(',', $flexformConfiguration['settings']['items'], TRUE) : [];
+        if (\in_array('Article->listByCategories', $switchableControllerActions, true)) {
+            $selectedItemsArray = isset($flexFormConfiguration['settings']['categories']) ?
+                GeneralUtility::intExplode(',', $flexFormConfiguration['settings']['categories'], true) :
+                [];
+        } else {
+            $selectedItemsArray = isset($flexFormConfiguration['settings']['items']) ?
+                GeneralUtility::intExplode(',', $flexFormConfiguration['settings']['items'], true) :
+                [];
+        }
 
         foreach ($selectedItemsArray as $item) {
             $language = $this->languageToShopMappingService->getShopIdBySysLanguageUid($row['sys_language_uid']);
@@ -204,8 +228,10 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
 
         $templateConfigurations = $TCEFORM_TSconfig[$CType]['sDEF']['settings.template']['addItems'];
 
-        if (isset($flexformConfiguration['settings']['template']) && array_key_exists($flexformConfiguration['settings']['template'], $templateConfigurations)) {
-            $templateLLL = $TCEFORM_TSconfig[$CType]['sDEF']['settings.template']['addItems'][$flexformConfiguration['settings']['template']];
+        if (isset($flexFormConfiguration['settings']['template'])
+            && array_key_exists($flexFormConfiguration['settings']['template'], $templateConfigurations)
+        ) {
+            $templateLLL = $TCEFORM_TSconfig[$CType]['sDEF']['settings.template']['addItems'][$flexFormConfiguration['settings']['template']];
             $template = $this->languageService->sL($templateLLL);
         } else {
             $template = $this->languageService->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.' . $CType . '.settings.template.not_defined');
