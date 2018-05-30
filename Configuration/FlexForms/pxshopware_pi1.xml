@@ -10,9 +10,30 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
+                    <switchableControllerActions>
+                        <TCEforms>
+                            <label>LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxshopware_pi1.switchable_controller_actions</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>select</type>
+                                <items type="array">
+                                    <numIndex index="10" type="array">
+                                        <numIndex index="0">LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxshopware_pi1.switchable_controller_actions.list</numIndex>
+                                        <numIndex index="1">Article->list</numIndex>
+                                    </numIndex>
+                                    <numIndex index="20" type="array">
+                                        <numIndex index="0">LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxshopware_pi1.switchable_controller_actions.list_by_categories</numIndex>
+                                        <numIndex index="1">Article->listByCategories</numIndex>
+                                    </numIndex>
+                                </items>
+                                <size>1</size>
+                            </config>
+                        </TCEforms>
+                    </switchableControllerActions>
                     <settings.items>
                         <TCEforms>
                             <label>LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxshopware_pi1.settings.items</label>
+                            <displayCond>FIELD:switchableControllerActions:=:Article->list</displayCond>
                             <config>
                                 <type>select</type>
                                 <renderType>selectMultipleSideBySide</renderType>
@@ -37,6 +58,35 @@
                             </config>
                         </TCEforms>
                     </settings.items>
+                    <settings.categories>
+                        <TCEforms>
+                            <label>LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxshopware_pi1.settings.categories</label>
+                            <displayCond>FIELD:switchableControllerActions:=:Article->listByCategories</displayCond>
+                            <config>
+                                <type>select</type>
+                                <renderType>selectMultipleSideBySide</renderType>
+                                <items>
+                                </items>
+                                <itemsProcFunc>Portrino\PxShopware\Backend\Hooks\ItemsProcFunc->getItemsSelected</itemsProcFunc>
+                                <itemsProcFunc_params>
+                                    <type>Category</type>
+                                </itemsProcFunc_params>
+                                <maxitems>100</maxitems>
+                                <size>5</size>
+                                <itemListStyle>display: none;</itemListStyle>
+                                <wizards>
+                                    <userFunc>
+                                        <type>userFunc</type>
+                                        <userFunc>Portrino\PxShopware\Backend\Form\Wizard\SuggestWizard->renderSuggestSelector</userFunc>
+                                        <params>
+                                            <type>Category</type>
+                                            <minchars>3</minchars>
+                                        </params>
+                                    </userFunc>
+                                </wizards>
+                            </config>
+                        </TCEforms>
+                    </settings.categories>
                     <settings.template>
                         <TCEforms>
                             <label>LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxshopware_pi1.settings.template</label>

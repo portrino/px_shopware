@@ -1,9 +1,9 @@
 <?php
 defined('TYPO3_MODE') || die();
 
-call_user_func(function ($_EXTKEY) {
+$boot = function ($_EXTKEY) {
     /** @var array $extConf */
-    $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$_EXTKEY]);
+    $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$_EXTKEY], ['allowed_classes' => false]);
     /** @var array $version */
     $version = \TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionStringToArray(TYPO3_version);
 
@@ -33,22 +33,30 @@ call_user_func(function ($_EXTKEY) {
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
                 'Portrino.' . $_EXTKEY,
                 'Pi1',
-                ['Article' => 'list'],
+                [
+                    'Article' => 'list, listByCategories'
+                ],
                 []
             );
 
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
                 'Portrino.' . $_EXTKEY,
                 'Pi2',
-                ['Category' => 'list'],
+                [
+                    'Category' => 'list'
+                ],
                 []
             );
 
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
                 'Portrino.' . $_EXTKEY,
                 'Notification',
-                ['Notification' => 'index'],
-                ['Notification' => 'index']
+                [
+                    'Notification' => 'index'
+                ],
+                [
+                    'Notification' => 'index'
+                ]
             );
 
             /**
@@ -219,7 +227,7 @@ call_user_func(function ($_EXTKEY) {
     /**
      * if caching was not disabled create one cache for each endpoint
      */
-    if ((boolean)$extConf['caching.']['disable'] != true) {
+    if ((bool)$extConf['caching.']['disable'] === false) {
         if (false === is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_level1'])) {
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_level1'] = [
                 'backend' => \TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend::class,
@@ -272,12 +280,14 @@ call_user_func(function ($_EXTKEY) {
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\Portrino\PxShopware\Backend\Toolbar\ClearCacheMenu::class] = [
             'className' => \Portrino\PxShopware\Compatibility6\Backend\Toolbar\ClearCacheMenu::class
         ];
-        
+
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
             'tx_pxshopware::clearCache', \Portrino\PxShopware\Backend\Hooks\Ajax::class . '->clearCache', false
         );
 
         unset($GLOBALS['TYPO3_CONF_VARS']['BE']['toolbarItems'][1435433105]);
     }
+};
 
-}, 'px_shopware');
+$boot($_EXTKEY);
+unset($boot);

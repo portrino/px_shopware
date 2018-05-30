@@ -57,16 +57,18 @@ class AbstractLinkResolver implements SingletonInterface
             'title' => $linkParameterParts['title']
         ];
 
-        $object = $this->client->findById(intval($linkHandlerValue));
+        /** @var \Portrino\PxShopware\Domain\Model\ShopwareModelInterface $object */
+        $object = $this->client->findById((int)$linkHandlerValue);
         if ($object === null) {
-
             // TODO: Log dead link
             return $result;
         }
 
-        $result['href'] = (string)$object->getUri();
-        if ($result['title'] === '') {
-            $result['title'] = $object->getName();
+        if (method_exists($object, 'getUri') && method_exists($object, 'getName')) {
+            $result['href'] = (string)$object->getUri();
+            if ($result['title'] === '') {
+                $result['title'] = $object->getName();
+            }
         }
 
         return $result;

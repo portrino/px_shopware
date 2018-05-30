@@ -25,6 +25,7 @@ namespace Portrino\PxShopware\Service\Solr\Indexer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Portrino\PxShopware\Domain\Model\AbstractShopwareModel;
 use Portrino\PxShopware\Domain\Model\Category;
 use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
 
@@ -33,7 +34,8 @@ use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
  *
  * @package Portrino\PxShopware\Service\Solr\Indexer
  */
-class CategoryIndexer extends AbstractShopwareIndexer {
+class CategoryIndexer extends AbstractShopwareIndexer
+{
 
     /**
      * @var string
@@ -44,18 +46,28 @@ class CategoryIndexer extends AbstractShopwareIndexer {
      * overwrite special fields for categories
      *
      * @param \Apache_Solr_Document $itemDocument
-     * @param Category $category
+     * @param AbstractShopwareModel $itemRecord
+     * @param integer $language The language to use.
      * @return \Apache_Solr_Document $itemDocument
      */
-    protected function overwriteSpecialFields(\Apache_Solr_Document $itemDocument, Category $category) {
+    protected function overwriteSpecialFields(
+        \Apache_Solr_Document $itemDocument,
+        AbstractShopwareModel $itemRecord,
+        $language = 0
+    )
+    {
+        if ($itemRecord instanceof Category) {
+            $itemDocument->setField('title', $itemRecord->getName());
+            if (\is_object($itemRecord->getRaw())
+                && \is_string($itemRecord->getRaw()->metaDescription)
+                && $itemRecord->getRaw()->metaDescription !== ''
+            ) {
+                $itemDocument->setField('description', $itemRecord->getRaw()->metaDescription);
+            }
 
-        $itemDocument->setField('title', $category->getName());
-        if (is_object($category->getRaw()) && is_string($category->getRaw()->metaDescription) && $category->getRaw()->metaDescription != '') {
-            $itemDocument->setField('description', $category->getRaw()->metaDescription);
-        }
-
-        if ($category->getImage()) {
-            $itemDocument->setField('image_stringS', $category->getImage()->getUrl());
+            if ($itemRecord->getImage()) {
+                $itemDocument->setField('image_stringS', $itemRecord->getImage()->getUrl());
+            }
         }
 
         return $itemDocument;
