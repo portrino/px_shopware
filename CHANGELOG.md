@@ -1,5 +1,12 @@
 # PxShopware Changelog
 
+3.2.0 - 2018-05-30
+------------------
+* [FEATURE] allow to tease articles of a specified category
+* [TASK] updates PageLayoutViewDraw hook
+* [BUGFIX] updates Solr Indexer service classes to avoid PHP >= 7.0 warnings
+* [CLEANUP] updates ext_localconf and ext_tables
+
 3.1.0 - 2018-01-18
 ------------------
 * [TASK] updates dependencies in composer.json and ext_emconf.php for TYPO3 8.7
