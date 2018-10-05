@@ -18,4 +18,4 @@ Links
 	https://forge.typo3.org/projects/extension-px_shopware/issues
 
 :Shopware Plugin:
-	https://store.shopware.com/port116496663052/typo3-connector.html
+	https://github.com/portrino/shopware-typo3-connector

@@ -46,11 +46,6 @@ After that you are able to choose the articles you want to display in frontend.
 
     Please note that you to override the article partial for an optimized frontend output (:ref:`typoscript-configuration`).
 
-.. important::
-
-    The trial version allows to display only one article. If you want to render more please get our "TYPO3-Connector"
-    from shopware store.
-
 .. note::
 
     With the expression ``{article.url}`` you can link articles within your fluid template. This feature is only

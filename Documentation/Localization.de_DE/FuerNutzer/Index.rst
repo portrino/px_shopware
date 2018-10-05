@@ -48,10 +48,6 @@ Frontend angezeigt werden sollen.
 
    Bitte beachten Sie, dass für eine optimale Ausgabe im Frontend zunächst ein Artikel-Partial angelegt werden sollte. (:ref:`typoscript-configuration`)
 
-.. important::
-
-    In der Trial Version kann lediglich ein Produkt über das Frontend ausgegeben werden.
-
 .. note::
 
     Mit ``{article.url}`` kann man im Fluid-Template auf den jeweilige Artikel im Shopware verlinken. Dieses Feature steht nur in der

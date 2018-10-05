@@ -24,9 +24,7 @@ uneccessary API-Calls and also boost up the frontend rendering.
 
 .. important::
 
-    To get access to all features you have to install our shopware plugin "TYPO3-Connector"
-    on your shop instance. Buy and download it from store here_. Otherwise your extension will work as a trial version and
-    some features are not available or limited.
+    The px_shopware TYPO3 extension needs the Shopware plugin "TYPO3-Connector" in your shop system. Download the plugin here_ from our github reposititory.
 
 **Feature List**
 
@@ -47,5 +45,5 @@ uneccessary API-Calls and also boost up the frontend rendering.
 
 .. _shopware: https://www.shopware.com/
 .. _REST-API: https://developers.shopware.com/developers-guide/rest-api/
-.. _here: https://store.shopware.com/en/port116496663052/typo3-connector.html
+.. _here: https://github.com/portrino/shopware-typo3-connector
 .. _typo3-solr: https://typo3.org/extensions/repository/view/solr

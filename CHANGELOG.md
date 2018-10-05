@@ -1,5 +1,13 @@
 # PxShopware Changelog
 
+3.2.2 - 2018-10-05
+------------------
+* [TASK] updates documentation with new open source shopware plugin 
+
+3.2.1 - 2018-05-30
+------------------
+* [CLEANUP] removes version number from README
+
 3.2.0 - 2018-05-30
 ------------------
 * [FEATURE] allow to tease articles of a specified category

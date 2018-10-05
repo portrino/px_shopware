@@ -27,8 +27,7 @@ Die Extension kann nach Installation als Trial- oder Vollversion benutzt werden.
 
 .. important::
 
-    Damit die Extension optimal mit Ihrem Shopware-System zusammen arbeitet, sollten Sie das Plugin "TYPO3-Connector"
-    in Ihrer Shop-Instanz einbinden. Sie können das TYPO3-Plugin_ im Shopware-Store erwerben.
+    Die px_shopware TYPO3-Extension benötigt das Shopware plugin "TYPO3-Connector" in Ihrem Shop-System. Sie können das Plugin hier_ aus unserem github reposititory herunterladen.
 
 Die Extension wurde von Grund auf neu implementiert und basiert auf einer variablen und erweiterbaren Architektur.
 Die Frontend-Plugins wurden mit Extbase und Fluid erstellt. Alle Shopware-Daten werden mit dem TYPO3-Caching-Framework
@@ -53,6 +52,6 @@ gecached um unnötig häufige API-Aufrufe zu vermeiden und dadurch das Frontend-
 
 .. _shopware: https://www.shopware.com/
 .. _REST-API: https://developers.shopware.com/developers-guide/rest-api/
-.. _hier: https://store.shopware.com/port116496663052/typo3-connector.html
+.. _hier: https://github.com/portrino/shopware-typo3-connector
 .. _typo3-solr: https://typo3.org/extensions/repository/view/solr
 .. _TYPO3-Plugin: https://store.shopware.com/port116496663052/typo3-connector.html
