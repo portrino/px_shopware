@@ -115,8 +115,11 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     {
         $this->path = new ObjectStorage();
         if (isset($this->getRaw()->media) && is_object($this->getRaw()->media) && isset($this->getRaw()->media->id)) {
+            /** @var Media $media */
             $media = $this->mediaClient->findById($this->getRaw()->media->id);
-            $this->setImage($media);
+            if ($media && is_a($media, Media::class)) {
+                $this->setImage($media);
+            }
         }
     }
 
@@ -229,7 +232,7 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     /**
      * Removes a path
      *
-     * @param \Portrino\PxShopware\Domain\Model\Path $pathElementToRemove The path element to be removed
+     * @param \Portrino\PxShopware\Domain\Model\Category $pathElementToRemove The path element to be removed
      *
      * @return void
      */
@@ -251,7 +254,7 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
             foreach ($pathArray as $pathItem) {
                 /** @var Category|NULL $pathElement */
                 $pathElement = $this->categoryClient->findById($pathItem);
-                if ($pathElement) {
+                if ($pathElement && is_a($pathElement, Category::class)) {
                     $this->addPathElement($pathElement);
                 }
             }

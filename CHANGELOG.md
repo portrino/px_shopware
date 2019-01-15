@@ -1,5 +1,9 @@
 # PxShopware Changelog
 
+3.2.3 - 2019-01-15
+------------------
+* [TASK] adds safety checks to models to prevent error 500
+
 3.2.2 - 2018-10-05
 ------------------
 * [TASK] updates documentation with new open source shopware plugin 

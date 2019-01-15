@@ -278,7 +278,9 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
                     if (isset($image->mediaId)) {
                         /** @var Media $media */
                         $media = $this->mediaClient->findById($image->mediaId);
-                        $this->addImage($media);
+                        if ($media && is_a($media, Media::class)) {
+                            $this->addImage($media);
+                        }
                     }
                 }
             }
@@ -461,6 +463,9 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
                     if (isset($category->id)) {
                         /** @var Category $detailedCategory */
                         $detailedCategory = $this->categoryClient->findById($category->id);
+                        if (!$detailedCategory || !is_a($detailedCategory, Category::class)) {
+                            continue;
+                        }
 
                         /**
                          * Get the current language
