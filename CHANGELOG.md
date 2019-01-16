@@ -1,5 +1,9 @@
 # PxShopware Changelog
 
+3.2.4 - 2019-01-16
+------------------
+* [TASK] updates BE flexform for backwards compatibility to display item list if switchableControllerActions != listByCategories
+
 3.2.3 - 2019-01-15
 ------------------
 * [TASK] adds safety checks to models to prevent error 500
