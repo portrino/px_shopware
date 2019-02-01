@@ -56,7 +56,7 @@ class ArticleController extends AbstractController
 
         if (is_array($categoryIdList)) {
             foreach ($categoryIdList as $categoryId) {
-                $filter[] = [
+                $filter['filter'][] = [
                     'property' => 'categories.id',
                     'value' => $categoryId
                 ];
