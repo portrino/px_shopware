@@ -25,6 +25,8 @@ namespace Portrino\PxShopware\Xclass\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -53,14 +55,30 @@ class Queue extends \ApacheSolrForTypo3\Solr\IndexQueue\Queue {
             $uidList = implode(',', $uids);
 
             if (isset($GLOBALS['TCA'][$table])) {
-                $records = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-                    '*',
-                    $table,
-                    'uid IN(' . $uidList . ')',
-                    '', '', '', // group, order, limit
-                    'uid'
-                );
-                $tableRecords[$table] = $records;
+
+                /** @var QueryBuilder $queryBuilder */
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable($table);
+                $statement = $queryBuilder
+                    ->select('*')
+                    ->from($table)
+                    $queryBuilder->expr()->in(
+                        'uid',
+                        $uidList
+                    )
+                    ->execute();
+                while ($row = $statement->fetch()) {
+                    $tableRecords[$table][$row['uid']] = $row;
+                }
+
+                // TODO: test and remove old
+//                $records = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+//                    '*',
+//                    $table,
+//                    'uid IN(' . $uidList . ')',
+//                    '', '', '', // group, order, limit
+//                    'uid'
+//                );
             }
 
             if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'])) {

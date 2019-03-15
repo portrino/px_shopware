@@ -1,5 +1,11 @@
 # PxShopware Changelog
 
+4.0.0 - 2019-03-15
+------------------
+* [TASK] updates for TYPO3 9.5
+* [TASK] replace all TYPO3_DB calls with doctrine
+* [TASK] changes dependencies
+
 3.2.5 - 2019-02-01
 ------------------
 * [BUGFIX] fix article listByCategories filter

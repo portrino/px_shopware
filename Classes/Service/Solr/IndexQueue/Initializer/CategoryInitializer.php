@@ -27,6 +27,8 @@ namespace Portrino\PxShopware\Service\Solr\IndexQueue\Initializer;
 
 use Portrino\PxShopware\Domain\Model\Category;
 use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class CategoryInitializer extends AbstractInitializer
 {
@@ -37,7 +39,7 @@ class CategoryInitializer extends AbstractInitializer
     protected $clientClassName = CategoryClientInterface::class;
 
     /**
-     * @return bool|\mysqli_result|object
+     * @return int The number of affected rows.
      */
     public function initialize()
     {
@@ -51,12 +53,14 @@ class CategoryInitializer extends AbstractInitializer
             $rowsToIndex[] = $record;
         }
 
-        return $this->getDatabaseConnection()->exec_INSERTmultipleRows(
+        /** @var ConnectionPool $connectionPool */
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $databaseConnectionForPages = $connectionPool->getConnectionForTable('tx_solr_indexqueue_item');
+        return $databaseConnectionForPages->bulkInsert(
             'tx_solr_indexqueue_item',
-            array_keys($defaultRecord),
-            $rowsToIndex
+            $rowsToIndex,
+            array_keys($defaultRecord)
         );
-
     }
 
 }

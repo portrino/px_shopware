@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Solr\IndexQueue\Initializer;
 
 /***************************************************************
@@ -27,6 +28,8 @@ namespace Portrino\PxShopware\Service\Solr\IndexQueue\Initializer;
 
 use Portrino\PxShopware\Domain\Model\Article;
 use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class ArticleInitializer
@@ -42,7 +45,7 @@ class ArticleInitializer extends AbstractInitializer
     protected $clientClassName = ArticleClientInterface::class;
 
     /**
-     * @return bool|\mysqli_result|object
+     * @return int The number of affected rows.
      */
     public function initialize()
     {
@@ -57,12 +60,14 @@ class ArticleInitializer extends AbstractInitializer
             $rowsToIndex[] = $record;
         }
 
-        return $this->getDatabaseConnection()->exec_INSERTmultipleRows(
+        /** @var ConnectionPool $connectionPool */
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $databaseConnectionForPages = $connectionPool->getConnectionForTable('tx_solr_indexqueue_item');
+        return $databaseConnectionForPages->bulkInsert(
             'tx_solr_indexqueue_item',
-            array_keys($defaultRecord),
-            $rowsToIndex
+            $rowsToIndex,
+            array_keys($defaultRecord)
         );
-
     }
 
 }

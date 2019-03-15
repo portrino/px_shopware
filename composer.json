@@ -20,6 +20,12 @@
             "role": "Developer"
         },
         {
+            "name": "Thomas Griessbach",
+            "email": "griessbach@portrino.de",
+            "homepage": "http://www.portrino.de",
+            "role": "Developer"
+        },
+        {
             "name": "Sascha Nowak",
             "email": "sascha.nowak@netlogix.de",
             "homepage": "https://websolutions.netlogix.de/",
@@ -31,8 +37,8 @@
         "source": "https://github.com/portrino/px_shopware"
     },
     "require": {
-        "typo3/cms-core": ">=6.2.27,<9.0",
-        "php": ">=5.5.0",
+        "typo3/cms-core": ">=8.7,<9.6",
+        "php": ">=7.2.0",
         "lib-curl": "^7"
     },
     "autoload": {

@@ -33,6 +33,7 @@ use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurati
 use Portrino\PxShopware\Service\Shopware\MediaClientInterface;
 use Portrino\PxShopware\Service\Shopware\ShopClientInterface;
 use Portrino\PxShopware\Service\Shopware\VersionClientInterface;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -207,7 +208,11 @@ class NotificationController extends ActionController
     {
         $rootPageId = Util::getRootPageId($GLOBALS['TSFE']->id);
         $item = array_merge(['root' => $rootPageId, 'errors' => ''], $item);
-        $GLOBALS['TYPO3_DB']->exec_INSERTquery(
+
+        /** @var ConnectionPool $connectionPool */
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $databaseConnectionForPages = $connectionPool->getConnectionForTable('tx_solr_indexqueue_item');
+        $databaseConnectionForPages->insert(
             'tx_solr_indexqueue_item',
             $item
         );

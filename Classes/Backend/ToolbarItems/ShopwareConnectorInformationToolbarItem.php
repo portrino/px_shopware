@@ -34,7 +34,9 @@ use TYPO3\CMS\Backend\Toolbar\Enumeration\InformationStatus;
 use TYPO3\CMS\Backend\Toolbar\ToolbarItemInterface;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Page\PageRenderer;
@@ -351,7 +353,16 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
                 if ($backend instanceof Typo3DatabaseBackend) {
                     $cacheTables = '';
                     foreach ($cache->getCacheTables() as $cacheTable) {
-                        $cacheTables .= $cacheTable . '<br>(' . (string)$this->getDatabaseConnection()->exec_SELECTcountRows('*', $cacheTable) . ' ' . $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.caches.entries', TRUE) . ') <br>';
+
+                        /** @var QueryBuilder $queryBuilder */
+                        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($cacheTable);
+                        $numberOfRecords = $queryBuilder
+                            ->count('*')
+                            ->from($cacheTable)
+                            ->execute()
+                            ->fetchColumn(0);
+
+                        $cacheTables .= $cacheTable . '<br>(' . $numberOfRecords . ' ' . $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.caches.entries', TRUE) . ') <br>';
 
                         if ($cacheTables != '') {
                             $this->cacheInformation[] = [
