@@ -32,14 +32,14 @@ use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHookInterface;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-use TYPO3\CMS\Extbase\Service\FlexFormService;
-use TYPO3\CMS\Extbase\Service\TypoScriptService;
+use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Lang\LanguageService;
 
@@ -92,7 +92,7 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
     protected $view;
 
     /**
-     * @var DatabaseConnection
+     * @var Connection
      */
     protected $databaseConnection;
 
@@ -238,6 +238,9 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
         }
 
         $header = $this->languageService->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.CType.' . $CType);
+        if (\in_array('Article->listByCategories', $switchableControllerActions, true)) {
+            $header = $this->languageService->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.CType.pxshopware_pi1.titleByCategory');
+        }
 
         $this->view->assign('header', $header);
         $this->view->assign('template', $template);
@@ -248,7 +251,7 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
     }
 
     /**
-     * @return DatabaseConnection
+     * @return Connection
      */
     protected function getDatabase()
     {

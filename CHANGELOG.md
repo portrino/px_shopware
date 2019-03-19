@@ -2,9 +2,15 @@
 
 4.0.0 - 2019-03-15
 ------------------
-* [TASK] updates for TYPO3 9.5
+* [TASK] updates ext for TYPO3 9.5
 * [TASK] replace all TYPO3_DB calls with doctrine
 * [TASK] changes dependencies
+* [TASK] rebuild BE suggest wizard
+* [TASK] fixes BE preview hook
+* [TASK] fixes cache clear hook
+* [TASK] fixes ListByCategories html template
+* [TASK] fixes BE suggest JS
+* [TASK] remove compatibility6 layer to drop TYPO3 6.2 legacy support
 
 3.2.5 - 2019-02-01
 ------------------

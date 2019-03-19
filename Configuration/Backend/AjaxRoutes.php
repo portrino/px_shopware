@@ -16,6 +16,6 @@ return [
     // Search Shopware Items
     'tx_pxshopware::searchAction' => [
         'path' => 'tx_pxshopware::searchAction',
-        'target' => Portrino\PxShopware\Backend\Form\Wizard\SuggestWizard::class . '::searchAction'
+        'target' => Portrino\PxShopware\Backend\FormEngine\FieldControl\SuggestWizardControl::class . '::searchAction'
     ]
 ];

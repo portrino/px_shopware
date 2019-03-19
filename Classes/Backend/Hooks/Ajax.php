@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Backend\Hooks;
 
 /***************************************************************
@@ -26,7 +27,8 @@ namespace Portrino\PxShopware\Backend\Hooks;
  ***************************************************************/
 
 use Portrino\PxShopware\Cache\CacheChainFactory;
-use TYPO3\CMS\Core\Cache\CacheManager;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -35,7 +37,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @package Portrino\PxShopware\Backend\Hooks
  */
-class Ajax {
+class Ajax
+{
 
     /**
      * @var string Key of the extension
@@ -45,11 +48,15 @@ class Ajax {
     /**
      * @throws NoSuchCacheException
      */
-    public function clearCache() {
+    public function clearCache(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
         /** @var CacheChainFactory $cacheChainFactory */
         $cacheChainFactory = GeneralUtility::makeInstance(CacheChainFactory::class);
         $cache = $cacheChainFactory->create();
         $cache->flush();
+
+        $response->getBody()->write('');
+        return $response;
     }
 
 }

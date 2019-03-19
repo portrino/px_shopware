@@ -4,8 +4,6 @@ defined('TYPO3_MODE') || die();
 $boot = function ($_EXTKEY) {
     /** @var array $extConf */
     $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$_EXTKEY], ['allowed_classes' => false]);
-    /** @var array $version */
-    $version = \TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionStringToArray(TYPO3_version);
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
         '<INCLUDE_TYPOSCRIPT: source="DIR:EXT:px_shopware/Configuration/PageTSconfig/" extension="ts">'
@@ -81,118 +79,120 @@ $boot = function ($_EXTKEY) {
             break;
         case 'BE':
 
+            /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
+            $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+
+            $iconRegistry->registerIcon(
+                'px-shopware',
+                \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+                [
+                    'source' => 'EXT:' . $_EXTKEY . '/ext_icon.svg'
+                ]
+            );
+
+            $iconRegistry->registerIcon(
+                'px-shopware-toolbar-icon',
+                \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+                [
+                    'source' => 'EXT:px_shopware/Resources/Public/Icons/toolbar_item.svg'
+                ]
+            );
+
+            $iconRegistry->registerIcon(
+                'px-shopware-shop-connected',
+                \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
+                [
+                    'name' => 'chain'
+                ]
+            );
+
+            $iconRegistry->registerIcon(
+                'px-shopware-shop-disconnected',
+                \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
+                [
+                    'name' => 'chain-broken'
+                ]
+            );
+
+            $iconRegistry->registerIcon(
+                'px-shopware-shop-version',
+                \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
+                [
+                    'name' => 'cog'
+                ]
+            );
+
+            $iconRegistry->registerIcon(
+                'px-shopware-shop-revision',
+                \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
+                [
+                    'name' => 'cogs'
+                ]
+            );
+
+            $iconRegistry->registerIcon(
+                'px-shopware-cache-level',
+                \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
+                [
+                    'name' => 'arrow-circle-right'
+                ]
+            );
+
+            $iconRegistry->registerIcon(
+                'px-shopware-shop-shop',
+                \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
+                [
+                    'name' => 'shopping-cart'
+                ]
+            );
+
+            $iconRegistry->registerIcon(
+                'px-shopware-clear-cache',
+                \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+                [
+                    'source' => 'EXT:px_shopware/Resources/Public/Icons/clear_cache.svg'
+                ]
+            );
+
+            $iconRegistry->registerIcon(
+                'px-shopware-article',
+                \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+                [
+                    'source' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/article.svg'
+                ]
+            );
+
+            $iconRegistry->registerIcon(
+                'px-shopware-category',
+                \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+                [
+                    'source' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/category.svg'
+                ]
+            );
+
             /**
-             * For TYPO3 Versions newer than 7.2.x
+             * register icons for each plugin
              */
-            if ($version['version_main'] >= 7) {
-                /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
-                $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
-
+            $pluginSignatures = [
+                0 => str_replace('_', '', $_EXTKEY) . '_pi1',
+                1 => str_replace('_', '', $_EXTKEY) . '_pi2'
+            ];
+            foreach ($pluginSignatures as $pluginSignature) {
                 $iconRegistry->registerIcon(
-                    'px-shopware',
+                    str_replace('_', '-', $pluginSignature),
                     \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
                     [
-                        'source' => 'EXT:' . $_EXTKEY . '/ext_icon.svg'
+                        'source' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/' . $pluginSignature . '.svg'
                     ]
                 );
-
-                $iconRegistry->registerIcon(
-                    'px-shopware-toolbar-icon',
-                    \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-                    [
-                        'source' => 'EXT:px_shopware/Resources/Public/Icons/toolbar_item.svg'
-                    ]
-                );
-
-                $iconRegistry->registerIcon(
-                    'px-shopware-shop-connected',
-                    \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
-                    [
-                        'name' => 'chain'
-                    ]
-                );
-
-                $iconRegistry->registerIcon(
-                    'px-shopware-shop-disconnected',
-                    \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
-                    [
-                        'name' => 'chain-broken'
-                    ]
-                );
-
-                $iconRegistry->registerIcon(
-                    'px-shopware-shop-version',
-                    \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
-                    [
-                        'name' => 'cog'
-                    ]
-                );
-
-                $iconRegistry->registerIcon(
-                    'px-shopware-shop-revision',
-                    \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
-                    [
-                        'name' => 'cogs'
-                    ]
-                );
-
-                $iconRegistry->registerIcon(
-                    'px-shopware-cache-level',
-                    \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
-                    [
-                        'name' => 'arrow-circle-right'
-                    ]
-                );
-
-                $iconRegistry->registerIcon(
-                    'px-shopware-shop-shop',
-                    \TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider::class,
-                    [
-                        'name' => 'shopping-cart'
-                    ]
-                );
-
-                $iconRegistry->registerIcon(
-                    'px-shopware-clear-cache',
-                    \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-                    [
-                        'source' => 'EXT:px_shopware/Resources/Public/Icons/clear_cache.svg'
-                    ]
-                );
-
-                $iconRegistry->registerIcon(
-                    'px-shopware-article',
-                    \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-                    [
-                        'source' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/article.svg'
-                    ]
-                );
-
-                $iconRegistry->registerIcon(
-                    'px-shopware-category',
-                    \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-                    [
-                        'source' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/category.svg'
-                    ]
-                );
-
-                /**
-                 * register icons for each plugin
-                 */
-                $pluginSignatures = [
-                    0 => str_replace('_', '', $_EXTKEY) . '_pi1',
-                    1 => str_replace('_', '', $_EXTKEY) . '_pi2'
-                ];
-                foreach ($pluginSignatures as $pluginSignature) {
-                    $iconRegistry->registerIcon(
-                        str_replace('_', '-', $pluginSignature),
-                        \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-                        [
-                            'source' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/' . $pluginSignature . '.svg'
-                        ]
-                    );
-                }
             }
+
+            // add new Shopware Suggest
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1552909662] = [
+                'nodeName' => 'suggestWizardControl',
+                'priority' => 30,
+                'class' => \Portrino\PxShopware\Backend\FormEngine\FieldControl\SuggestWizardControl::class
+            ];
 
             $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][] =
                 \Portrino\PxShopware\Backend\Toolbar\ClearCacheMenu::class;
@@ -251,41 +251,6 @@ $boot = function ($_EXTKEY) {
             0 => 'px_shopware_level1',
             1 => 'px_shopware',
         ];
-    }
-
-    /**
-     * compatibility6 layer
-     */
-    if ($version['version_main'] < 7) {
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\Portrino\PxShopware\Backend\Service\LanguageFilePrefixService::class] = [
-            'className' => \Portrino\PxShopware\Compatibility6\Backend\Service\LanguageFilePrefixService::class
-        ];
-
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\Portrino\PxShopware\Backend\Service\ExtensionManagementService::class] = [
-            'className' => \Portrino\PxShopware\Compatibility6\Backend\Service\ExtensionManagementService::class
-        ];
-
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
-            '<INCLUDE_TYPOSCRIPT: source="DIR:EXT:px_shopware/Configuration/Compatibility6/PageTSconfig/" extension="ts">'
-        );
-
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\Portrino\PxShopware\Backend\Hooks\PageLayoutViewDraw::class] = [
-            'className' => \Portrino\PxShopware\Compatibility6\Backend\Hooks\PageLayoutViewDraw::class
-        ];
-
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\Portrino\PxShopware\Domain\Model\Category::class] = [
-            'className' => \Portrino\PxShopware\Compatibility6\Domain\Model\Category::class
-        ];
-
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\Portrino\PxShopware\Backend\Toolbar\ClearCacheMenu::class] = [
-            'className' => \Portrino\PxShopware\Compatibility6\Backend\Toolbar\ClearCacheMenu::class
-        ];
-
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-            'tx_pxshopware::clearCache', \Portrino\PxShopware\Backend\Hooks\Ajax::class . '->clearCache', false
-        );
-
-        unset($GLOBALS['TYPO3_CONF_VARS']['BE']['toolbarItems'][1435433105]);
     }
 };
 

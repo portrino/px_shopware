@@ -16,25 +16,21 @@
                             <config>
                                 <type>select</type>
                                 <renderType>selectMultipleSideBySide</renderType>
-                                <items>
-                                </items>
                                 <itemsProcFunc>Portrino\PxShopware\Backend\Hooks\ItemsProcFunc->getItemsSelected</itemsProcFunc>
                                 <itemsProcFunc_params>
                                     <type>Category</type>
                                 </itemsProcFunc_params>
                                 <maxitems>100</maxitems>
                                 <size>5</size>
-                                <itemListStyle>display: none;</itemListStyle>
-                                <wizards>
-                                    <userFunc>
-                                        <type>userFunc</type>
-                                        <userFunc>Portrino\PxShopware\Backend\Form\Wizard\SuggestWizard->renderSuggestSelector</userFunc>
+                                <fieldWizard>
+                                    <suggestWizardControl>
+                                        <renderType>suggestWizardControl</renderType>
                                         <params>
                                             <type>Category</type>
                                             <minchars>3</minchars>
                                         </params>
-                                    </userFunc>
-                                </wizards>
+                                    </suggestWizardControl>
+                                </fieldWizard>
                             </config>
                         </TCEforms>
                     </settings.items>
@@ -43,7 +39,6 @@
                             <label>LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxshopware_pi2.settings.template</label>
                             <config>
                                 <type>select</type>
-                                <items></items>
                                 <maxitems>1</maxitems>
                                 <size>1</size>
                             </config>

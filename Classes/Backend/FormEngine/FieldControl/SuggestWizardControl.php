@@ -1,10 +1,11 @@
 <?php
-namespace Portrino\PxShopware\Backend\Form\Wizard;
+
+namespace Portrino\PxShopware\Backend\FormEngine\FieldControl;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2016 Andre Wuttig <wuttig@portrino.de>, portrino GmbH
+ *  (c) 2019 Thomas Griessbach <griessbach@portrino.de>, portrino GmbH
  *
  *  All rights reserved
  *
@@ -30,32 +31,23 @@ use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurati
 use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
-use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Backend\Form\AbstractNode;
+use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Lang\LanguageService;
 
+
 /**
- * Class SuggestWizard
+ * Class SuggestWizardControl
+ * Adds a wizard to select Shopware Items (Articles/Categories)
  *
- * @package Portrino\PxShopware\Backend\Form\Wizard
+ * @package Portrino\PxShopware\Backend\FormEngine\FieldControl
  */
-class SuggestWizard {
-
-    /**
-     * @var IconFactory
-     */
-    protected $iconFactory;
-
-    /**
-     * @var PageRenderer
-     */
-    protected $pageRenderer;
+class SuggestWizardControl extends AbstractNode
+{
 
     /**
      * @var LanguageToShopwareMappingService
@@ -73,40 +65,45 @@ class SuggestWizard {
     protected $languagePrefix = 'LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:';
 
     /**
-     * SuggestWizard constructor.
+     * SuggestWizardControl constructor.
+     *
+     * @param NodeFactory $nodeFactory
+     * @param array $data
      */
-    public function __construct() {
-        $this->pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+    public function __construct(NodeFactory $nodeFactory = null, array $data = [])
+    {
+        if ($nodeFactory) {
+            parent::__construct($nodeFactory, $data);
+        }
+
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-//        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $this->localeToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
     }
 
     /**
-     * Renders an ajax-enabled text field. Also adds required JS
-     *
-     * @param array $params the params given by TCA or Flexform config
-     * @param AbstractFormElement $pObj
-     *
-     * @return string The HTML code for the selector
+     * @return array
+     * @throws ShopwareApiClientConfigurationException
      */
-    public function renderSuggestSelector($params, $pObj) {
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/PxShopware/FormEngineSuggest');
-        $this->pageRenderer->addCssFile(
-            ExtensionManagementUtility::extRelPath('px_shopware') . 'Resources/Public/Css/autocomplete.css'
-        );
+    public function render(): array
+    {
+        $row = $this->data['databaseRow'];
+        $paramArray = $this->data['parameterArray'];
+        $resultArray = $this->initializeResultArray();
+
+        $resultArray['requireJsModules'][] = 'TYPO3/CMS/PxShopware/FormEngineSuggest';
+        $resultArray['stylesheetFiles'][] = ExtensionManagementUtility::extPath('px_shopware') . 'Resources/Public/Css/autocomplete.css';
 
         /**
          * get the specific endpoint from type
          */
-        $endpoint = $params['params']['type'];
+        $endpoint = $paramArray["fieldConf"]["config"]["fieldWizard"]["suggestWizardControl"]["params"]["type"];
 
         /*
          * get the minimal characters to trigger autosuggest from params
          */
-        $minchars = isset($params['params']['minchars']) ? (int)$params['params']['minchars'] : 5;
+        $minchars = isset($paramArray["fieldConf"]["config"]["fieldWizard"]["suggestWizardControl"]["params"]["minchars"]) ? (int)$paramArray["fieldConf"]["config"]["fieldWizard"]["suggestWizardControl"]["params"]["minchars"] : 5;
 
-        $fieldname = $params['itemName'];
+        $fieldname = $paramArray["itemFormElName"];
 
         /**
          * check if the responsible shopwareApiClient interface and class exists for the given flexform type configuration
@@ -114,15 +111,17 @@ class SuggestWizard {
         $shopwareApiClientInterface = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'ClientInterface';
         $shopwareApiClientClass = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'Client';
         if (!interface_exists($shopwareApiClientInterface)) {
-            throw new ShopwareApiClientConfigurationException('The Interface:"' . $shopwareApiClientInterface . '" does not exist. Please check your type configuration in flexform config!', 1460126052);
+            throw new ShopwareApiClientConfigurationException('The Interface:"' . $shopwareApiClientInterface . '" does not exist. Please check your type configuration in flexform config!',
+                1460126052);
         }
 
         if (!class_exists($shopwareApiClientClass)) {
-            throw new ShopwareApiClientConfigurationException('The Class:"' . $shopwareApiClientClass . '" does not exist. Please check your type configuration in flexform config!', 1460126052);
+            throw new ShopwareApiClientConfigurationException('The Class:"' . $shopwareApiClientClass . '" does not exist. Please check your type configuration in flexform config!',
+                1460126052);
         }
 
-        if (isset($params['row']['sys_language_uid'][0])) {
-            $language = (int)$params['row']['sys_language_uid'][0];
+        if (isset($row['sys_language_uid'][0])) {
+            $language = (int)$row['sys_language_uid'][0];
         }
 
         $selector = '
@@ -131,18 +130,20 @@ class SuggestWizard {
             <div class="input-group has-feedback">
                 <span class="input-group-addon">' . '' . '</span>
                 <input type="search" class="t3-form-suggest-px-shopware form-control" 
-                        placeholder="' . $this->getLanguageService()->sL($this->languagePrefix . 'suggest_wizard.placeholder.' . strtolower($endpoint), FALSE) . '"
+                        placeholder="' . $this->getLanguageService()->sL($this->languagePrefix . 'suggest_wizard.placeholder.' . strtolower($endpoint)) . '"
                         data-type="' . htmlspecialchars($endpoint) . '"
                         data-fieldname="' . htmlspecialchars($fieldname) . '" 
                         data-language="' . $language . '" 
-                        data-minchars="' . $minchars. '" 
+                        data-minchars="' . $minchars . '" 
                 />
                 <span class="loading input-group-addon">
                     <i style="display: none;" id="loader" class="fa fa-circle-o-notch fa-spin"></i>
                 </span>
             </div>
         </div>';
-        return $selector;
+
+        $resultArray['html'] = $selector;
+        return $resultArray;
     }
 
 
@@ -153,8 +154,10 @@ class SuggestWizard {
      * @param ResponseInterface $response
      *
      * @return ResponseInterface
+     * @throws ShopwareApiClientConfigurationException
      */
-    public function searchAction(ServerRequestInterface $request, ResponseInterface $response) {
+    public function searchAction(ServerRequestInterface $request, ResponseInterface $response)
+    {
         $parsedBody = $request->getParsedBody();
         $queryParams = $request->getQueryParams();
 
@@ -173,24 +176,27 @@ class SuggestWizard {
         $shopwareApiClientInterface = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'ClientInterface';
         $shopwareApiClientClass = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'Client';
         if (!interface_exists($shopwareApiClientInterface)) {
-            throw new ShopwareApiClientConfigurationException('The Interface:"' . $shopwareApiClientInterface . '" does not exist. Please check your type configuration in flexform config!', 1460126052);
+            throw new ShopwareApiClientConfigurationException('The Interface:"' . $shopwareApiClientInterface . '" does not exist. Please check your type configuration in flexform config!',
+                1460126052);
         }
 
         if (!class_exists($shopwareApiClientClass)) {
-            throw new ShopwareApiClientConfigurationException('The Class:"' . $shopwareApiClientClass . '" does not exist. Please check your type configuration in flexform config!', 1460126052);
+            throw new ShopwareApiClientConfigurationException('The Class:"' . $shopwareApiClientClass . '" does not exist. Please check your type configuration in flexform config!',
+                1460126052);
         }
 
         /** @var AbstractShopwareApiClientInterface $shopwareApiClient */
         $shopwareApiClient = $this->objectManager->get($shopwareApiClientClass);
 
         $shopId = $this->localeToShopMappingService->getShopIdBySysLanguageUid($language);
-        $results = $shopwareApiClient->findByTerm($search, 8, TRUE, ['language' => $shopId]);
+        $results = $shopwareApiClient->findByTerm($search, 8, true, ['language' => $shopId]);
 
         /** @var SuggestEntryInterface $result */
         foreach ($results as $result) {
             $entry = [
                 'text' => '<span class="suggest-label">&nbsp;' . $this->highlight($result->getSuggestLabel(), $search) . '</span><br />
-                                <span class="suggest-path"><i>' . $this->crop($result->getSuggestDescription(), 80) . '</i></span>',
+                                <span class="suggest-path"><i>' . $this->crop($result->getSuggestDescription(),
+                        80) . '</i></span>',
                 'label' => $result->getSuggestLabel(),
                 'uid' => $result->getSuggestId(),
                 'sprite' => ''
@@ -206,7 +212,8 @@ class SuggestWizard {
     /**
      * @return LanguageService
      */
-    protected function getLanguageService() {
+    protected function getLanguageService()
+    {
         return $GLOBALS['LANG'];
     }
 
@@ -216,8 +223,10 @@ class SuggestWizard {
      *
      * @return mixed
      */
-    protected function highlight($text, $words) {
-        $highlighted = preg_filter('/' . preg_quote($words) . '/i', '<b><span class="search-highlight">$0</span></b>', $text);
+    protected function highlight($text, $words)
+    {
+        $highlighted = preg_filter('/' . preg_quote($words) . '/i', '<b><span class="search-highlight">$0</span></b>',
+            $text);
         if (!empty($highlighted)) {
             $text = $highlighted;
         }
@@ -230,7 +239,8 @@ class SuggestWizard {
      *
      * @return string
      */
-    private function crop($string, $limit) {
+    private function crop($string, $limit)
+    {
         if (strlen($string) > $limit) {
             return substr($string, 0, $limit) . '...';
         } else {

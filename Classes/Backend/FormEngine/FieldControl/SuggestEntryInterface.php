@@ -1,5 +1,5 @@
 <?php
-namespace Portrino\PxShopware\Backend\Form\Wizard;
+namespace Portrino\PxShopware\Backend\FormEngine\FieldControl;
 
 /***************************************************************
  *  Copyright notice
@@ -28,7 +28,7 @@ namespace Portrino\PxShopware\Backend\Form\Wizard;
 /**
  * Interface SuggestEntryInterface
  *
- * @package Portrino\PxShopware\Backend\Form\Wizard
+ * @package Portrino\PxShopware\Backend\FormEngine\FieldControl
  */
 interface SuggestEntryInterface {
 

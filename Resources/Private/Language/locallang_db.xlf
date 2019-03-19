@@ -151,11 +151,14 @@
             <trans-unit id="tt_content.CType.pxshopware_pi1.title">
                 <source>Article(s)</source>
             </trans-unit>
+            <trans-unit id="tt_content.CType.pxshopware_pi1.titleByCategory">
+                <source>Article(s) from selected Category</source>
+            </trans-unit>
             <trans-unit id="tt_content.CType.pxshopware_pi1.description">
                 <source>Show one or more articles from Shopware</source>
             </trans-unit>
             <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.settings">
-                <source>Settings</source>
+                <source>Settings Foobar123</source>
             </trans-unit>
             <trans-unit id="tt_content.pi_flexform.pxshopware_pi1.switchable_controller_actions">
                 <source>Type</source>

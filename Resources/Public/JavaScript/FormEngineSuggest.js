@@ -24,13 +24,15 @@ define(['jquery', 'jquery/autocomplete', 'TYPO3/CMS/Backend/FormEngine'], functi
     });
 
     var initialize = function($searchField) {
+        var $containerElement = $searchField.closest('.t3-form-suggest-container');
+        var $fieldContainer = $containerElement.closest('.formengine-field-item');
+
         /**
          * we have to hide the item to select wrapper div manually via JS, because there is no chance to
          * hide the selector wrapper div via CSS
          */
-        $('.t3js-formengine-select-itemstoselect').parent('.form-multigroup-item').hide();
+        $fieldContainer.find('.form-wizards-element .form-multigroup-wrap .form-multigroup-item:nth-child(2)').children().hide();
 
-        var $containerElement = $searchField.closest('.t3-form-suggest-container');
         var $loader = $('#loader');
         var type = $searchField.data('type'),
             language = $searchField.data('language'),
