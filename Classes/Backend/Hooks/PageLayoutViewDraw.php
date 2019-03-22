@@ -29,6 +29,7 @@ use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\ArticleClient;
 use Portrino\PxShopware\Service\Shopware\CategoryClient;
 use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
+use Portrino\PxShopware\Service\Shopware\VariantClient;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHookInterface;
@@ -148,14 +149,20 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
     {
         switch ($CType) {
             case 'pxshopware_pi1':
-                if (\in_array('Article->listByCategories', $switchableControllerActions, true)) {
-                    $this->shopwareClient = GeneralUtility::makeInstance(CategoryClient::class);
-                } else {
-                    $this->shopwareClient = GeneralUtility::makeInstance(ArticleClient::class);
+                switch (current($switchableControllerActions)) {
+                    case 'Article->list':
+                        $this->shopwareClient = $this->objectManager->get(ArticleClient::class);
+                        break;
+                    case 'Article->listByCategories':
+                        $this->shopwareClient = $this->objectManager->get(CategoryClient::class);
+                        break;
+                    case 'Variant->list':
+                        $this->shopwareClient = $this->objectManager->get(VariantClient::class);
+                        break;
                 }
                 break;
             case 'pxshopware_pi2':
-                $this->shopwareClient = GeneralUtility::makeInstance(CategoryClient::class);
+                $this->shopwareClient = $this->objectManager->get(CategoryClient::class);
                 break;
         }
     }
@@ -202,14 +209,22 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
 
         /** @var ObjectStorage $selectedItems */
         $selectedItems = new ObjectStorage();
-        if (\in_array('Article->listByCategories', $switchableControllerActions, true)) {
-            $selectedItemsArray = isset($flexFormConfiguration['settings']['categories']) ?
-                GeneralUtility::intExplode(',', $flexFormConfiguration['settings']['categories'], true) :
-                [];
-        } else {
-            $selectedItemsArray = isset($flexFormConfiguration['settings']['items']) ?
-                GeneralUtility::intExplode(',', $flexFormConfiguration['settings']['items'], true) :
-                [];
+        switch (current($switchableControllerActions)) {
+            case 'Article->listByCategories':
+                $selectedItemsArray = isset($flexFormConfiguration['settings']['categories']) ?
+                    GeneralUtility::intExplode(',', $flexFormConfiguration['settings']['categories'], true) :
+                    [];
+                break;
+            case 'Variant->list':
+                $selectedItemsArray = isset($flexFormConfiguration['settings']['variants']) ?
+                    GeneralUtility::intExplode(',', $flexFormConfiguration['settings']['variants'], true) :
+                    [];
+                break;
+            default:
+                $selectedItemsArray = isset($flexFormConfiguration['settings']['items']) ?
+                    GeneralUtility::intExplode(',', $flexFormConfiguration['settings']['items'], true) :
+                    [];
+
         }
 
         foreach ($selectedItemsArray as $item) {
@@ -218,6 +233,9 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
             $selectedItem = $this->shopwareClient->findById($item, true, ['language' => $language]);
 
             if ($selectedItem) {
+                if (current($switchableControllerActions) === 'Variant->list') {
+                    $selectedItem = $selectedItem->getArticle();
+                }
                 $selectedItems->attach($selectedItem);
             }
         }

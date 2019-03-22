@@ -26,6 +26,8 @@ $boot = function ($_EXTKEY) {
         Portrino\PxShopware\LinkResolver\ArticleLinkResolver::class;
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typolinkLinkHandler']['shopware_category'] =
         Portrino\PxShopware\LinkResolver\CategoryLinkResolver::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typolinkLinkHandler']['shopware_variant'] =
+        Portrino\PxShopware\LinkResolver\VariantLinkResolver::class;
 
     switch (TYPO3_MODE) {
         case 'FE':
@@ -34,7 +36,8 @@ $boot = function ($_EXTKEY) {
                 'Portrino.' . $_EXTKEY,
                 'Pi1',
                 [
-                    'Article' => 'list, listByCategories'
+                    'Article' => 'list, listByCategories',
+                    'Variant' => 'list'
                 ],
                 []
             );

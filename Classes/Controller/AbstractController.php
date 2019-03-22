@@ -27,9 +27,11 @@ namespace Portrino\PxShopware\Controller;
 
 use Portrino\PxShopware\Domain\Model\Article;
 use Portrino\PxShopware\Domain\Model\Category;
+use Portrino\PxShopware\Domain\Model\Variant;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
 use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
+use Portrino\PxShopware\Service\Shopware\VariantClientInterface;
 use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -350,8 +352,9 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      */
     public function listAction()
     {
-        $itemUidList = isset($this->settings['items']) ? GeneralUtility::trimExplode(',',
-            $this->settings['items']) : [];
+        $itemUidList = isset($this->settings['items']) ?
+            GeneralUtility::trimExplode(',', $this->settings['items']) :
+            [];
         $items = new ObjectStorage();
         $cacheTags = [];
         foreach ($itemUidList as $itemUid) {
@@ -359,7 +362,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                 $items->attach($item);
 
                 $cacheTag = $this->getCacheTagForItem($item);
-                if ($cacheTag != false) {
+                if ($cacheTag !== false) {
                     $cacheTags[] = $cacheTag;
                 }
 
@@ -388,6 +391,9 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         }
         if ($item instanceof Category) {
             $result = CategoryClientInterface::CACHE_TAG . '_' . $item->getId();
+        }
+        if ($item instanceof Variant) {
+            $result = VariantClientInterface::CACHE_TAG . '_' . $item->getId();
         }
         return $result;
     }

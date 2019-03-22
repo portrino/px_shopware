@@ -24,6 +24,7 @@ namespace Portrino\PxShopware\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use Portrino\PxShopware\Backend\Form\Wizard\SuggestEntryInterface;
 use Portrino\PxShopware\Backend\Hooks\ItemEntryInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -67,12 +68,12 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     protected $orderNumber = null;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<Portrino\PxShopware\Domain\Model\Media>
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Media>
      */
     protected $images;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<Portrino\PxShopware\Domain\Model\Category>
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Category>
      */
     protected $categories;
 
@@ -82,7 +83,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     protected $detail;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<Portrino\PxShopware\Domain\Model\Detail>
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Detail>
      */
     protected $details;
 
@@ -139,15 +140,15 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
         /**
          * set description in dependence of the description or descriptionLong attribute
          */
-        if (isset($this->raw->description) && $this->raw->description != '') {
+        if (isset($this->raw->description) && $this->raw->description !== '') {
             $this->setDescription($this->raw->description);
         } else {
-            if (isset($this->raw->descriptionLong) && $this->raw->descriptionLong != '') {
+            if (isset($this->raw->descriptionLong) && $this->raw->descriptionLong !== '') {
                 $this->setDescription($this->raw->descriptionLong);
             }
         }
 
-        if (isset($this->raw->descriptionLong) && $this->raw->descriptionLong != '') {
+        if (isset($this->raw->descriptionLong) && $this->raw->descriptionLong !== '') {
             $this->setDescriptionLong($this->raw->descriptionLong);
         }
 
@@ -232,6 +233,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
 
     /**
      * @param \DateTime|string $changed
+     * @throws \Exception
      */
     public function setChanged($changed)
     {
@@ -305,11 +307,13 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * Return the first image
      *
-     * @return NULL|\Portrino\PxShopware\Domain\Model\Media
+     * @return null|\Portrino\PxShopware\Domain\Model\Media
      */
     public function getFirstImage()
     {
-        return ($this->getImages() != null && $this->getImages()->count() > 0) ? array_values($this->getImages()->toArray())[0] : null;
+        return ($this->getImages() !== null && $this->getImages()->count() > 0) ?
+            array_values($this->getImages()->toArray())[0] :
+            null;
     }
 
     /**
@@ -354,8 +358,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     public function getDetails()
     {
         if ($this->details->count() === 0) {
-
-                // check if raw details are available or get them from API
+            // check if raw details are available or get them from API
             if (!isset($this->getRaw()->details)) {
                 /** @var Article $detail */
                 $detailedArticle = $this->articleClient->findById($this->getId(), false);
@@ -363,7 +366,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
             } else {
                 $details = (array)$this->getRaw()->details;
             }
-                // build Detail models and add them to ObjectStorage
+            // build Detail models and add them to ObjectStorage
             foreach ($details as $detailData) {
                 /** @var Detail $detail */
                 $detail = $this->objectManager->get(Detail::class, $detailData, $this->token);
@@ -419,11 +422,10 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      */
     public function getOrderNumber()
     {
-        $result = '';
-        if ($this->orderNumber != null) {
+        if ($this->orderNumber !== null) {
             $result = $this->orderNumber;
         } else {
-            $result = ($this->getDetail() != null) ? $this->getDetail()->getNumber() : '';
+            $result = ($this->getDetail() !== null) ? $this->getDetail()->getNumber() : '';
         }
         return $result;
     }
@@ -441,9 +443,6 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      */
     public function setUri($uri)
     {
-        if (is_string($uri)) {
-//            $uri = new \TYPO3\CMS\Core\Http\Uri($uri);
-        }
         $this->uri = $uri;
     }
 
@@ -476,7 +475,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
                                 $GLOBALS['TSFE']->config['config']['sys_language_uid'], true);
                             $sys_language_id = ($language && isset($language[0])) ? $language[0] : 0;
                             // add only categories of current FE language
-                            if ($detailedCategory->getLanguage() == $sys_language_id) {
+                            if ($detailedCategory->getLanguage() === $sys_language_id) {
                                 $this->addCategory($detailedCategory);
                             }
                         } else {

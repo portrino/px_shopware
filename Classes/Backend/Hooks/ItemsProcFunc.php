@@ -25,8 +25,6 @@ namespace Portrino\PxShopware\Backend\Hooks;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Portrino\PxShopware\Domain\Model\Article;
-use Portrino\PxShopware\Domain\Model\Category;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurationException;
 use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
@@ -40,7 +38,8 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  *
  * @package Portrino\PxShopware\Backend\Hooks
  */
-class ItemsProcFunc {
+class ItemsProcFunc
+{
 
     /**
      * @var ObjectManagerInterface
@@ -61,7 +60,8 @@ class ItemsProcFunc {
      * ItemsProcFunc constructor.
      *
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
     }
@@ -71,39 +71,26 @@ class ItemsProcFunc {
      * @param string $key
      * @throws ShopwareApiClientConfigurationException
      */
-    public function getItemsSelected(array &$config, $key) {
-        $params = isset($config['config']['itemsProcFunc_params']) ? $config['config']['itemsProcFunc_params'] : [];
-        $endpoint = isset($params['type']) ? $params['type'] : '';
-        /**
-         * check if the responsible shopwareApiClient interface and class exists for the given flexform type configuration
-         */
-        $shopwareApiClientInterface = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'ClientInterface';
-        $shopwareApiClientClass = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'Client';
-        if (!interface_exists($shopwareApiClientInterface)) {
-            throw new ShopwareApiClientConfigurationException('The Interface:"' . $shopwareApiClientInterface . '" does not exist. Please check your type configuration in flexform config!', 1460126052);
-        }
+    public function getItemsSelected(array &$config, $key)
+    {
+        $shopwareApiClient = $this->getShopwareClient($config);
 
-        if (!class_exists($shopwareApiClientClass)) {
-            throw new ShopwareApiClientConfigurationException('The Class:"' . $shopwareApiClientClass . '" does not exist. Please check your type configuration in flexform config!', 1460126052);
-        }
-
-        /** @var AbstractShopwareApiClientInterface $shopwareApiClient */
-        $shopwareApiClient = $this->objectManager->get($shopwareApiClientClass);
-
-        $language = isset($config['flexParentDatabaseRow']['sys_language_uid']) ? $config['flexParentDatabaseRow']['sys_language_uid'] : 0;
+        $language = $config['flexParentDatabaseRow']['sys_language_uid'] ?? 0;
         $shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
 
         /** @var array $selectedItems */
-        $selectedItems = isset($config['row'][$config['field']]) ? GeneralUtility::trimExplode(',', $config['row'][$config['field']], TRUE) : [];
+        $selectedItems = isset($config['row'][$config['field']]) ?
+            GeneralUtility::trimExplode(',', $config['row'][$config['field']], true) :
+            [];
         foreach ($selectedItems as $item) {
             /** @var ItemEntryInterface $selectedItem */
-            $selectedItem = $shopwareApiClient->findById($item, FALSE, ['language' => $shopId]);
+            $selectedItem = $shopwareApiClient->findById($item, false, ['language' => $shopId]);
             if ($selectedItem) {
                 $selectedItemOption = [
                     $selectedItem->getSelectItemLabel(),
                     $selectedItem->getSelectItemId()
                 ];
-                array_push($config['items'], $selectedItemOption);
+                $config['items'][] = $selectedItemOption;
             }
         }
     }
@@ -113,29 +100,13 @@ class ItemsProcFunc {
      * @param string $key
      * @throws ShopwareApiClientConfigurationException
      */
-    public function getAllItems(array &$config, $key) {
+    public function getAllItems(array &$config, $key)
+    {
+        $shopwareApiClient = $this->getShopwareClient($config);
 
-        $params = isset($config['config']['itemsProcFunc_params']) ? $config['config']['itemsProcFunc_params'] : [];
-        $endpoint = isset($params['type']) ? $params['type'] : '';
-        /**
-         * check if the responsible shopwareApiClient interface and class exists for the given flexform type configuration
-         */
-        $shopwareApiClientInterface = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'ClientInterface';
-        $shopwareApiClientClass = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'Client';
-        if (!interface_exists($shopwareApiClientInterface)) {
-            throw new ShopwareApiClientConfigurationException('The Interface:"' . $shopwareApiClientInterface . '" does not exist. Please check your type configuration in flexform config!', 1460126052);
-        }
-
-        if (!class_exists($shopwareApiClientClass)) {
-            throw new ShopwareApiClientConfigurationException('The Class:"' . $shopwareApiClientClass . '" does not exist. Please check your type configuration in flexform config!', 1460126052);
-        }
-
-        /** @var AbstractShopwareApiClientInterface $shopwareApiClient */
-        $shopwareApiClient = $this->objectManager->get($shopwareApiClientClass);
-
-        $language = isset($config['flexParentDatabaseRow']['sys_language_uid']) ? $config['flexParentDatabaseRow']['sys_language_uid'] : 0;
+        $language = $config['flexParentDatabaseRow']['sys_language_uid'] ?? 0;
         $shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
-        $items = $shopwareApiClient->findAll(TRUE, ['language' => $shopId]);
+        $items = $shopwareApiClient->findAll(true, ['language' => $shopId]);
 
         /** @var ItemEntryInterface $item */
         foreach ($items as $item) {
@@ -143,9 +114,39 @@ class ItemsProcFunc {
                 $item->getSelectItemLabel(),
                 $item->getSelectItemId()
             ];
-            array_push($config['items'], $option);
+            $config['items'][] = $option;
         }
     }
 
+    /**
+     * @param array $config
+     * @return AbstractShopwareApiClientInterface|object
+     * @throws ShopwareApiClientConfigurationException
+     */
+    protected function getShopwareClient(array $config)
+    {
+        $params = $config['config']['itemsProcFunc_params'] ?? [];
+        $endpoint = $params['type'] ?? '';
+        /**
+         * check if the responsible shopwareApiClient interface and class exists for the given flexform type configuration
+         */
+        $shopwareApiClientInterface = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'ClientInterface';
+        $shopwareApiClientClass = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'Client';
+        if (!interface_exists($shopwareApiClientInterface)) {
+            throw new ShopwareApiClientConfigurationException(
+                'The Interface: "' . $shopwareApiClientInterface . '" does not exist. Please check your type configuration in flexform config!',
+                1460126052
+            );
+        }
+
+        if (!class_exists($shopwareApiClientClass)) {
+            throw new ShopwareApiClientConfigurationException(
+                'The Class: "' . $shopwareApiClientClass . '" does not exist. Please check your type configuration in flexform config!',
+                1460126052
+            );
+        }
+
+        return $this->objectManager->get($shopwareApiClientClass);
+    }
 }
 
