@@ -1,5 +1,13 @@
 # PxShopware Changelog
 
+3.3.0 - 2019-03-22
+------------------
+* [TASK] adds support for article variants
+
+3.2.5 - 2019-02-01
+------------------
+* [BUGFIX] fix article listByCategories filter
+
 3.2.4 - 2019-01-16
 ------------------
 * [TASK] updates BE flexform for backwards compatibility to display item list if switchableControllerActions != listByCategories
