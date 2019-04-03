@@ -24,6 +24,7 @@ namespace Portrino\PxShopware\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use Portrino\PxShopware\Backend\Form\Wizard\SuggestEntryInterface;
 use Portrino\PxShopware\Backend\Hooks\ItemEntryInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -50,6 +51,12 @@ class Variant extends AbstractShopwareModel implements SuggestEntryInterface, It
      * @var \Portrino\PxShopware\Domain\Model\Article
      */
     protected $article;
+
+    /**
+     * @var \Portrino\PxShopware\Service\Shopware\ArticleClientInterface
+     * @inject
+     */
+    protected $articleClient;
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\VariantClientInterface
@@ -79,15 +86,6 @@ class Variant extends AbstractShopwareModel implements SuggestEntryInterface, It
 
         if (isset($this->raw->pxShopwareUrl)) {
             $this->setUri($this->raw->pxShopwareUrl);
-        }
-
-        if (isset($this->raw->article)) {
-            $this->raw->article->pxShopwareOrderNumber = $this->getNumber();
-            $this->raw->article->pxShopwareUrl = $this->getUri();
-            $this->setArticle($this->raw->article);
-
-            $detail = $this->objectManager->get(Detail::class, $this->raw, $this->token);
-            $this->getArticle()->setDetail($detail);
         }
     }
 
@@ -135,12 +133,35 @@ class Variant extends AbstractShopwareModel implements SuggestEntryInterface, It
      */
     public function getArticle()
     {
+        if (!$this->article) {
+            if (!$this->getRaw()->article) {
+                /** @var Article $article */
+                $article = $this->articleClient->findById($this->getRaw()->articleId, false);
+                $article->setOrderNumber($this->getNumber());
+                $article->setUri($this->getUri());
+            } else {
+                $raw = $this->getRaw();
+                $raw->article->pxShopwareOrderNumber = $this->getNumber();
+                $raw->article->pxShopwareUrl = $this->getUri();
+                $this->setRaw($raw);
+
+                $article = $this->objectManager->get(Article::class, $this->getRaw()->article, $this->token);
+            }
+
+            $detail = $this->objectManager->get(Detail::class, $this->getRaw(), $this->token);
+            $article->setDetail($detail);
+
+            $this->setArticle($article);
+        }
         return $this->article;
     }
 
+    /**
+     * @param Article $article
+     */
     public function setArticle($article)
     {
-        $this->article = $this->objectManager->get(Article::class, $article, $this->token);
+        $this->article = $article;
     }
 
     /**

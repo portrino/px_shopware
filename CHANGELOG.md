@@ -1,5 +1,13 @@
 # PxShopware Changelog
 
+3.3.2 - 2019-04-03
+------------------
+* [TASK] updates Variant model -> now checks if article property is available in the raw Shopware API response
+
+3.3.1 - 2019-04-02
+------------------
+* [TASK] allow article variants in "find all" extension mode
+
 3.3.0 - 2019-03-22
 ------------------
 * [TASK] adds support for article variants
