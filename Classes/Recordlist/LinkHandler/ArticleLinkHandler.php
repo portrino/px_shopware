@@ -1,5 +1,5 @@
 <?php
-namespace Portrino\PxShopware\LinkResolver;
+namespace Portrino\PxShopware\Recordlist\LinkHandler;
 
 /***************************************************************
  *  Copyright notice
@@ -25,17 +25,18 @@ namespace Portrino\PxShopware\LinkResolver;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
+use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-class CategoryLinkResolver extends AbstractLinkResolver
+class ArticleLinkHandler extends AbstractLinkHandler
 {
 
     public function __construct()
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->client = $objectManager->get(CategoryClientInterface::class);
+        $this->client = $objectManager->get(ArticleClientInterface::class);
+        $this->type = 'article';
     }
 
 }

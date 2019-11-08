@@ -1,5 +1,5 @@
 <?php
-namespace Portrino\PxShopware\LinkHandler;
+namespace Portrino\PxShopware\Recordlist\LinkHandler;
 
 /***************************************************************
  *  Copyright notice

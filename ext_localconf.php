@@ -20,10 +20,11 @@ $boot = function ($_EXTKEY) {
         ];
     }
 
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typolinkLinkHandler']['shopware_article'] =
-        Portrino\PxShopware\LinkResolver\ArticleLinkResolver::class;
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typolinkLinkHandler']['shopware_category'] =
-        Portrino\PxShopware\LinkResolver\CategoryLinkResolver::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['linkHandler']['shopware'] =
+        Portrino\PxShopware\LinkHandling\ShopwareLinkHandler::class;
+
+    $GLOBALS['TYPO3_CONF_VARS']['FE']['typolinkBuilder']['shopware'] =
+        Portrino\PxShopware\LinkHandling\ShopwareLinkBuilder::class;
 
     switch (TYPO3_MODE) {
         case 'FE':
