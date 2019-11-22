@@ -73,9 +73,9 @@ plugin.tx_pxshopware_pi1 {
     extensionName = PxShopware
     controller = Article
     action = list
-    settings =< plugin.tx_pxshopware.settings
-    persistence =< plugin.tx_pxshopware.persistence
-    view =< plugin.tx_pxshopware.view
+    settings < plugin.tx_pxshopware.settings
+    persistence < plugin.tx_pxshopware.persistence
+    view < plugin.tx_pxshopware.view
 }
 
 plugin.tx_pxshopware_pi2 < plugin.tx_pxshopware_pi1
