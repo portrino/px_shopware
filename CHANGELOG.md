@@ -1,5 +1,9 @@
 # PxShopware Changelog
 
+4.1.2 - 2020-01-07
+------------------
+* [BUGFIX] fixes replace config in composer.json so that packagist won't complain anymore
+
 4.1.1 - 2020-01-07
 ------------------
 * [BUGFIX] merge pull request #11 from jonakieling/master -> add missing QueryBuilder::where() function call
