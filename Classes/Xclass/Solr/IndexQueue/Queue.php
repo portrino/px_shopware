@@ -62,9 +62,11 @@ class Queue extends \ApacheSolrForTypo3\Solr\IndexQueue\Queue {
                 $statement = $queryBuilder
                     ->select('*')
                     ->from($table)
-                    $queryBuilder->expr()->in(
-                        'uid',
-                        $uidList
+                    ->where(
+                        $queryBuilder->expr()->in(
+                            'uid',
+                            $uidList
+                        )
                     )
                     ->execute();
                 while ($row = $statement->fetch()) {
