@@ -276,7 +276,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     {
         if ($this->images->count() === 0) {
             if (isset($this->getRaw()->images) && is_array($this->getRaw()->images)) {
-                foreach ($this->raw->images as $image) {
+                foreach ($this->getRaw()->images as $image) {
                     if (isset($image->mediaId)) {
                         /** @var Media $media */
                         $media = $this->mediaClient->findById($image->mediaId);
@@ -287,8 +287,6 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
                 }
             }
         }
-
-
         return $this->images;
     }
 
@@ -308,10 +306,33 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      * Return the first image
      *
      * @return NULL|\Portrino\PxShopware\Domain\Model\Media
+     * @deprecated Use getTeaserImage()
      */
     public function getFirstImage()
     {
         return ($this->getImages() != null && $this->getImages()->count() > 0) ? array_values($this->getImages()->toArray())[0] : null;
+    }
+
+    /**
+     * Return the main/ teaser image (selected in shopware backend)
+     *
+     * @return NULL|\Portrino\PxShopware\Domain\Model\Media
+     */
+    public function getTeaserImage()
+    {
+        $result = null;
+        if ($this->getImages() != null && $this->getImages()->count() > 0) {
+            foreach ($this->getRaw()->images as $image) {
+                if (isset($image->mediaId) && isset($image->main) && (int)$image->main === 1) {
+                    /** @var Media $media */
+                    $media = $this->mediaClient->findById($image->mediaId);
+                    if ($media && is_a($media, Media::class)) {
+                        $result = $media;
+                    }
+                }
+            }
+        }
+        return $result;
     }
 
     /**

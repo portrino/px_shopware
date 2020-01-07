@@ -26,9 +26,9 @@
 </f:section>
 
 <f:section name="image">
-    <f:if condition="{article.firstImage}">
+    <f:if condition="{article.teaserImage}">
         <f:then>
-            <img src="{article.firstImage.url}" width="200" height="200" title="{article.name}" alt="{article.name}" >
+            <img src="{article.teaserImage.url}" width="200" height="200" title="{article.name}" alt="{article.name}" >
         </f:then>
         <f:else>
             <f:alias map="{height: 200, width: 200}">

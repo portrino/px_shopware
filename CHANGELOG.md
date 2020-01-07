@@ -1,5 +1,9 @@
 # PxShopware Changelog
 
+4.1.0 - 2020-01-07
+------------------
+* [!!!][BUGFIX] replaces article.firstImage calls with article.teaserImage calls, so that the correct (in Shopware selected) teaser image instead of simply the first image will be returned
+
 4.0.0 - 2019-03-15
 ------------------
 * [TASK] updates ext for TYPO3 9.5
