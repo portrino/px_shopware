@@ -41,6 +41,6 @@
         }
     },
     "replace": {
-        "px_shopware": "*"
+        "typo3-ter/px_shopware": "*"
     }
 }

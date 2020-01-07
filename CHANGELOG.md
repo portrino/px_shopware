@@ -3,6 +3,7 @@
 3.3.0 - 2020-01-07
 ------------------
 * [!!!][BUGFIX] replaces article.firstImage calls with article.teaserImage calls, so that the correct (in Shopware selected) teaser image instead of simply the first image will be returned
+* [BUGFIX] fixes replace config in composer.json so that packagist won't complain anymore
 
 3.2.5 - 2019-02-01
 ------------------
