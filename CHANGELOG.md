@@ -1,5 +1,9 @@
 # PxShopware Changelog
 
+4.1.1 - 2020-01-07
+------------------
+* [BUGFIX] merge pull request #11 from jonakieling/master -> add missing QueryBuilder::where() function call
+
 4.1.0 - 2020-01-07
 ------------------
 * [!!!][BUGFIX] replaces article.firstImage calls with article.teaserImage calls, so that the correct (in Shopware selected) teaser image instead of simply the first image will be returned
