@@ -38,6 +38,11 @@ class Media extends AbstractShopwareModel {
     protected $url = '';
 
     /**
+     * @var array
+     */
+    protected $thumbnails = '';
+
+    /**
      * @param object $raw
      * @param string $token
      */
@@ -46,6 +51,10 @@ class Media extends AbstractShopwareModel {
 
         if (isset($this->raw->path)) {
             $this->setUrl($this->raw->path);
+        }
+
+        if (isset($this->raw->thumbnails)) {
+            $this->setThumbnails((array) $this->raw->thumbnails);
         }
     }
 
@@ -63,4 +72,19 @@ class Media extends AbstractShopwareModel {
         $this->url = $url;
     }
 
+    /**
+     * @return array
+     */
+    public function getThumbnails(): array
+    {
+        return $this->thumbnails;
+    }
+
+    /**
+     * @param array $thumbnails
+     */
+    public function setThumbnails(array $thumbnails): void
+    {
+        $this->thumbnails = $thumbnails;
+    }
 }
