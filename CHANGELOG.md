@@ -1,5 +1,11 @@
 # PxShopware Changelog
 
+4.2.0 - 2020-02-10
+------------------
+* [FEATURE] merges thumbnail branch
+  * [TASK] fix category images
+  * [TASK] add thumbnail support to Media model
+
 4.1.2 - 2020-01-07
 ------------------
 * [BUGFIX] fixes replace config in composer.json so that packagist won't complain anymore
