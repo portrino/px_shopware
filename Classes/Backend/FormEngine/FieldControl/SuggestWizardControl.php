@@ -1,5 +1,4 @@
 <?php
-
 namespace Portrino\PxShopware\Backend\FormEngine\FieldControl;
 
 /***************************************************************
@@ -101,24 +100,11 @@ class SuggestWizardControl extends AbstractNode
         /*
          * get the minimal characters to trigger autosuggest from params
          */
-        $minchars = isset($paramArray["fieldConf"]["config"]["fieldWizard"]["suggestWizardControl"]["params"]["minchars"]) ? (int)$paramArray["fieldConf"]["config"]["fieldWizard"]["suggestWizardControl"]["params"]["minchars"] : 5;
+        $minchars = isset($paramArray["fieldConf"]["config"]["fieldWizard"]["suggestWizardControl"]["params"]["minchars"]) ?
+            (int)$paramArray["fieldConf"]["config"]["fieldWizard"]["suggestWizardControl"]["params"]["minchars"] :
+            5;
 
         $fieldname = $paramArray["itemFormElName"];
-
-        /**
-         * check if the responsible shopwareApiClient interface and class exists for the given flexform type configuration
-         */
-        $shopwareApiClientInterface = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'ClientInterface';
-        $shopwareApiClientClass = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'Client';
-        if (!interface_exists($shopwareApiClientInterface)) {
-            throw new ShopwareApiClientConfigurationException('The Interface:"' . $shopwareApiClientInterface . '" does not exist. Please check your type configuration in flexform config!',
-                1460126052);
-        }
-
-        if (!class_exists($shopwareApiClientClass)) {
-            throw new ShopwareApiClientConfigurationException('The Class:"' . $shopwareApiClientClass . '" does not exist. Please check your type configuration in flexform config!',
-                1460126052);
-        }
 
         if (isset($row['sys_language_uid'][0])) {
             $language = (int)$row['sys_language_uid'][0];
@@ -129,12 +115,12 @@ class SuggestWizardControl extends AbstractNode
         <div class="px-shopware autocomplete t3-form-suggest-container">
             <div class="input-group has-feedback">
                 <span class="input-group-addon">' . '' . '</span>
-                <input type="search" class="t3-form-suggest-px-shopware form-control" 
+                <input type="search" class="t3-form-suggest-px-shopware form-control"
                         placeholder="' . $this->getLanguageService()->sL($this->languagePrefix . 'suggest_wizard.placeholder.' . strtolower($endpoint)) . '"
                         data-type="' . htmlspecialchars($endpoint) . '"
-                        data-fieldname="' . htmlspecialchars($fieldname) . '" 
-                        data-language="' . $language . '" 
-                        data-minchars="' . $minchars . '" 
+                        data-fieldname="' . htmlspecialchars($fieldname) . '"
+                        data-language="' . $language . '"
+                        data-minchars="' . $minchars . '"
                 />
                 <span class="loading input-group-addon">
                     <i style="display: none;" id="loader" class="fa fa-circle-o-notch fa-spin"></i>
@@ -162,31 +148,16 @@ class SuggestWizardControl extends AbstractNode
         $queryParams = $request->getQueryParams();
 
         // Get parameters from $_GET/$_POST
-        $search = isset($parsedBody['value']) ? $parsedBody['value'] : $queryParams['value'];
-        $endpoint = isset($parsedBody['type']) ? $parsedBody['type'] : $queryParams['type'];
+        $search = $parsedBody['value'] ?? $queryParams['value'];
+        $endpoint = $parsedBody['type'] ?? $queryParams['type'];
         $language = isset($parsedBody['language']) ? (int)$parsedBody['language'] : (int)$queryParams['language'];
         // set language to 0 if no language was given
         if ($language < 0) {
             $language = 0;
         }
 
-        /**
-         * check if the responsible shopwareApiClient interface and class exists for the given flexform type configuration
-         */
-        $shopwareApiClientInterface = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'ClientInterface';
-        $shopwareApiClientClass = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'Client';
-        if (!interface_exists($shopwareApiClientInterface)) {
-            throw new ShopwareApiClientConfigurationException('The Interface:"' . $shopwareApiClientInterface . '" does not exist. Please check your type configuration in flexform config!',
-                1460126052);
-        }
-
-        if (!class_exists($shopwareApiClientClass)) {
-            throw new ShopwareApiClientConfigurationException('The Class:"' . $shopwareApiClientClass . '" does not exist. Please check your type configuration in flexform config!',
-                1460126052);
-        }
-
         /** @var AbstractShopwareApiClientInterface $shopwareApiClient */
-        $shopwareApiClient = $this->objectManager->get($shopwareApiClientClass);
+        $shopwareApiClient = $this->objectManager->get($this->getShopwareApiClientClass($endpoint));
 
         $shopId = $this->localeToShopMappingService->getShopIdBySysLanguageUid($language);
         $results = $shopwareApiClient->findByTerm($search, 8, true, ['language' => $shopId]);
@@ -194,9 +165,10 @@ class SuggestWizardControl extends AbstractNode
         /** @var SuggestEntryInterface $result */
         foreach ($results as $result) {
             $entry = [
-                'text' => '<span class="suggest-label">&nbsp;' . $this->highlight($result->getSuggestLabel(), $search) . '</span><br />
-                                <span class="suggest-path"><i>' . $this->crop($result->getSuggestDescription(),
-                        80) . '</i></span>',
+                'text' => trim('
+                    <span class="suggest-label">&nbsp;' . $this->highlight($result->getSuggestLabel(), $search) . '</span><br />
+                    <span class="suggest-path"><i>' . $this->crop($result->getSuggestDescription(), 80) . '</i></span>
+                '),
                 'label' => $result->getSuggestLabel(),
                 'uid' => $result->getSuggestId(),
                 'sprite' => ''
@@ -218,6 +190,35 @@ class SuggestWizardControl extends AbstractNode
     }
 
     /**
+     * @param string $endpoint
+     * @return string
+     * @throws ShopwareApiClientConfigurationException
+     */
+    protected function getShopwareApiClientClass($endpoint)
+    {
+        /**
+         * check if the responsible shopwareApiClient interface and class exists for the given flexform type configuration
+         */
+        $shopwareApiClientInterface = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'ClientInterface';
+        $shopwareApiClientClass = 'Portrino\\PxShopware\\Service\\Shopware\\' . $endpoint . 'Client';
+
+        if (!interface_exists($shopwareApiClientInterface)) {
+            throw new ShopwareApiClientConfigurationException(
+                'The Interface:"' . $shopwareApiClientInterface . '" does not exist. Please check your type configuration in flexform config!',
+                1460126052
+            );
+        }
+        if (!class_exists($shopwareApiClientClass)) {
+            throw new ShopwareApiClientConfigurationException(
+                'The Class:"' . $shopwareApiClientClass . '" does not exist. Please check your type configuration in flexform config!',
+                1460126052
+            );
+        }
+
+        return $shopwareApiClientClass;
+    }
+
+    /**
      * @param string $text
      * @param string $words
      *
@@ -225,8 +226,11 @@ class SuggestWizardControl extends AbstractNode
      */
     protected function highlight($text, $words)
     {
-        $highlighted = preg_filter('/' . preg_quote($words) . '/i', '<b><span class="search-highlight">$0</span></b>',
-            $text);
+        $highlighted = preg_filter(
+            '/' . preg_quote($words, '/') . '/i',
+            '<b><span class="search-highlight">$0</span></b>',
+            $text
+        );
         if (!empty($highlighted)) {
             $text = $highlighted;
         }
@@ -241,10 +245,10 @@ class SuggestWizardControl extends AbstractNode
      */
     private function crop($string, $limit)
     {
+        $string = strip_tags($string);
         if (strlen($string) > $limit) {
             return substr($string, 0, $limit) . '...';
-        } else {
-            return $string;
         }
+        return $string;
     }
 }

@@ -24,6 +24,8 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use Portrino\PxShopware\Domain\Model\AbstractShopwareModel;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -93,9 +95,9 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
             if (isset($result->data) && is_array($result->data)) {
                 foreach ($result->data as $data) {
                     if (isset($data->id)) {
-                        /** @var \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $shopwareModel */
+                        /** @var AbstractShopwareModel $shopwareModel */
                         $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $data, $token);
-                        if ($shopwareModel != null) {
+                        if ($shopwareModel !== null) {
                             $shopwareModels->attach($shopwareModel);
                         }
                     }
