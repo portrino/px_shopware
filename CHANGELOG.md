@@ -1,5 +1,14 @@
 # PxShopware Changelog
 
+4.2.2 - 2020-02-18
+------------------
+* [BUGFIX] updates "sys_language_uid" retrieval in AbstractController and AbstractShopwareApiClient
+* [CLEANUP] removes unnecessary "trial" parts and little code formatting
+
+4.2.1 - 2020-02-10
+------------------
+* [CLEANUP] updates SuggestWizardControl and ArticleClient
+
 4.2.0 - 2020-02-10
 ------------------
 * [FEATURE] merges thumbnail branch
