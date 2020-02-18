@@ -30,6 +30,8 @@ use Portrino\PxShopware\Domain\Model\Category;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
 use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
+use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -49,11 +51,6 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * @var \TYPO3\CMS\Core\Core\ApplicationContext
      */
     protected $applicationContext;
-
-    /**
-     * @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
-     */
-    protected $typoScriptFrontendController;
 
     /**
      * @var \DateTime The current time
@@ -114,18 +111,13 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     protected $shopwareClient;
 
     /**
-     * @var boolean
-     */
-    protected $isTrialVersion;
-
-    /**
      * Initializes the controller before invoking an action method.
      *
      * Override this method to solve tasks which all actions have in
      * common.
      *
      * @return void
-     * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
+     * @throws \Exception
      */
     protected function initializeAction()
     {
@@ -133,17 +125,27 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         $this->applicationContext = GeneralUtility::getApplicationContext();
         $this->dateTime = new \DateTime('now', new \DateTimeZone('Europe/Berlin'));
         $this->extConf = unserialize(
-            $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)]
+            $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)],
+            ['allowed_classes' => false]
         );
-        $this->extbaseFrameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $this->extbaseFrameworkConfiguration = $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
+        );
         $this->controllerSettings = $this->settings['controllers'][$this->request->getControllerName()];
         $this->actionSettings = $this->controllerSettings['actions'][$this->request->getControllerActionName()];
 
-        $this->isTrialVersion = ($this->shopwareClient->getStatus() === AbstractShopwareApiClientInterface::STATUS_CONNECTED_TRIAL);
-
         if (TYPO3_MODE === 'FE') {
-            $this->typoScriptFrontendController = $GLOBALS['TSFE'];
-            $this->language = $this->typoScriptFrontendController->config['config']['language'];
+            if (version_compare(TYPO3_version, '9.5', '>=')) {
+                $context = GeneralUtility::makeInstance(Context::class);
+                $this->language = $context->getPropertyFromAspect('language', 'id');
+            } else {
+                $this->language = GeneralUtility::trimExplode(
+                    '.',
+                    $this->getTypoScriptFrontendController()->config['config']['language'],
+                    true
+                );
+                $this->language = ($this->language && isset($this->language[0])) ? $this->language[0] : 0;
+            }
         }
     }
 
@@ -175,20 +177,24 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             'language' => $this->language
         ]);
 
-        if ($this->isTrialVersion === true) {
-            $this->addFlashMessage(
-                LocalizationUtility::translate(
-                    'flash.warning.trial.description',
-                    $this->extensionName,
-                    [
-                        1 => $this->settings['urls']['shopware_store'],
-                        2 => $this->settings['emails']['portrino_support'],
-                        3 => $this->settings['urls']['portrino_website']
-                    ]
-                ),
-                LocalizationUtility::translate('flash.warning.trial.title', $this->extensionName),
-                FlashMessage::WARNING
-            );
+        try {
+            if ($this->shopwareClient->getStatus() === AbstractShopwareApiClientInterface::STATUS_CONNECTED_TRIAL) {
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'flash.warning.trial.description',
+                        $this->extensionName,
+                        [
+                            1 => $this->settings['urls']['shopware_store'],
+                            2 => $this->settings['emails']['portrino_support'],
+                            3 => $this->settings['urls']['portrino_website']
+                        ]
+                    ),
+                    LocalizationUtility::translate('flash.warning.trial.title', $this->extensionName),
+                    FlashMessage::WARNING
+                );
+            }
+        } catch (ShopwareApiClientException $e) {
+            // do nothing here - just a hint
         }
     }
 
@@ -295,17 +301,18 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         try {
             parent::processRequest($request, $response);
         } catch (\Exception $exception) {
-
-            if (TYPO3_DLOG) {
-                GeneralUtility::devLog($exception->getMessage(), $this->extensionName, 1);
-            }
-
             $applicationContext = GeneralUtility::getApplicationContext();
             if ($applicationContext->isProduction()) {
-                // If the property mapper did throw a \TYPO3\CMS\Extbase\Property\Exception, because it was unable to find the requested entity, call the page-not-found handler.
+                // If the property mapper did throw a \TYPO3\CMS\Extbase\Property\Exception,
+                // because it was unable to find the requested entity, call the page-not-found handler.
                 $previousException = $exception->getPrevious();
-                if (($exception instanceof \TYPO3\CMS\Extbase\Property\Exception) && (($previousException instanceof \TYPO3\CMS\Extbase\Property\Exception\TargetNotFoundException) || ($previousException instanceof \TYPO3\CMS\Extbase\Property\Exception\InvalidSourceException))) {
-                    $this->typoScriptFrontendController->pageNotFoundAndExit();
+                if (($exception instanceof \TYPO3\CMS\Extbase\Property\Exception)
+                    && (
+                        ($previousException instanceof \TYPO3\CMS\Extbase\Property\Exception\TargetNotFoundException)
+                        || ($previousException instanceof \TYPO3\CMS\Extbase\Property\Exception\InvalidSourceException)
+                    )
+                ) {
+                    $this->getTypoScriptFrontendController()->pageNotFoundAndExit();
                 }
             }
 
@@ -329,15 +336,11 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         try {
             parent::callActionMethod();
         } catch (\Exception $exception) {
-
-            if (TYPO3_DLOG) {
-                GeneralUtility::devLog($exception->getMessage(), $this->extensionName, 1);
-            }
-
             if ($this->applicationContext->isProduction()) {
-                // This enables you to trigger the call of TYPO3s page-not-found handler by throwing \TYPO3\CMS\Core\Error\Http\PageNotFoundException
+                // This enables you to trigger the call of TYPO3s page-not-found handler by throwing
+                // \TYPO3\CMS\Core\Error\Http\PageNotFoundException
                 if ($exception instanceof PageNotFoundException) {
-                    $GLOBALS['TSFE']->pageNotFoundAndExit($this->entityNotFoundMessage);
+                    $this->getTypoScriptFrontendController()->pageNotFoundAndExit($this->entityNotFoundMessage);
                 }
             }
 
@@ -359,20 +362,13 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                 $items->attach($item);
 
                 $cacheTag = $this->getCacheTagForItem($item);
-                if ($cacheTag != false) {
+                if ($cacheTag !== false) {
                     $cacheTags[] = $cacheTag;
-                }
-
-                /**
-                 * only show one item if isTrialVersion
-                 */
-                if ($this->isTrialVersion === true) {
-                    break;
                 }
             }
         }
 
-        $this->getTypeScriptFrontendController()->addCacheTags(array_unique($cacheTags));
+        $this->getTypoScriptFrontendController()->addCacheTags(array_unique($cacheTags));
         $this->view->assign('items', $items);
     }
 
@@ -395,7 +391,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     /**
      * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
      */
-    protected function getTypeScriptFrontendController()
+    protected function getTypoScriptFrontendController()
     {
         return $GLOBALS['TSFE'];
     }

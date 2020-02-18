@@ -24,10 +24,13 @@ namespace Portrino\PxShopware\Cache;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use TYPO3\CMS\Core\Cache\Backend\BackendInterface;
 use TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend;
 use TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -42,6 +45,11 @@ class CacheChain implements FrontendInterface, SingletonInterface {
      * @var array
      */
     protected $chain = [];
+
+    /**
+     * @var LogManager
+     */
+    protected $logger;
 
     /**
      * @var FrontendInterface
@@ -112,7 +120,7 @@ class CacheChain implements FrontendInterface, SingletonInterface {
      * @api
      */
     public function get($entryIdentifier) {
-        $result = FALSE;
+        $result = false;
 
         ksort($this->chain);
 
@@ -122,16 +130,16 @@ class CacheChain implements FrontendInterface, SingletonInterface {
          */
         foreach ($this->chain as $priority => $cache) {
             $result = $cache->get($entryIdentifier);
-            if ($result != FALSE) {
+            if ($result !== false) {
                 /**
                  * if the entry identifier was found in database, store the result in the faster transient memory cache
                  */
                 if ($cache->getBackend() instanceof Typo3DatabaseBackend) {
-                    /** @var \TYPO3\CMS\Core\Log\LogManager $logger */
-                    $this->logger = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class)->getLogger(__CLASS__);
-                    $this->logger->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, $entryIdentifier);
+                    /** @var LogManager $logger */
+                    $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+                    $this->logger->log(LogLevel::INFO, $entryIdentifier);
 
-                    if ($this->transientMemoryCache != null) {
+                    if ($this->transientMemoryCache !== null) {
                         $this->transientMemoryCache->set($entryIdentifier, $result);
                     }
                 }
@@ -172,13 +180,11 @@ class CacheChain implements FrontendInterface, SingletonInterface {
     }
 
     public function has($entryIdentifier) {
-        $result = FALSE;
-        /**
-         * @var FrontendInterface $cache
-         */
+        $result = false;
+        /** @var FrontendInterface $cache */
         foreach ($this->chain as $cache) {
             $result = $cache->has($entryIdentifier);
-            if ($result != FALSE) {
+            if ($result !== false) {
                 break;
             }
         }
@@ -186,27 +192,21 @@ class CacheChain implements FrontendInterface, SingletonInterface {
     }
 
     public function remove($entryIdentifier) {
-        /**
-         * @var FrontendInterface $cache
-         */
+        /** @var FrontendInterface $cache */
         foreach ($this->chain as $cache) {
             $cache->remove($entryIdentifier);
         }
     }
 
     public function flush() {
-        /**
-         * @var FrontendInterface $cache
-         */
+        /**  @var FrontendInterface $cache */
         foreach ($this->chain as $cache) {
             $cache->flush();
         }
     }
 
     public function flushByTag($tag) {
-        /**
-         * @var FrontendInterface $cache
-         */
+        /** @var FrontendInterface $cache */
         foreach ($this->chain as $cache) {
             $cache->flushByTag($tag);
         }
@@ -220,18 +220,14 @@ class CacheChain implements FrontendInterface, SingletonInterface {
      */
     public function flushByTags(array $tags)
     {
-        /**
-         * @var FrontendInterface $cache
-         */
+        /** @var FrontendInterface $cache */
         foreach ($this->chain as $cache) {
             $cache->flushByTags($tags);
         }
     }
 
     public function collectGarbage() {
-        /**
-         * @var FrontendInterface $cache
-         */
+        /**  @var FrontendInterface $cache */
         foreach ($this->chain as $cache) {
             $cache->collectGarbage();
         }
@@ -244,6 +240,4 @@ class CacheChain implements FrontendInterface, SingletonInterface {
     public function isValidTag($tag) {
         // TODO: Implement isValidTag() method.
     }
-
-
 }

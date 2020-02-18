@@ -35,7 +35,6 @@ use TYPO3\CMS\Backend\Toolbar\ToolbarItemInterface;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
@@ -170,6 +169,10 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
 
     /**
      * Collect the information for the menu
+     *
+     * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
+     * @throws \ReflectionException
+     * @throws \TYPO3\CMS\Core\Package\Exception
      */
     protected function collectInformation()
     {
@@ -192,6 +195,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
      * Gets the connected Shops
      *
      * @return void
+     * @throws \TYPO3\CMS\Core\Package\Exception
      */
     protected function getExtensionInformation()
     {
@@ -315,6 +319,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
      * Gets the Cache Status
      *
      * @return void
+     * @throws \ReflectionException
      */
     protected function getCacheStatus()
     {
@@ -353,7 +358,6 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
                 if ($backend instanceof Typo3DatabaseBackend) {
                     $cacheTables = '';
                     foreach ($cache->getCacheTables() as $cacheTable) {
-
                         /** @var QueryBuilder $queryBuilder */
                         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($cacheTable);
                         $numberOfRecords = $queryBuilder
@@ -364,7 +368,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
 
                         $cacheTables .= $cacheTable . '<br>(' . $numberOfRecords . ' ' . $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.caches.entries', TRUE) . ') <br>';
 
-                        if ($cacheTables != '') {
+                        if ($cacheTables !== '') {
                             $this->cacheInformation[] = [
                                 'value' => $cacheTables,
                             ];
@@ -392,6 +396,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
      * Render system information dropdown
      *
      * @return string Icon HTML
+     * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
      */
     public function getItem()
     {
@@ -420,6 +425,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
      * Render drop down
      *
      * @return string Drop down HTML
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\InvalidExtensionNameException
      */
     public function getDropDown()
     {
@@ -481,16 +487,6 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
     protected function getBackendUserAuthentication()
     {
         return $GLOBALS['BE_USER'];
-    }
-
-    /**
-     * Returns DatabaseConnection
-     *
-     * @return DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 
     /**

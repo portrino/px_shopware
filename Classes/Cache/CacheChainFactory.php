@@ -24,6 +24,7 @@ namespace Portrino\PxShopware\Cache;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -37,6 +38,7 @@ class CacheChainFactory implements SingletonInterface {
 
     /**
      * @return CacheChain
+     * @throws \TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException
      */
     public function create() {
         /** @var CacheManager $cacheManager */
