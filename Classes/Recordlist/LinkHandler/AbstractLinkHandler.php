@@ -1,5 +1,5 @@
 <?php
-namespace Portrino\PxShopware\LinkHandler;
+namespace Portrino\PxShopware\Recordlist\LinkHandler;
 
 /***************************************************************
  *  Copyright notice
@@ -62,12 +62,11 @@ class AbstractLinkHandler extends \TYPO3\CMS\Recordlist\LinkHandler\AbstractLink
         if (!$linkParts['url']) {
             return false;
         }
-        $url = rawurldecode($linkParts['url']);
-        if (StringUtility::beginsWith($url, $this->getPrefix())) {
-            $id = intval(substr($url, strlen($this->getPrefix())));
-            $this->object = $this->client->findById($id);
+
+        if ($linkParts['type'] == 'shopware') {
             return true;
         }
+
         return false;
     }
 
@@ -156,6 +155,6 @@ class AbstractLinkHandler extends \TYPO3\CMS\Recordlist\LinkHandler\AbstractLink
 
     protected function getPrefix()
     {
-        return 'shopware_' . $this->type . ':';
+        return 't3://shopware?' . $this->type . '=';
     }
 }
