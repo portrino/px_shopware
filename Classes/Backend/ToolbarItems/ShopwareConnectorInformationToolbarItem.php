@@ -211,7 +211,6 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
     {
         /** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Shop> $shops */
         $shops = $this->shopClient->findAll(false);
-        var_dump($shops->toArray());exit;
 
         $shopString = '';
         foreach ($shops as $shop) {
