@@ -92,11 +92,6 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
     protected $view;
 
     /**
-     * @var Connection
-     */
-    protected $databaseConnection;
-
-    /**
      * @var LanguageService
      */
     protected $languageService;
@@ -120,7 +115,6 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
         $this->articleClient = $this->objectManager->get(ArticleClient::class);
         $this->categoryClient = $this->objectManager->get(CategoryClient::class);
         $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
-        $this->databaseConnection = $this->getDatabase();
         $this->languageService = $this->getLanguageService();
 
         $this->view = $this->objectManager->get(StandaloneView::class);
@@ -248,14 +242,6 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
 
         $itemContent = $this->view->render();
         $drawItem = false;
-    }
-
-    /**
-     * @return Connection
-     */
-    protected function getDatabase()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 
     /**

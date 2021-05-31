@@ -51,26 +51,26 @@
                 <source>Status</source>
             </trans-unit>
             <trans-unit id="toolbar_items.shopware_connector_information.shop.status.connected_full">
-                <source>Connected (Full Version)</source>
+                <source>Connected (Full)</source>
             </trans-unit>
             <trans-unit id="toolbar_items.shopware_connector_information.shop.status.connected_full.message">
                 <source>
                     <![CDATA[
-                        Thank you for purchasing our product: "TYPO3-Connector for Shopware". <br>
+                        Thank you for using our product: "TYPO3-Connector for Shopware". <br>
                         If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:%1$s">contact us </a>
                         or visit our <a style="text-decoration: underline;" href="%2$s" target="_blank">website</a>.
                     ]]>
                 </source>
             </trans-unit>
             <trans-unit id="toolbar_items.shopware_connector_information.shop.status.connected_trial">
-                <source>Connected (Trial Version)</source>
+                <source>Connected (Partial)</source>
             </trans-unit>
             <trans-unit id="toolbar_items.shopware_connector_information.shop.status.connected_trial.message">
                 <source>
                     <![CDATA[
-                        You are using the trial version of this extension. <br>
-                        Please download our <a style="text-decoration: underline;" href="%1$s" target="_blank">TYPO3-Connector</a> plugin from shopware store
-                        and install it on your shopware system to get the full version.
+                        It seems that you haven't installed the TYPO3-Connector plugin in Shopware yet. <br>
+                        Please download our <a style="text-decoration: underline;" href="%1$s" target="_blank">TYPO3-Connector</a> plugin from Github
+                        and install it on your shopware system to get a fully connected version.
                         <br>
                         <br>
                         If you have questions or would get more information about our products feel free to <a style="text-decoration: underline;" href="mailto:%2$s">contact us </a>

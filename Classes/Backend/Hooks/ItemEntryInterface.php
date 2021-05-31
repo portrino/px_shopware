@@ -30,7 +30,8 @@ namespace Portrino\PxShopware\Backend\Hooks;
  *
  * @package Portrino\PxShopware\Backend\Hooks
  */
-interface ItemEntryInterface {
+interface ItemEntryInterface
+{
 
     /**
      * @return int

@@ -26,24 +26,26 @@ namespace Portrino\PxShopware\ViewHelpers\Media;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
 
 /**
  * Class ExistsViewHelper
  *
  * @package Portrino\PxShopware\ViewHelpers\Media
  */
-class ExistsViewHelper extends AbstractConditionViewHelper {
+class ExistsViewHelper extends AbstractConditionViewHelper
+{
 
     /**
      * Initialize arguments
      *
      * @return void
      */
-    public function initializeArguments() {
+    public function initializeArguments()
+    {
         parent::initializeArguments();
-        $this->registerArgument('file', 'string', 'Filename which must exist to trigger f:then rendering', FALSE);
-        $this->registerArgument('directory', 'string', 'Directory which must exist to trigger f:then rendering', FALSE);
+        $this->registerArgument('file', 'string', 'Filename which must exist to trigger f:then rendering', false);
+        $this->registerArgument('directory', 'string', 'Directory which must exist to trigger f:then rendering', false);
     }
 
     /**
@@ -51,11 +53,12 @@ class ExistsViewHelper extends AbstractConditionViewHelper {
      *
      * @return string
      */
-    public function render() {
+    public function render()
+    {
 
         $evaluation = static::evaluateCondition($this->arguments);
 
-        if (FALSE !== $evaluation) {
+        if (false !== $evaluation) {
             return $this->renderThenChild();
         }
         return $this->renderElseChild();
@@ -67,14 +70,15 @@ class ExistsViewHelper extends AbstractConditionViewHelper {
      * @param array $arguments ViewHelper arguments to evaluate the condition for this ViewHelper, allows for flexiblity in overriding this method.
      * @return bool
      */
-    static protected function evaluateCondition($arguments = NULL) {
+    protected static function evaluateCondition($arguments = null)
+    {
         $file = GeneralUtility::getFileAbsFileName($arguments['file']);
         $directory = $arguments['directory'];
-        $evaluation = FALSE;
-        if (TRUE === isset($arguments['file'])) {
-            $evaluation = (boolean) ((TRUE === file_exists($file) || TRUE === file_exists(constant('PATH_site') . $file)) && TRUE === is_file($file));
-        } elseif (TRUE === isset($arguments['directory'])) {
-            $evaluation = (boolean) (TRUE === is_dir($directory) || TRUE === is_dir(constant('PATH_site') . $directory));
+        $evaluation = false;
+        if (true === isset($arguments['file'])) {
+            $evaluation = (boolean)((true === file_exists($file) || true === file_exists(constant('PATH_site') . $file)) && true === is_file($file));
+        } elseif (true === isset($arguments['directory'])) {
+            $evaluation = (boolean)(true === is_dir($directory) || true === is_dir(constant('PATH_site') . $directory));
         }
         return $evaluation;
     }

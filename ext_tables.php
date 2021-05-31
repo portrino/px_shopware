@@ -1,23 +1,17 @@
 <?php
 defined('TYPO3_MODE') || die();
 
-$boot = function ($_EXTKEY) {
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-        $_EXTKEY,
-        'Configuration/TypoScript',
-        'Shopware Integration'
-    );
+(function () {
+    $extensionKey = 'px_shopware';
 
     if (TYPO3_MODE === 'BE') {
-        $GLOBALS['TBE_STYLES']['skins'][$_EXTKEY] = [
-            'name' => $_EXTKEY,
+        $GLOBALS['TBE_STYLES']['skins'][$extensionKey] = [
+            'name' => $extensionKey,
             'stylesheetDirectories' => [
                 'structure' => '', //removes structure stylesheet
-                'visual' => 'EXT:' . $_EXTKEY . '/Resources/Public/Css' // changes default directory
+                'visual' => 'EXT:' . $extensionKey . '/Resources/Public/Css' // changes default directory
             ]
         ];
     }
-};
 
-$boot($_EXTKEY);
-unset($boot);
+})();

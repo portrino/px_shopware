@@ -31,13 +31,20 @@ use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
 use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
+use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Extbase\Property\Exception;
+use TYPO3\CMS\Extbase\Property\Exception\InvalidSourceException;
+use TYPO3\CMS\Extbase\Property\Exception\TargetNotFoundException;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Frontend\Controller\ErrorController;
+use TYPO3\CMS\Frontend\Page\PageAccessFailureReasons;
 
 /**
  * Class AbstractController
@@ -90,7 +97,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $persistenceManager;
 
@@ -106,7 +113,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $shopwareClient;
 
@@ -124,10 +131,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         parent::initializeAction();
         $this->applicationContext = GeneralUtility::getApplicationContext();
         $this->dateTime = new \DateTime('now', new \DateTimeZone('Europe/Berlin'));
-        $this->extConf = unserialize(
-            $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)],
-            ['allowed_classes' => false]
-        );
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('px_shopware');
         $this->extbaseFrameworkConfiguration = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
         );
@@ -184,7 +188,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                         'flash.warning.trial.description',
                         $this->extensionName,
                         [
-                            1 => $this->settings['urls']['shopware_store'],
+                            1 => $this->settings['urls']['shopware_plugin_repository'],
                             2 => $this->settings['emails']['portrino_support'],
                             3 => $this->settings['urls']['portrino_website']
                         ]
@@ -289,7 +293,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      *
      *
      * @throws \Exception
-     * @throws \TYPO3\CMS\Extbase\Property\Exception
+     * @throws Exception
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @return void
      * @override \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
@@ -306,13 +310,18 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                 // If the property mapper did throw a \TYPO3\CMS\Extbase\Property\Exception,
                 // because it was unable to find the requested entity, call the page-not-found handler.
                 $previousException = $exception->getPrevious();
-                if (($exception instanceof \TYPO3\CMS\Extbase\Property\Exception)
+                if (($exception instanceof Exception)
                     && (
-                        ($previousException instanceof \TYPO3\CMS\Extbase\Property\Exception\TargetNotFoundException)
-                        || ($previousException instanceof \TYPO3\CMS\Extbase\Property\Exception\InvalidSourceException)
+                        ($previousException instanceof TargetNotFoundException)
+                        || ($previousException instanceof InvalidSourceException)
                     )
                 ) {
-                    $this->getTypoScriptFrontendController()->pageNotFoundAndExit();
+                    $pageNotFoundResponse = GeneralUtility::makeInstance(ErrorController::class)->pageNotFoundAction(
+                        $this->request,
+                        'The requested page does not exist',
+                        ['code' => PageAccessFailureReasons::PAGE_NOT_FOUND]
+                    );
+                    throw new ImmediateResponseException($pageNotFoundResponse, 1622473582);
                 }
             }
 

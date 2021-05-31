@@ -2,7 +2,9 @@
 namespace Portrino\PxShopware\Service\Shopware;
 
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurationException;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 class ConfigurationService implements SingletonInterface
@@ -10,7 +12,7 @@ class ConfigurationService implements SingletonInterface
 
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $configurationManager;
 
@@ -22,27 +24,27 @@ class ConfigurationService implements SingletonInterface
     public function initializeObject()
     {
         $settings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, 'PxShopware');
-        $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['px_shopware']);
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('px_shopware');
 
-        if ($settings['api']['url'] === '' && isset($extConf['api.']['url'])) {
-            $settings['api']['url'] = $extConf['api.']['url'];
+        if ($settings['api']['url'] === '' && isset($extConf['api']['url'])) {
+            $settings['api']['url'] = $extConf['api']['url'];
         }
-        if ($settings['api']['username'] === '' && isset($extConf['api.']['username'])) {
-            $settings['api']['username'] = $extConf['api.']['username'];
+        if ($settings['api']['username'] === '' && isset($extConf['api']['username'])) {
+            $settings['api']['username'] = $extConf['api']['username'];
         }
-        if ($settings['api']['key'] === '' && isset($extConf['api.']['key'])) {
-            $settings['api']['key'] = $extConf['api.']['key'];
-        }
-
-        if (!isset($settings['caching']['disable']) && isset($extConf['caching.']['disable'])) {
-            $settings['caching']['disable'] = $extConf['caching.']['disable'];
-        }
-        if (!isset($settings['caching']['lifetime']) && isset($extConf['caching.']['lifetime'])) {
-            $settings['caching']['lifetime'] = (int)$extConf['caching.']['lifetime'];
+        if ($settings['api']['key'] === '' && isset($extConf['api']['key'])) {
+            $settings['api']['key'] = $extConf['api']['key'];
         }
 
-        if (!isset($settings['logging']['disable']) && isset($extConf['logging.']['disable'])) {
-            $settings['logging']['disable'] = $extConf['logging.']['disable'];
+        if (!isset($settings['caching']['disable']) && isset($extConf['caching']['disable'])) {
+            $settings['caching']['disable'] = $extConf['caching']['disable'];
+        }
+        if (!isset($settings['caching']['lifetime']) && isset($extConf['caching']['lifetime'])) {
+            $settings['caching']['lifetime'] = (int)$extConf['caching']['lifetime'];
+        }
+
+        if (!isset($settings['logging']['disable']) && isset($extConf['logging']['disable'])) {
+            $settings['logging']['disable'] = $extConf['logging']['disable'];
         }
 
         $this->settings = $settings;

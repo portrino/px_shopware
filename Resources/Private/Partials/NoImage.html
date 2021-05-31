@@ -1,4 +1,7 @@
-{namespace s = Portrino\PxShopware\ViewHelpers}
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:s="http://typo3.org/ns/Portrino/PxShopware/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
 <f:if condition="{language}">
     <f:then>
         <f:render section="localized-image" arguments="{_all}" />
@@ -56,3 +59,5 @@
         </f:else>
     </s:media.exists>
 </f:section>
+
+</html>

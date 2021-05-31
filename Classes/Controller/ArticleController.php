@@ -39,7 +39,7 @@ class ArticleController extends AbstractController
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\ArticleClientInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $shopwareClient;
 

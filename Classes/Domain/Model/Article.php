@@ -90,25 +90,25 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $categoryClient;
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\MediaClientInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $mediaClient;
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\ArticleClientInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $articleClient;
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $objectManager;
 

@@ -1,9 +1,13 @@
 <?php
 defined('TYPO3_MODE') || die();
 
-$boot = function ($_EXTKEY) {
+(function () {
+    $extensionKey = 'px_shopware';
+
     /** @var array $extConf */
-    $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$_EXTKEY], ['allowed_classes' => false]);
+    $extConf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class
+    )->get($extensionKey);
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
         '<INCLUDE_TYPOSCRIPT: source="DIR:EXT:px_shopware/Configuration/PageTSconfig/" extension="ts">'
@@ -11,7 +15,6 @@ $boot = function ($_EXTKEY) {
 
 
     if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {
-
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'][] =
             Portrino\PxShopware\Service\Solr\Hooks\Queue::class . '->postProcessFetchRecordsForIndexQueueItem';
 
@@ -29,7 +32,7 @@ $boot = function ($_EXTKEY) {
         case 'FE':
 
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-                'Portrino.' . $_EXTKEY,
+                'Portrino.' . $extensionKey,
                 'Pi1',
                 [
                     'Article' => 'list, listByCategories'
@@ -38,7 +41,7 @@ $boot = function ($_EXTKEY) {
             );
 
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-                'Portrino.' . $_EXTKEY,
+                'Portrino.' . $extensionKey,
                 'Pi2',
                 [
                     'Category' => 'list'
@@ -47,7 +50,7 @@ $boot = function ($_EXTKEY) {
             );
 
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-                'Portrino.' . $_EXTKEY,
+                'Portrino.' . $extensionKey,
                 'Notification',
                 [
                     'Notification' => 'index'
@@ -61,11 +64,11 @@ $boot = function ($_EXTKEY) {
              * add TS for each plugin
              */
             $pluginSignatures = [
-                0 => str_replace('_', '', $_EXTKEY) . '_pi1',
-                1 => str_replace('_', '', $_EXTKEY) . '_pi2'
+                0 => str_replace('_', '', $extensionKey) . '_pi1',
+                1 => str_replace('_', '', $extensionKey) . '_pi2'
             ];
             foreach ($pluginSignatures as $pluginSignature) {
-                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($_EXTKEY, 'setup',
+                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($extensionKey, 'setup',
                     '[GLOBAL]
                 tt_content.' . $pluginSignature . ' = COA
                 tt_content.' . $pluginSignature . ' {
@@ -86,7 +89,7 @@ $boot = function ($_EXTKEY) {
                 'px-shopware',
                 \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
                 [
-                    'source' => 'EXT:' . $_EXTKEY . '/ext_icon.svg'
+                    'source' => 'EXT:' . $extensionKey . '/ext_icon.svg'
                 ]
             );
 
@@ -150,7 +153,7 @@ $boot = function ($_EXTKEY) {
                 'px-shopware-clear-cache',
                 \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
                 [
-                    'source' => 'EXT:px_shopware/Resources/Public/Icons/clear_cache.svg'
+                    'source' => 'EXT:' . $extensionKey . '/Resources/Public/Icons/clear_cache.svg'
                 ]
             );
 
@@ -158,7 +161,7 @@ $boot = function ($_EXTKEY) {
                 'px-shopware-article',
                 \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
                 [
-                    'source' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/article.svg'
+                    'source' => 'EXT:' . $extensionKey . '/Resources/Public/Icons/article.svg'
                 ]
             );
 
@@ -166,7 +169,7 @@ $boot = function ($_EXTKEY) {
                 'px-shopware-category',
                 \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
                 [
-                    'source' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/category.svg'
+                    'source' => 'EXT:' . $extensionKey . '/Resources/Public/Icons/category.svg'
                 ]
             );
 
@@ -174,15 +177,15 @@ $boot = function ($_EXTKEY) {
              * register icons for each plugin
              */
             $pluginSignatures = [
-                0 => str_replace('_', '', $_EXTKEY) . '_pi1',
-                1 => str_replace('_', '', $_EXTKEY) . '_pi2'
+                0 => str_replace('_', '', $extensionKey) . '_pi1',
+                1 => str_replace('_', '', $extensionKey) . '_pi2'
             ];
             foreach ($pluginSignatures as $pluginSignature) {
                 $iconRegistry->registerIcon(
                     str_replace('_', '-', $pluginSignature),
                     \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
                     [
-                        'source' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/' . $pluginSignature . '.svg'
+                        'source' => 'EXT:' . $extensionKey . '/Resources/Public/Icons/' . $pluginSignature . '.svg'
                     ]
                 );
             }
@@ -227,32 +230,30 @@ $boot = function ($_EXTKEY) {
     /**
      * if caching was not disabled create one cache for each endpoint
      */
-    if ((bool)$extConf['caching.']['disable'] === false) {
+    if ((bool)$extConf['caching']['disable'] === false) {
         if (false === is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_level1'])) {
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware_level1'] = [
                 'backend' => \TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend::class,
-                'frontend' => \TYPO3\CMS\Core\Cache\Frontend\StringFrontend::class,
-                'groups' => ['px_shopware']
+                'frontend' => \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class,
+                'groups' => [$extensionKey]
             ];
         }
 
-        if (false === is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware'])) {
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['px_shopware'] = [
+        if (false === is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$extensionKey])) {
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$extensionKey] = [
                 'backend' => \TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend::class,
-                'frontend' => \TYPO3\CMS\Core\Cache\Frontend\StringFrontend::class,
+                'frontend' => \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class,
                 'options' => [
-                    'defaultLifetime' => (int)$extConf['caching.']['lifetime'] > 0 ? (int)$extConf['caching.']['lifetime'] : 3600
+                    'defaultLifetime' => (int)$extConf['caching']['lifetime'] > 0 ? (int)$extConf['caching']['lifetime'] : 3600
                 ],
-                'groups' => ['px_shopware']
+                'groups' => [$extensionKey]
             ];
         }
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXT']['px_shopware']['cache_chain'] = [
+        $GLOBALS['TYPO3_CONF_VARS']['EXT'][$extensionKey]['cache_chain'] = [
             0 => 'px_shopware_level1',
             1 => 'px_shopware',
         ];
     }
-};
 
-$boot($_EXTKEY);
-unset($boot);
+})();

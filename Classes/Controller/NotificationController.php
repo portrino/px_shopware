@@ -59,7 +59,7 @@ class NotificationController extends ActionController
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\ConfigurationService
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $configurationService;
 
@@ -70,13 +70,13 @@ class NotificationController extends ActionController
 
     /**
      * @var \TYPO3\CMS\Core\Cache\CacheManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $cacheManager;
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\ArticleClientInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $articleClient;
 

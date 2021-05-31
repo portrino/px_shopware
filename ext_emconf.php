@@ -10,7 +10,7 @@
  * writing. "version" and "dependencies" must not be touched!
  ***************************************************************/
 
-$EM_CONF[$_EXTKEY] = array (
+$EM_CONF[$_EXTKEY] = [
     'title' => 'Shopware Client for TYPO3',
     'description' => 'Provides frontend plugins to render articles, products from shopware systems',
     'category' => 'plugin',
@@ -21,19 +21,14 @@ $EM_CONF[$_EXTKEY] = array (
     'uploadfolder' => false,
     'createDirs' => '',
     'clearCacheOnLoad' => 0,
-    'version' => '4.2.2',
-    'constraints' =>
-    array (
-        'depends' =>
-            array (
-                'typo3' => '8.7.0-9.5.99',
-            ),
-        'conflicts' =>
-        array (
-        ),
-        'suggests' =>
-        array (
-        ),
-    ),
-    '_md5_values_when_last_written' => '',
-);
+    'version' => '5.0.0',
+    'constraints' => [
+        'depends' => [
+            'typo3' => '9.5.0-10.4.99',
+        ],
+        'conflicts' => [
+        ],
+        'suggests' => [
+        ],
+    ],
+];

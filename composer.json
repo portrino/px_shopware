@@ -37,9 +37,11 @@
         "source": "https://github.com/portrino/px_shopware"
     },
     "require": {
-        "typo3/cms-core": ">=8.7,<9.6",
+        "ext-curl": "*",
+        "lib-curl": "^7",
         "php": ">=7.2.0",
-        "lib-curl": "^7"
+
+        "typo3/cms-core": "^9.5 || ^10.4"
     },
     "autoload": {
         "psr-4": {
@@ -47,6 +49,12 @@
         }
     },
     "replace": {
+        "portrino/px_shopware": "*",
         "typo3-ter/px_shopware": "*"
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "px_shopware"
+        }
     }
 }

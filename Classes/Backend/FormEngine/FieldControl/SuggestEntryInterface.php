@@ -30,7 +30,8 @@ namespace Portrino\PxShopware\Backend\FormEngine\FieldControl;
  *
  * @package Portrino\PxShopware\Backend\FormEngine\FieldControl
  */
-interface SuggestEntryInterface {
+interface SuggestEntryInterface
+{
 
     /**
      * @return int

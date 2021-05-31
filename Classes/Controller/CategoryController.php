@@ -34,7 +34,7 @@ class CategoryController extends AbstractController {
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $shopwareClient;
 }

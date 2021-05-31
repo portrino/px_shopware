@@ -26,6 +26,7 @@ namespace Portrino\PxShopware\Service\Shopware;
  ***************************************************************/
 
 use Portrino\PxShopware\Cache\CacheChainFactory;
+use Portrino\PxShopware\Domain\Model\AbstractShopwareModel;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurationException;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientJsonException;
@@ -98,25 +99,25 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\ConfigurationService
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $configurationService;
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $objectManager;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $persistenceManager;
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $languageToShopMappingService;
 
@@ -582,7 +583,7 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
                     if (isset($data->id)) {
                         /** @var \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $shopwareModel */
                         $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $data, $token);
-                        if ($shopwareModel != null) {
+                        if ($shopwareModel !== null) {
                             $shopwareModelArray[$shopwareModel->getId()] = $shopwareModel;
                         }
                     }
@@ -596,7 +597,7 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
                         // safety break
                     while ($i < 99) {
                             // increase offset (called start in shopware)
-                        $params['start'] = $params['start'] + $params['limit'];
+                        $params['start'] += $params['limit'];
                             // get API result
                         $additionalResults = $this->findByParams($params, $doCacheRequest);
                         foreach ($additionalResults as $additionalResult) {
@@ -607,7 +608,7 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
                         }
 
                             // stop if API returns empty
-                        if ($additionalResults->count() == 0) {
+                        if ($additionalResults->count() === 0) {
                             break;
                         }
                             // stop if total count is reached
@@ -643,9 +644,9 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
             if (isset($result->data) && is_array($result->data)) {
                 foreach ($result->data as $data) {
                     if (isset($data->id)) {
-                        /** @var \Portrino\PxShopware\Domain\Model\AbstractShopwareModel $shopwareModel */
+                        /** @var AbstractShopwareModel $shopwareModel */
                         $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $data, $token);
-                        if ($shopwareModel != null) {
+                        if ($shopwareModel !== null) {
                             $shopwareModels->attach($shopwareModel);
                         }
                     }

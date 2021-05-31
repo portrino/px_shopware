@@ -25,20 +25,25 @@ namespace Portrino\PxShopware\Backend\Utility;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Class ExtensionConfigurationMatcher
  *
  * @package Portrino\PxShopware\Backend\Utility
  */
-class ExtensionConfigurationMatcher {
+class ExtensionConfigurationMatcher
+{
 
     /**
      * @param array $conditionParameters
      *
      * @return bool
      */
-    static public function isFeatureEnabled($conditionParameters) {
-        $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['px_shopware']);
+    public static function isFeatureEnabled($conditionParameters)
+    {
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('px_shopware');
         $result = $extConf;
         foreach ($conditionParameters as $conditionParameter) {
             $result = $result[$conditionParameter];
@@ -51,7 +56,8 @@ class ExtensionConfigurationMatcher {
      *
      * @return bool
      */
-    static public function isFeatureDisabled($config) {
+    public static function isFeatureDisabled($config)
+    {
         return !self::isFeatureEnabled($config);
     }
 }

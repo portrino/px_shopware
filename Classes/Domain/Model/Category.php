@@ -61,13 +61,13 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $categoryClient;
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\MediaClientInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $mediaClient;
 
@@ -83,7 +83,7 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $languageToShopMappingService;
 
