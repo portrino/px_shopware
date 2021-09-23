@@ -33,6 +33,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHookInterface;
 use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
@@ -41,7 +42,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Fluid\View\StandaloneView;
-use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * Class PageLayoutViewDraw
@@ -121,8 +121,7 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
     }
 
     /**
-     * @param string $CType
-     * @throws \TYPO3\CMS\Fluid\View\Exception\InvalidTemplateResourceException
+     * @param $CType
      */
     protected function initializeView($CType)
     {
@@ -164,7 +163,6 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
      * @param array $row Record row of tt_content
      *
      * @return void
-     * @throws \TYPO3\CMS\Fluid\View\Exception\InvalidTemplateResourceException
      */
     public function preProcess(
         PageLayoutView &$parentObject,

@@ -37,7 +37,7 @@ define(['jquery', 'jquery/autocomplete', 'TYPO3/CMS/Backend/FormEngine'], functi
         var type = $searchField.data('type'),
             language = $searchField.data('language'),
             minimumCharacters = $searchField.data('minchars'),
-            url = TYPO3.settings.ajaxUrls['tx_pxshopware::searchAction'],
+            url = TYPO3.settings.ajaxUrls['px_shopware_search'],
             params = {
                 'type': type,
                 'language': language

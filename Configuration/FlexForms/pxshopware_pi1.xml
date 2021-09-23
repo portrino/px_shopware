@@ -16,6 +16,7 @@
                             <onChange>reload</onChange>
                             <config>
                                 <type>select</type>
+                                <renderType>selectSingle</renderType>
                                 <items type="array">
                                     <numIndex index="10" type="array">
                                         <numIndex index="0">LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxshopware_pi1.switchable_controller_actions.list</numIndex>
@@ -85,6 +86,7 @@
                             <label>LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:tt_content.pi_flexform.pxshopware_pi1.settings.template</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectSingle</renderType>
                                 <maxitems>1</maxitems>
                                 <size>1</size>
                             </config>

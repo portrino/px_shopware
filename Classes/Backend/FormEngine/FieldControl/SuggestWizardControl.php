@@ -32,11 +32,12 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Form\AbstractNode;
 use TYPO3\CMS\Backend\Form\NodeFactory;
+use TYPO3\CMS\Core\Http\JsonResponse;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
-use TYPO3\CMS\Lang\LanguageService;
 
 
 /**
@@ -95,16 +96,16 @@ class SuggestWizardControl extends AbstractNode
         /**
          * get the specific endpoint from type
          */
-        $endpoint = $paramArray["fieldConf"]["config"]["fieldWizard"]["suggestWizardControl"]["params"]["type"];
+        $endpoint = $paramArray['fieldConf']['config']['fieldWizard']['suggestWizardControl']['params']['type'];
 
         /*
          * get the minimal characters to trigger autosuggest from params
          */
-        $minchars = isset($paramArray["fieldConf"]["config"]["fieldWizard"]["suggestWizardControl"]["params"]["minchars"]) ?
-            (int)$paramArray["fieldConf"]["config"]["fieldWizard"]["suggestWizardControl"]["params"]["minchars"] :
+        $minchars = isset($paramArray['fieldConf']['config']['fieldWizard']['suggestWizardControl']['params']['minchars']) ?
+            (int)$paramArray['fieldConf']['config']['fieldWizard']['suggestWizardControl']['params']['minchars'] :
             5;
 
-        $fieldname = $paramArray["itemFormElName"];
+        $fieldname = $paramArray['itemFormElName'];
 
         if (isset($row['sys_language_uid'][0])) {
             $language = (int)$row['sys_language_uid'][0];
@@ -142,7 +143,7 @@ class SuggestWizardControl extends AbstractNode
      * @return ResponseInterface
      * @throws ShopwareApiClientConfigurationException
      */
-    public function searchAction(ServerRequestInterface $request, ResponseInterface $response)
+    public function searchAction(ServerRequestInterface $request)
     {
         $parsedBody = $request->getParsedBody();
         $queryParams = $request->getQueryParams();
@@ -176,9 +177,7 @@ class SuggestWizardControl extends AbstractNode
             $rows[$result->getId()] = $entry;
         }
 
-        $response->getBody()->write(json_encode($rows));
-
-        return $response;
+        return new JsonResponse($rows);
     }
 
     /**

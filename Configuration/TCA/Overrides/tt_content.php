@@ -30,7 +30,7 @@ $boot = function () {
         1 => str_replace('_', '', $extKey) . '_pi2'
     ];
     foreach ($pluginSignatures as $pluginSignature) {
-        
+
         if (\Portrino\PxShopware\Backend\Utility\ExtensionConfigurationMatcher::isFeatureEnabled([0 => 'plugin.', 1 => 'fetchAllItems'])) {
             $extensionManagementService->addPiFlexFormValue(
                 '*',
@@ -44,7 +44,7 @@ $boot = function () {
                 $pluginSignature
             );
         }
-        
+
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTcaSelectItem(
             'tt_content',
             'CType',
@@ -76,7 +76,7 @@ $boot = function () {
         // Add category tab when categories column exits
         if (!empty($GLOBALS['TCA']['tt_content']['columns']['categories'])) {
             $GLOBALS['TCA']['tt_content']['types'][$pluginSignature]['showitem'] .=
-                ',--div--;LLL:EXT:lang/locallang_tca.xlf:sys_category.tabs.category,
+                ',--div--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_category.tabs.category,
                 categories';
         }
     }

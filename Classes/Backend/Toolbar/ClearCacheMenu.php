@@ -24,13 +24,12 @@ namespace Portrino\PxShopware\Backend\Toolbar;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use TYPO3\CMS\Backend\Routing\UriBuilder;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * Class ClearCacheMenu
@@ -51,16 +50,14 @@ class ClearCacheMenu implements \TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHook
         if ($this->getBackendUser()->isAdmin()) {
             /** @var UriBuilder $uriBuilder */
             $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-            $routeIdentifier = 'ajax_tx_pxshopware::clearCache';
-            $uri = $uriBuilder->buildUriFromRoute($routeIdentifier);
             $cacheActions[] = [
                 'id' => 'px_shopware',
                 'title' => 'LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:clear_cache_menu.title',
                 'description' => 'LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:clear_cache_menu.description',
-                'href' => (string)$uri,
+                'href' => $uriBuilder->buildUriFromRoute('px_shopware_clear_cache'),
                 'iconIdentifier' => 'px-shopware-clear-cache'
             ];
-            $optionValues[] = 'tx_pxshopware::clearCache';
+            $optionValues[] = 'clearCache';
         }
     }
 
@@ -72,16 +69,6 @@ class ClearCacheMenu implements \TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHook
     protected function getBackendUser()
     {
         return $GLOBALS['BE_USER'];
-    }
-
-    /**
-     * Returns LanguageService
-     *
-     * @return LanguageService
-     */
-    protected function getLanguageService()
-    {
-        return $GLOBALS['LANG'];
     }
 
     /**

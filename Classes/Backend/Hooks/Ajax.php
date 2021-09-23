@@ -30,6 +30,7 @@ use Portrino\PxShopware\Cache\CacheChainFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -48,15 +49,14 @@ class Ajax
     /**
      * @throws NoSuchCacheException
      */
-    public function clearCache(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function clearCache(ServerRequestInterface $request): ResponseInterface
     {
         /** @var CacheChainFactory $cacheChainFactory */
         $cacheChainFactory = GeneralUtility::makeInstance(CacheChainFactory::class);
         $cache = $cacheChainFactory->create();
         $cache->flush();
 
-        $response->getBody()->write('');
-        return $response;
+        return new HtmlResponse('');
     }
 
 }
