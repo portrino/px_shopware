@@ -125,18 +125,18 @@ class NotificationController extends ActionController
     public function indexAction($payload)
     {
         foreach ($payload['data'] as $command) {
-            $this->flushCacheForCommand($command['type'], intval($command['id']));
+            $this->flushCacheForCommand($command['type'], (int)$command['id']);
             if (isset($command['id']) && $command['id'] !== '' && ExtensionManagementUtility::isLoaded('solr') === true) {
 
                 switch ($command['action']) {
                     case self::COMMAND_CREATE;
-                        $this->addItemToQueue($command['type'], intval($command['id']));
+                        $this->addItemToQueue($command['type'], (int)$command['id']);
                         break;
                     case self::COMMAND_UPDATE;
-                        $this->updateItemInQueue($command['type'], intval($command['id']));
+                        $this->updateItemInQueue($command['type'], (int)$command['id']);
                         break;
                     case self::COMMAND_DELETE;
-                        $this->deleteItemFromQueueAndCore($command['type'], intval($command['id']));
+                        $this->deleteItemFromQueueAndCore($command['type'], (int)$command['id']);
                         break;
                     default:
                         $this->response->setStatus(400);
@@ -285,5 +285,4 @@ class NotificationController extends ActionController
         $this->cacheManager->flushCachesByTag($tag);
         $this->cacheManager->flushCachesByTag($tag . '_' . (int)$id);
     }
-
 }

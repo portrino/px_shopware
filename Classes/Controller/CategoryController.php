@@ -37,5 +37,4 @@ class CategoryController extends AbstractController {
      * @inject
      */
     protected $shopwareClient;
-
 }

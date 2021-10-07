@@ -1,5 +1,32 @@
 # PxShopware Changelog
 
+4.2.2 - 2020-02-18
+------------------
+* [BUGFIX] updates "sys_language_uid" retrieval in AbstractController and AbstractShopwareApiClient
+* [CLEANUP] removes unnecessary "trial" parts and little code formatting
+
+4.2.1 - 2020-02-10
+------------------
+* [CLEANUP] updates SuggestWizardControl and ArticleClient
+
+4.2.0 - 2020-02-10
+------------------
+* [FEATURE] merges thumbnail branch
+  * [TASK] fix category images
+  * [TASK] add thumbnail support to Media model
+
+4.1.2 - 2020-01-07
+------------------
+* [BUGFIX] fixes replace config in composer.json so that packagist won't complain anymore
+
+4.1.1 - 2020-01-07
+------------------
+* [BUGFIX] merge pull request #11 from jonakieling/master -> add missing QueryBuilder::where() function call
+
+4.1.0 - 2020-01-07
+------------------
+* [!!!][BUGFIX] replaces article.firstImage calls with article.teaserImage calls, so that the correct (in Shopware selected) teaser image instead of simply the first image will be returned
+
 4.0.0 - 2019-03-15
 ------------------
 * [TASK] updates ext for TYPO3 9.5

@@ -116,9 +116,9 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     public function initializeObject()
     {
         $this->path = new ObjectStorage();
-        if (isset($this->getRaw()->media) && is_object($this->getRaw()->media) && isset($this->getRaw()->media->id)) {
+        if (isset($this->getRaw()->mediaId)) {
             /** @var Media $media */
-            $media = $this->mediaClient->findById($this->getRaw()->media->id);
+            $media = $this->mediaClient->findById($this->getRaw()->mediaId);
             if ($media && is_a($media, Media::class)) {
                 $this->setImage($media);
             }

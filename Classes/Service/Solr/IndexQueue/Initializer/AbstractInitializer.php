@@ -26,7 +26,6 @@ namespace Portrino\PxShopware\Service\Solr\IndexQueue\Initializer;
  ***************************************************************/
 
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -43,6 +42,11 @@ abstract class AbstractInitializer extends \ApacheSolrForTypo3\Solr\IndexQueue\I
      */
     protected $shopwareClient;
 
+    /**
+     * AbstractInitializer constructor.
+     *
+     * @throws \ReflectionException
+     */
     public function __construct()
     {
         $reflection = new \ReflectionClass(self::class);
@@ -56,6 +60,7 @@ abstract class AbstractInitializer extends \ApacheSolrForTypo3\Solr\IndexQueue\I
 
     /**
      * @return array
+     * @throws \Exception
      */
     protected function getRecordDefaults()
     {
@@ -68,13 +73,4 @@ abstract class AbstractInitializer extends \ApacheSolrForTypo3\Solr\IndexQueue\I
             'changed' => (new \DateTime())->getTimestamp()
         ];
     }
-
-    /**
-     * @return DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
-
 }

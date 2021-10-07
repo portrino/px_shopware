@@ -32,6 +32,7 @@ use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientJsonExcepti
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientRequestException;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientResponseException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -172,13 +173,21 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
             /**
              * retrieve the language id from localeMappingService
              */
-            $language = GeneralUtility::trimExplode('.', $GLOBALS['TSFE']->config['config']['sys_language_uid'], true);
-            $language = ($language && isset($language[0])) ? $language[0] : 0;
+            if (version_compare(TYPO3_version, '9.5', '>=')) {
+                $context = GeneralUtility::makeInstance(Context::class);
+                $language = $context->getPropertyFromAspect('language', 'id');
+            } else {
+                $language = GeneralUtility::trimExplode(
+                    '.',
+                    $GLOBALS['TSFE']->config['config']['sys_language_uid'],
+                    true
+                );
+                $language = ($language && isset($language[0])) ? $language[0] : 0;
+            }
             $this->shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
         } else {
             $this->shopId = null;
         }
-
     }
 
     /**

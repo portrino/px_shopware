@@ -51,23 +51,17 @@ class CategoryClient extends AbstractShopwareApiClient implements CategoryClient
                 'value' => $parentId
             ],
         ];
-
         $response = $this->get($this->getValidEndpoint(), ['filter' => $filterByParentId]);
-
 
         if ($response) {
             $token = (isset($response->pxShopwareTypo3Token)) ? (bool)$response->pxShopwareTypo3Token : false;
-            $isTrialVersion = ($this->getStatus() === AbstractShopwareApiClientInterface::STATUS_CONNECTED_TRIAL);
 
             if (isset($response->data) && is_array($response->data)) {
                 foreach ($response->data as $data) {
                     if (isset($data->id)) {
                         $category = $this->objectManager->get($this->getEntityClassName(), $data, $token);
-                        if ($category != null) {
+                        if ($category !== null) {
                             $result->attach($category);
-                            if ($isTrialVersion === true) {
-                                break;
-                            }
                         }
                     }
                 }
