@@ -25,6 +25,7 @@ namespace Portrino\PxShopware\LinkResolver;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Portrino\PxShopware\Domain\Model\ShopwareModelInterface;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -57,7 +58,7 @@ class AbstractLinkResolver implements SingletonInterface
             'title' => $linkParameterParts['title']
         ];
 
-        /** @var \Portrino\PxShopware\Domain\Model\ShopwareModelInterface $object */
+        /** @var ShopwareModelInterface $object */
         $object = $this->client->findById((int)$linkHandlerValue);
         if ($object === null) {
             // TODO: Log dead link

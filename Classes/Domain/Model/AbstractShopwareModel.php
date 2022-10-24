@@ -26,6 +26,7 @@ namespace Portrino\PxShopware\Domain\Model;
  ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Class AbstractShopwareModel
@@ -51,7 +52,7 @@ abstract class AbstractShopwareModel implements ShopwareModelInterface
     protected $token;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
+     * @var ObjectManagerInterface
      */
     protected $objectManager;
 
@@ -61,7 +62,6 @@ abstract class AbstractShopwareModel implements ShopwareModelInterface
      */
     public function __construct($raw, $token)
     {
-
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
         $this->setRaw($raw);

@@ -25,14 +25,19 @@ namespace Portrino\PxShopware\Service\Solr\Indexer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
-use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Util;
 use Portrino\PxShopware\Domain\Model\AbstractShopwareModel;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
+use Solarium\Exception\HttpException;
+use Symfony\Component\Mailer\Exception\HttpTransportException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -78,10 +83,11 @@ class AbstractShopwareIndexer extends Indexer
      * @param Item $item An index queue item to index.
      * @param integer $language The language to use.
      * @return boolean TRUE if item was indexed successfully, FALSE on failure
-     * @throws \Apache_Solr_HttpTransportException
+     * @throws HttpTransportException
      */
     protected function indexItem(Item $item, $language = 0)
     {
+        $itemIndexed = false;
         $documents = [];
 
         /** @var AbstractShopwareModel $itemRecord */
@@ -96,7 +102,7 @@ class AbstractShopwareIndexer extends Indexer
         $itemDataRaw = json_decode(json_encode($itemRecord->getRaw()), true);
 
         // get general fields
-        /** @var \Apache_Solr_Document $itemDocument */
+        /** @var Document $itemDocument */
         $itemDocument = $this->getBaseDocument($item, $itemDataRaw);
 
         $itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
@@ -133,9 +139,14 @@ class AbstractShopwareIndexer extends Indexer
             $garbageCollector->collectGarbage($item->getType(), $itemRecord->getId());
         }
 
-        // add clean documents to solr index core
-        $response = $this->solr->addDocuments($documents);
-        $itemIndexed = $response->getHttpStatus() === 200;
+        try {
+            $response = $this->solr->getWriteService()->addDocuments($documents);
+            if ($response->getHttpStatus() == 200) {
+                $itemIndexed = true;
+            }
+        } catch (HttpException $e) {
+            $response = new ResponseAdapter($e->getBody(), $httpStatus = 500, $e->getStatusMessage());
+        }
 
         $this->log($item, $documents, $response);
 
@@ -184,13 +195,13 @@ class AbstractShopwareIndexer extends Indexer
     /**
      * overwrite special fields for item type
      *
-     * @param \Apache_Solr_Document $itemDocument
+     * @param Document $itemDocument
      * @param AbstractShopwareModel $itemRecord
      * @param integer $language The language to use.
-     * @return \Apache_Solr_Document $itemDocument
+     * @return Document $itemDocument
      */
     protected function overwriteSpecialFields(
-        \Apache_Solr_Document $itemDocument,
+        Document $itemDocument,
         AbstractShopwareModel $itemRecord,
         $language = 0
     ) {
@@ -203,14 +214,14 @@ class AbstractShopwareIndexer extends Indexer
      *
      * @param Item $item The item to index
      * @param array $itemRecord The record to use to build the base document
-     * @return \Apache_Solr_Document A basic Solr document
+     * @return Document A basic Solr document
      */
     protected function getBaseDocument(Item $item, array $itemRecord)
     {
-        $site = GeneralUtility::makeInstance(Site::class, $item->getRootPageUid());
+        $site = $this->getSiteByPageId($item->getRootPageUid());
 
-        /** @var $document \Apache_Solr_Document */
-        $document = GeneralUtility::makeInstance(\Apache_Solr_Document::class);
+        /** @var Document $document */
+        $document = GeneralUtility::makeInstance(Document::class);
 
         // required fields
         $document->setField('id', Util::getDocumentId(
@@ -241,5 +252,14 @@ class AbstractShopwareIndexer extends Indexer
         }
 
         return $document;
+    }
+
+    /**
+     * @param integer $pageId
+     * @return Site
+     */
+    protected function getSiteByPageId($pageId)
+    {
+        return GeneralUtility::makeInstance(SiteRepository::class)->getSiteByPageId($pageId);
     }
 }

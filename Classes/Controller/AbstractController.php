@@ -33,11 +33,14 @@ use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Core\ApplicationContext;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Property\Exception;
 use TYPO3\CMS\Extbase\Property\Exception\InvalidSourceException;
@@ -55,7 +58,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 {
 
     /**
-     * @var \TYPO3\CMS\Core\Core\ApplicationContext
+     * @var ApplicationContext
      */
     protected $applicationContext;
 
@@ -96,8 +99,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     protected $extbaseFrameworkConfiguration = [];
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var PersistenceManager
      */
     protected $persistenceManager;
 
@@ -112,10 +114,14 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     protected $unknownErrorMessage = 'An unknown error occurred. We try to fix this as soon as possible.';
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var AbstractShopwareApiClientInterface
      */
     protected $shopwareClient;
+
+    public function injectPersistenceManager(PersistenceManager $persistenceManager)
+    {
+        $this->persistenceManager = $persistenceManager;
+    }
 
     /**
      * Initializes the controller before invoking an action method.
@@ -129,7 +135,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     protected function initializeAction()
     {
         parent::initializeAction();
-        $this->applicationContext = GeneralUtility::getApplicationContext();
+        $this->applicationContext = Environment::getContext();
         $this->dateTime = new \DateTime('now', new \DateTimeZone('Europe/Berlin'));
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('px_shopware');
         $this->extbaseFrameworkConfiguration = $this->configurationManager->getConfiguration(
@@ -139,17 +145,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         $this->actionSettings = $this->controllerSettings['actions'][$this->request->getControllerActionName()];
 
         if (TYPO3_MODE === 'FE') {
-            if (version_compare(TYPO3_version, '9.5', '>=')) {
-                $context = GeneralUtility::makeInstance(Context::class);
-                $this->language = $context->getPropertyFromAspect('language', 'id');
-            } else {
-                $this->language = GeneralUtility::trimExplode(
-                    '.',
-                    $this->getTypoScriptFrontendController()->config['config']['language'],
-                    true
-                );
-                $this->language = ($this->language && isset($this->language[0])) ? $this->language[0] : 0;
-            }
+            $context = GeneralUtility::makeInstance(Context::class);
+            $this->language = $context->getPropertyFromAspect('language', 'id');
         }
     }
 
@@ -235,7 +232,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             ->setTargetPageUid($pageUid)
             ->setTargetPageType($pageType)
             ->setNoCache($noCache)
-            ->setUseCacheHash(!$noCacheHash)
+//            ->setUseCacheHash(!$noCacheHash)
             ->setSection($section)
             ->setLinkAccessRestrictedPages($linkAccessRestrictedPages)
             ->setArguments($additionalParams)
@@ -305,7 +302,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         try {
             parent::processRequest($request, $response);
         } catch (\Exception $exception) {
-            $applicationContext = GeneralUtility::getApplicationContext();
+            $applicationContext = Environment::getContext();
             if ($applicationContext->isProduction()) {
                 // If the property mapper did throw a \TYPO3\CMS\Extbase\Property\Exception,
                 // because it was unable to find the requested entity, call the page-not-found handler.

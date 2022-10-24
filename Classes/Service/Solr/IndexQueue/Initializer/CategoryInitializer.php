@@ -39,28 +39,36 @@ class CategoryInitializer extends AbstractInitializer
     protected $clientClassName = CategoryClientInterface::class;
 
     /**
-     * @return int The number of affected rows.
+     * @return bool TRUE if initialization was successful, FALSE on error.
      */
     public function initialize()
     {
+        $logData = [];
         $rowsToIndex = [];
 
-        $defaultRecord = $this->getRecordDefaults();
-        /** @var Category $category */
-        foreach ($this->shopwareClient->findAll(false) as $category) {
-            $record = $defaultRecord;
-            $record['item_uid'] = $category->getId();
-            $rowsToIndex[] = $record;
+        try {
+            $defaultRecord = $this->getRecordDefaults();
+            /** @var Category $category */
+            foreach ($this->shopwareClient->findAll(false) as $category) {
+                $record = $defaultRecord;
+                $record['item_uid'] = $category->getId();
+                $rowsToIndex[] = $record;
+            }
+
+            /** @var ConnectionPool $connectionPool */
+            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+            $databaseConnectionForPages = $connectionPool->getConnectionForTable('tx_solr_indexqueue_item');
+            $logData['rows'] = $databaseConnectionForPages->bulkInsert(
+                'tx_solr_indexqueue_item',
+                $rowsToIndex,
+                array_keys($defaultRecord)
+            );
+        } catch (\Exception $exception) {
+            $logData['error'] = $exception->getCode() . ': ' . $exception->getMessage();
         }
 
-        /** @var ConnectionPool $connectionPool */
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $databaseConnectionForPages = $connectionPool->getConnectionForTable('tx_solr_indexqueue_item');
-        return $databaseConnectionForPages->bulkInsert(
-            'tx_solr_indexqueue_item',
-            $rowsToIndex,
-            array_keys($defaultRecord)
-        );
+        $this->logInitialization($logData);
+        return true;
     }
 
 }

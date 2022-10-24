@@ -26,6 +26,7 @@ namespace Portrino\PxShopware\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -39,9 +40,13 @@ class ArticleController extends AbstractController
 
     /**
      * @var \Portrino\PxShopware\Service\Shopware\ArticleClientInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $shopwareClient;
+
+    public function injectShopwareClient(ArticleClientInterface $shopwareClient)
+    {
+        $this->shopwareClient = $shopwareClient;
+    }
 
     /**
      * @return void

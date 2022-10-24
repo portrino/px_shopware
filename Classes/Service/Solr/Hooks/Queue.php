@@ -34,8 +34,8 @@ class Queue implements SingletonInterface
      * @var array
      */
     protected $tables = [
-        'Portrino_PxShopware_Domain_Model_Article',
-        'Portrino_PxShopware_Domain_Model_Category'
+        'tx_pxshopware_domain_model_article',
+        'tx_pxshopware_domain_model_category'
     ];
 
     /**

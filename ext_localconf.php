@@ -10,17 +10,12 @@ defined('TYPO3_MODE') || die();
     )->get($extensionKey);
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
-        '<INCLUDE_TYPOSCRIPT: source="DIR:EXT:px_shopware/Configuration/PageTSconfig/" extension="ts">'
+        '<INCLUDE_TYPOSCRIPT: source="DIR:EXT:px_shopware/Configuration/TsConfig/Page" extension="tsconfig">'
     );
-
 
     if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'][] =
             Portrino\PxShopware\Service\Solr\Hooks\Queue::class . '->postProcessFetchRecordsForIndexQueueItem';
-
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\ApacheSolrForTypo3\Solr\IndexQueue\Queue::class] = [
-            'className' => \Portrino\PxShopware\Xclass\Solr\IndexQueue\Queue::class
-        ];
     }
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typolinkLinkHandler']['shopware_article'] =

@@ -28,6 +28,10 @@ namespace Portrino\PxShopware\Domain\Model;
 
 use Portrino\PxShopware\Backend\FormEngine\FieldControl\SuggestEntryInterface;
 use Portrino\PxShopware\Backend\Hooks\ItemEntryInterface;
+use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
+use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
+use Portrino\PxShopware\Service\Shopware\MediaClientInterface;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -50,29 +54,27 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     protected $changed;
 
     /**
-     * @var \TYPO3\CMS\Core\Http\Uri
+     * @var Uri
      */
     protected $uri = '';
 
     /**
-     * @var \Portrino\PxShopware\Domain\Model\Media
+     * @var Media
      */
     protected $image;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var CategoryClientInterface
      */
     protected $categoryClient;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\MediaClientInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var MediaClientInterface
      */
     protected $mediaClient;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Category>
+     * @var ObjectStorage<Category>
      */
     protected $path;
 
@@ -82,10 +84,24 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     protected $language;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var LanguageToShopwareMappingService
      */
     protected $languageToShopMappingService;
+
+    public function injectCategoryClient(CategoryClientInterface $categoryClient)
+    {
+        $this->categoryClient = $categoryClient;
+    }
+
+    public function injectMediaClient(MediaClientInterface $mediaClient)
+    {
+        $this->mediaClient = $mediaClient;
+    }
+
+    public function injectLanguageToShopwareMappingService(LanguageToShopwareMappingService $languageToShopwareMappingService)
+    {
+        $this->languageToShopMappingService = $languageToShopwareMappingService;
+    }
 
     /**
      * @param object $raw
@@ -107,7 +123,7 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
 
         if ($this->raw->path) {
             if (!$this->languageToShopMappingService) {
-                $this->languageToShopMappingService = $this->objectManager->get(\Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService::class);
+                $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
             }
             $this->language = $this->languageToShopMappingService->getSysLanguageUidByParentCategoryPath($this->raw->path);
         }
@@ -126,7 +142,7 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Category>
+     * @return ObjectStorage<Category>
      */
     public function getSubCategories()
     {
@@ -150,7 +166,7 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Http\Uri
+     * @return Uri
      */
     public function getUri()
     {
@@ -158,12 +174,12 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     }
 
     /**
-     * @param \TYPO3\CMS\Core\Http\Uri|string $uri
+     * @param Uri|string $uri
      */
     public function setUri($uri)
     {
         if (is_string($uri)) {
-            $uri = new \TYPO3\CMS\Core\Http\Uri($uri);
+            $uri = new Uri($uri);
         }
         $this->uri = $uri;
     }
@@ -188,7 +204,7 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     }
 
     /**
-     * @return \Portrino\PxShopware\Domain\Model\Media
+     * @return Media
      */
     public function getImage()
     {
@@ -196,9 +212,9 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     }
 
     /**
-     * @param \Portrino\PxShopware\Domain\Model\Media $image
+     * @param Media $image
      */
-    public function setImage(\Portrino\PxShopware\Domain\Model\Media $image)
+    public function setImage(Media $image)
     {
         $this->image = $image;
     }
@@ -222,11 +238,11 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     /**
      * Adds a path element
      *
-     * @param \Portrino\PxShopware\Domain\Model\Category $pathElement
+     * @param Category $pathElement
      *
      * @return void
      */
-    public function addPathElement(\Portrino\PxShopware\Domain\Model\Category $pathElement)
+    public function addPathElement(Category $pathElement)
     {
         $this->path->attach($pathElement);
     }
@@ -234,11 +250,11 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     /**
      * Removes a path
      *
-     * @param \Portrino\PxShopware\Domain\Model\Category $pathElementToRemove The path element to be removed
+     * @param Category $pathElementToRemove The path element to be removed
      *
      * @return void
      */
-    public function removePathElement(\Portrino\PxShopware\Domain\Model\Category $pathElementToRemove)
+    public function removePathElement(Category $pathElementToRemove)
     {
         $this->path->detach($pathElementToRemove);
     }

@@ -37,8 +37,7 @@ class LanguageToShopwareMappingService implements SingletonInterface
 {
 
     /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var ConfigurationManagerInterface
      */
     protected $configurationManager;
 
@@ -47,6 +46,11 @@ class LanguageToShopwareMappingService implements SingletonInterface
      * @var array
      */
     protected $settings;
+
+    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
+    {
+        $this->configurationManager = $configurationManager;
+    }
 
     public function initializeObject()
     {

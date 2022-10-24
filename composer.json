@@ -8,7 +8,7 @@
         "CMS",
         "portrino"
     ],
-    "homepage": "http://www.portrino.de",
+    "homepage": "https://www.portrino.de",
     "license": [
         "GPL-2.0-or-later"
     ],
@@ -16,13 +16,19 @@
         {
             "name": "Andre Wuttig",
             "email": "wuttig@portrino.de",
-            "homepage": "http://www.portrino.de",
+            "homepage": "https://www.portrino.de",
+            "role": "Developer"
+        },
+        {
+            "name": "Axel Böswetter",
+            "email": "boeswetter@portrino.de",
+            "homepage": "https://www.portrino.de",
             "role": "Developer"
         },
         {
             "name": "Thomas Griessbach",
             "email": "griessbach@portrino.de",
-            "homepage": "http://www.portrino.de",
+            "homepage": "https://www.portrino.de",
             "role": "Developer"
         },
         {
@@ -49,7 +55,6 @@
         }
     },
     "replace": {
-        "portrino/px_shopware": "*",
         "typo3-ter/px_shopware": "*"
     },
     "extra": {

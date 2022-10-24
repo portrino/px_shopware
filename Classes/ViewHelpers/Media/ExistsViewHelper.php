@@ -49,22 +49,6 @@ class ExistsViewHelper extends AbstractConditionViewHelper
     }
 
     /**
-     * Render method
-     *
-     * @return string
-     */
-    public function render()
-    {
-
-        $evaluation = static::evaluateCondition($this->arguments);
-
-        if (false !== $evaluation) {
-            return $this->renderThenChild();
-        }
-        return $this->renderElseChild();
-    }
-
-    /**
      * This method decides if the condition is TRUE or FALSE. It can be overriden in extending viewhelpers to adjust functionality.
      *
      * @param array $arguments ViewHelper arguments to evaluate the condition for this ViewHelper, allows for flexiblity in overriding this method.

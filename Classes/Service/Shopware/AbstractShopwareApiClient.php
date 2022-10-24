@@ -40,6 +40,8 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -98,26 +100,22 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
     protected $shopId;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\ConfigurationService
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var ConfigurationService
      */
     protected $configurationService;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var ObjectManagerInterface
      */
     protected $objectManager;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var PersistenceManager
      */
     protected $persistenceManager;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var LanguageToShopwareMappingService
      */
     protected $languageToShopMappingService;
 
@@ -130,6 +128,26 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
      * @var \TYPO3\CMS\Core\Log\Logger
      */
     protected $logger;
+
+    public function injectConfigurationService(ConfigurationService $configurationService)
+    {
+        $this->configurationService = $configurationService;
+    }
+
+    public function injectObjectManager(ObjectManagerInterface $objectManager)
+    {
+        $this->objectManager = $objectManager;
+    }
+
+    public function injectPersistenceManager(PersistenceManager $persistenceManager)
+    {
+        $this->persistenceManager = $persistenceManager;
+    }
+
+    public function injectLanguageToShopwareMappingService(LanguageToShopwareMappingService $languageToShopwareMappingService)
+    {
+        $this->languageToShopMappingService = $languageToShopwareMappingService;
+    }
 
     public function initializeObject()
     {
@@ -174,17 +192,8 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
             /**
              * retrieve the language id from localeMappingService
              */
-            if (version_compare(TYPO3_version, '9.5', '>=')) {
-                $context = GeneralUtility::makeInstance(Context::class);
-                $language = $context->getPropertyFromAspect('language', 'id');
-            } else {
-                $language = GeneralUtility::trimExplode(
-                    '.',
-                    $GLOBALS['TSFE']->config['config']['sys_language_uid'],
-                    true
-                );
-                $language = ($language && isset($language[0])) ? $language[0] : 0;
-            }
+            $context = GeneralUtility::makeInstance(Context::class);
+            $language = $context->getPropertyFromAspect('language', 'id');
             $this->shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
         } else {
             $this->shopId = null;
@@ -223,7 +232,7 @@ abstract class AbstractShopwareApiClient implements SingletonInterface, Abstract
          *  - cache is available
          */
         $cacheIdentifier = sha1((string)$url);
-        $cachingEnabled = ($method == self::METHOD_GET && $doCacheRequest === true && $this->cache !== null);
+        $cachingEnabled = ($method === self::METHOD_GET && $doCacheRequest === true && $this->cache !== null);
 
 
         if ($cachingEnabled && $this->cache->has($cacheIdentifier)) {

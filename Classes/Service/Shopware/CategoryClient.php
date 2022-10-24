@@ -24,6 +24,8 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use Portrino\PxShopware\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -38,7 +40,7 @@ class CategoryClient extends AbstractShopwareApiClient implements CategoryClient
      * Do not use this during initialization, because it could lead to max nesting level exception
      *
      * @param int $parentId
-     * @return ObjectStorage <\Portrino\PxShopware\Domain\Model\Category>
+     * @return ObjectStorage<Category>
      */
     public function findByParent($parentId)
     {

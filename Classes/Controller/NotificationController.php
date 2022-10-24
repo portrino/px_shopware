@@ -25,14 +25,17 @@ namespace Portrino\PxShopware\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
-use ApacheSolrForTypo3\Solr\Util;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
 use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
+use Portrino\PxShopware\Service\Shopware\ConfigurationService;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurationException;
 use Portrino\PxShopware\Service\Shopware\MediaClientInterface;
 use Portrino\PxShopware\Service\Shopware\ShopClientInterface;
 use Portrino\PxShopware\Service\Shopware\VersionClientInterface;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -58,25 +61,22 @@ class NotificationController extends ActionController
     const SOLR_ITEM_TYPE_CATEGORY = 'Portrino_PxShopware_Domain_Model_Category';
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\ConfigurationService
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var ConfigurationService
      */
     protected $configurationService;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\IndexQueue\Queue
+     * @var Queue
      */
     protected $indexQueue;
 
     /**
      * @var \TYPO3\CMS\Core\Cache\CacheManager
-     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $cacheManager;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\ArticleClientInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var ArticleClientInterface
      */
     protected $articleClient;
 
@@ -84,6 +84,21 @@ class NotificationController extends ActionController
      * @var int
      */
     protected $currentTimeStamp;
+
+    public function injectConfigurationService(ConfigurationService $configurationService)
+    {
+        $this->configurationService = $configurationService;
+    }
+
+    public function injectCacheManager(CacheManager $cacheManager)
+    {
+        $this->cacheManager = $cacheManager;
+    }
+
+    public function injectArticleClient(ArticleClientInterface $articleClient)
+    {
+        $this->articleClient = $articleClient;
+    }
 
     protected function resolveActionMethodName()
     {
@@ -108,7 +123,7 @@ class NotificationController extends ActionController
         $this->currentTimeStamp = time();
 
         if (ExtensionManagementUtility::isLoaded('solr') === true) {
-            $this->indexQueue = $this->objectManager->get(\ApacheSolrForTypo3\Solr\IndexQueue\Queue::class);
+            $this->indexQueue = $this->objectManager->get(Queue::class);
         }
 
         if ($this->request->getMethod() === 'POST') {
@@ -176,7 +191,8 @@ class NotificationController extends ActionController
         switch ($type) {
             case self::TYPE_ARTICLE;
                 if ($this->indexQueue->containsItem(self::SOLR_ITEM_TYPE_ARTICLE, $id)) {
-                    return $this->updateItemInQueue($type, $id);
+                    $this->updateItemInQueue($type, $id);
+                    return;
                 }
                 $item = [
                     'item_type' => self::SOLR_ITEM_TYPE_ARTICLE,
@@ -188,7 +204,8 @@ class NotificationController extends ActionController
                 break;
             case self::TYPE_CATEGORY;
                 if ($this->indexQueue->containsItem(self::SOLR_ITEM_TYPE_CATEGORY, $id)) {
-                    return $this->updateItemInQueue($type, $id);
+                    $this->updateItemInQueue($type, $id);
+                    return;
                 }
                 $item = [
                     'item_type' => self::SOLR_ITEM_TYPE_CATEGORY,
@@ -206,7 +223,7 @@ class NotificationController extends ActionController
      */
     protected function addItem($item)
     {
-        $rootPageId = Util::getRootPageId($GLOBALS['TSFE']->id);
+        $rootPageId = (GeneralUtility::makeInstance(RootPageResolver::class))->getRootPageId($GLOBALS['TSFE']->id);
         $item = array_merge(['root' => $rootPageId, 'errors' => ''], $item);
 
         /** @var ConnectionPool $connectionPool */

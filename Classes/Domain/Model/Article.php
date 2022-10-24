@@ -28,7 +28,13 @@ namespace Portrino\PxShopware\Domain\Model;
 
 use Portrino\PxShopware\Backend\FormEngine\FieldControl\SuggestEntryInterface;
 use Portrino\PxShopware\Backend\Hooks\ItemEntryInterface;
+use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
+use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
+use Portrino\PxShopware\Service\Shopware\MediaClientInterface;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class Article
@@ -49,7 +55,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     protected $changed;
 
     /**
-     * @var \TYPO3\CMS\Core\Http\Uri
+     * @var Uri
      */
     protected $uri = '';
 
@@ -69,48 +75,64 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     protected $orderNumber = null;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<Portrino\PxShopware\Domain\Model\Media>
+     * @var ObjectStorage<Media>
      */
     protected $images;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<Portrino\PxShopware\Domain\Model\Category>
+     * @var ObjectStorage<Category>
      */
     protected $categories;
 
     /**
-     * @var \Portrino\PxShopware\Domain\Model\Detail
+     * @var Detail
      */
     protected $detail;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<Portrino\PxShopware\Domain\Model\Detail>
+     * @var ObjectStorage<Detail>
      */
     protected $details;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var CategoryClientInterface
      */
     protected $categoryClient;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\MediaClientInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var MediaClientInterface
      */
     protected $mediaClient;
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\ArticleClientInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var ArticleClientInterface
      */
     protected $articleClient;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var ObjectManagerInterface
      */
     protected $objectManager;
+
+    public function injectCategoryClient(CategoryClientInterface $categoryClient)
+    {
+        $this->categoryClient = $categoryClient;
+    }
+
+    public function injectMediaClient(MediaClientInterface $mediaClient)
+    {
+        $this->mediaClient = $mediaClient;
+    }
+
+    public function injectArticleClient(ArticleClientInterface $articleClient)
+    {
+        $this->articleClient = $articleClient;
+    }
+
+    public function injectObjectManager(ObjectManagerInterface $objectManager)
+    {
+        $this->objectManager = $objectManager;
+    }
 
     /**
      * Article constructor.
@@ -163,9 +185,9 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      */
     protected function initStorageObjects()
     {
-        $this->images = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->categories = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->details = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        $this->images = new ObjectStorage();
+        $this->categories = new ObjectStorage();
+        $this->details = new ObjectStorage();
     }
 
     /**
@@ -246,11 +268,11 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * Adds a image
      *
-     * @param \Portrino\PxShopware\Domain\Model\Media $image
+     * @param Media $image
      *
      * @return void
      */
-    public function addImage(\Portrino\PxShopware\Domain\Model\Media $image)
+    public function addImage(Media $image)
     {
         $this->images->attach($image);
     }
@@ -258,11 +280,11 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * Removes a image
      *
-     * @param \Portrino\PxShopware\Domain\Model\Media $imageToRemove The image to be removed
+     * @param Media $imageToRemove The image to be removed
      *
      * @return void
      */
-    public function removeImage(\Portrino\PxShopware\Domain\Model\Media $imageToRemove)
+    public function removeImage(Media $imageToRemove)
     {
         $this->images->detach($imageToRemove);
     }
@@ -270,7 +292,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * Returns the images
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Media> $images
+     * @return ObjectStorage<Media> $images
      */
     public function getImages()
     {
@@ -293,11 +315,11 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * Sets the images
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Media> $images
+     * @param ObjectStorage<Media> $images
      *
      * @return void
      */
-    public function setImages(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $images)
+    public function setImages(ObjectStorage $images)
     {
         $this->images = $images;
     }
@@ -305,7 +327,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * Return the first image
      *
-     * @return NULL|\Portrino\PxShopware\Domain\Model\Media
+     * @return NULL|Media
      * @deprecated Use getTeaserImage()
      */
     public function getFirstImage()
@@ -316,7 +338,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * Return the main/ teaser image (selected in shopware backend)
      *
-     * @return NULL|\Portrino\PxShopware\Domain\Model\Media
+     * @return NULL|Media
      */
     public function getTeaserImage()
     {
@@ -372,7 +394,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return ObjectStorage
      */
     public function getDetails()
     {
@@ -397,7 +419,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $details
+     * @param ObjectStorage $details
      */
     public function setDetails($details)
     {
@@ -407,11 +429,11 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * Adds a detail
      *
-     * @param \Portrino\PxShopware\Domain\Model\Detail $detail
+     * @param Detail $detail
      *
      * @return void
      */
-    public function addDetail(\Portrino\PxShopware\Domain\Model\Detail $detail)
+    public function addDetail(Detail $detail)
     {
         $this->details->attach($detail);
     }
@@ -419,11 +441,11 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * Removes a detail
      *
-     * @param \Portrino\PxShopware\Domain\Model\Detail $detailToRemove The detail to be removed
+     * @param Detail $detailToRemove The detail to be removed
      *
      * @return void
      */
-    public function removeDetail(\Portrino\PxShopware\Domain\Model\Detail $detailToRemove)
+    public function removeDetail(Detail $detailToRemove)
     {
         $this->details->detach($detailToRemove);
     }
@@ -452,7 +474,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Http\Uri
+     * @return Uri
      */
     public function getUri()
     {
@@ -460,7 +482,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     }
 
     /**
-     * @param \TYPO3\CMS\Core\Http\Uri|string $uri
+     * @param Uri|string $uri
      */
     public function setUri($uri)
     {
@@ -471,7 +493,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return ObjectStorage
      */
     public function getCategories()
     {
@@ -515,7 +537,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $categories
+     * @param ObjectStorage $categories
      */
     public function setCategories($categories)
     {
@@ -525,11 +547,11 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * Adds a category
      *
-     * @param \Portrino\PxShopware\Domain\Model\Category $category
+     * @param Category $category
      *
      * @return void
      */
-    public function addCategory(\Portrino\PxShopware\Domain\Model\Category $category)
+    public function addCategory(Category $category)
     {
         $this->categories->attach($category);
     }
@@ -537,11 +559,11 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * Removes a category
      *
-     * @param \Portrino\PxShopware\Domain\Model\Category $categoryToRemove The category to be removed
+     * @param Category $categoryToRemove The category to be removed
      *
      * @return void
      */
-    public function removeCategory(\Portrino\PxShopware\Domain\Model\Category $categoryToRemove)
+    public function removeCategory(Category $categoryToRemove)
     {
         $this->categories->detach($categoryToRemove);
     }

@@ -45,29 +45,37 @@ class ArticleInitializer extends AbstractInitializer
     protected $clientClassName = ArticleClientInterface::class;
 
     /**
-     * @return int The number of affected rows.
+     * @return bool TRUE if initialization was successful, FALSE on error.
      */
     public function initialize()
     {
+        $logData = [];
         $rowsToIndex = [];
 
-        $defaultRecord = $this->getRecordDefaults();
-        /** @var Article $article */
-        foreach ($this->shopwareClient->findAll(false) as $article) {
-            $record = $defaultRecord;
-            $record['item_uid'] = $article->getId();
-            $record['changed'] = $article->getChanged()->getTimestamp();
-            $rowsToIndex[] = $record;
+        try {
+            $defaultRecord = $this->getRecordDefaults();
+            /** @var Article $article */
+            foreach ($this->shopwareClient->findAll(false) as $article) {
+                $record = $defaultRecord;
+                $record['item_uid'] = $article->getId();
+                $record['changed'] = $article->getChanged()->getTimestamp();
+                $rowsToIndex[] = $record;
+            }
+
+            /** @var ConnectionPool $connectionPool */
+            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+            $databaseConnectionForPages = $connectionPool->getConnectionForTable('tx_solr_indexqueue_item');
+            $logData['rows'] = $databaseConnectionForPages->bulkInsert(
+                'tx_solr_indexqueue_item',
+                $rowsToIndex,
+                array_keys($defaultRecord)
+            );
+        } catch (\Exception $exception) {
+            $logData['error'] = $exception->getCode() . ': ' . $exception->getMessage();
         }
 
-        /** @var ConnectionPool $connectionPool */
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $databaseConnectionForPages = $connectionPool->getConnectionForTable('tx_solr_indexqueue_item');
-        return $databaseConnectionForPages->bulkInsert(
-            'tx_solr_indexqueue_item',
-            $rowsToIndex,
-            array_keys($defaultRecord)
-        );
+        $this->logInitialization($logData);
+        return true;
     }
 
 }

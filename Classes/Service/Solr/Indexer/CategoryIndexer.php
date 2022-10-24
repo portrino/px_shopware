@@ -25,6 +25,7 @@ namespace Portrino\PxShopware\Service\Solr\Indexer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use Portrino\PxShopware\Domain\Model\AbstractShopwareModel;
 use Portrino\PxShopware\Domain\Model\Category;
 use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
@@ -45,13 +46,13 @@ class CategoryIndexer extends AbstractShopwareIndexer
     /**
      * overwrite special fields for categories
      *
-     * @param \Apache_Solr_Document $itemDocument
+     * @param Document $itemDocument
      * @param AbstractShopwareModel $itemRecord
      * @param integer $language The language to use.
-     * @return \Apache_Solr_Document $itemDocument
+     * @return Document $itemDocument
      */
     protected function overwriteSpecialFields(
-        \Apache_Solr_Document $itemDocument,
+        Document $itemDocument,
         AbstractShopwareModel $itemRecord,
         $language = 0
     )

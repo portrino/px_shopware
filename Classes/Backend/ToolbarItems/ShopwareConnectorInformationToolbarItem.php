@@ -28,6 +28,7 @@ namespace Portrino\PxShopware\Backend\ToolbarItems;
 use Portrino\PxShopware\Cache\CacheChainFactory;
 use Portrino\PxShopware\Domain\Model\Version;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
+use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException;
 use Portrino\PxShopware\Service\Shopware\ShopClientInterface;
 use Portrino\PxShopware\Service\Shopware\VersionClientInterface;
 use TYPO3\CMS\Backend\Toolbar\Enumeration\InformationStatus;
@@ -43,6 +44,7 @@ use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Mvc\Exception\InvalidExtensionNameException;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
@@ -170,7 +172,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
     /**
      * Collect the information for the menu
      *
-     * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
+     * @throws ShopwareApiClientException
      * @throws \ReflectionException
      * @throws \TYPO3\CMS\Core\Package\Exception
      */
@@ -229,7 +231,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
     /**
      * Gets the shop status
      *
-     * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
+     * @throws ShopwareApiClientException
      */
     protected function getShopStatus()
     {
@@ -364,7 +366,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
                             ->count('*')
                             ->from($cacheTable)
                             ->execute()
-                            ->fetchColumn(0);
+                            ->fetchOne();
 
                         $cacheTables .= $cacheTable . '<br>(' . $numberOfRecords . ' ' . $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.caches.entries') . ') <br>';
 
@@ -396,7 +398,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
      * Render system information dropdown
      *
      * @return string Icon HTML
-     * @throws \Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException
+     * @throws ShopwareApiClientException
      */
     public function getItem()
     {
@@ -425,7 +427,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
      * Render drop down
      *
      * @return string Drop down HTML
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\InvalidExtensionNameException
+     * @throws InvalidExtensionNameException
      */
     public function getDropDown()
     {

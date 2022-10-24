@@ -1,5 +1,21 @@
 # PxShopware Changelog
 
+5.0.0 - 2022-10-24
+------------------
+* [CLEANUP] removes unnecessary code (like xclasses) and assets (like images)
+* [CLEANUP] several class updates regarding dependency injection
+* [CLEANUP] updates file and folder structure in Configuration/
+* [TASK] updates Shopware and Solr service classes to be compatible with TYPO3 v10
+* [!!!][TASK] adds fake tables for article and category models, to allow Solr indexing of external Shopware resources
+
+#### 2021-09-23
+*  [TASK] updates several classes (backend route endpoints), FlexForm and TCA configurations to be compatible with TYPO3 v10
+
+#### 2021-05-31
+* [CLEANUP] updates extension structure, removes deprecated function calls
+* [CLEANUP] updates code formatting
+* [TASK] sets minimum version to TYPO3 v9
+
 4.2.2 - 2020-02-18
 ------------------
 * [BUGFIX] updates "sys_language_uid" retrieval in AbstractController and AbstractShopwareApiClient

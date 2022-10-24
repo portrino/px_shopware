@@ -54,6 +54,12 @@ class AbstractLinkHandler extends \TYPO3\CMS\Recordlist\LinkHandler\AbstractLink
      */
     protected $type = '';
 
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     /**
      * @inheritdoc
      */
@@ -64,7 +70,7 @@ class AbstractLinkHandler extends \TYPO3\CMS\Recordlist\LinkHandler\AbstractLink
         }
         $url = rawurldecode($linkParts['url']);
         if (StringUtility::beginsWith($url, $this->getPrefix())) {
-            $id = intval(substr($url, strlen($this->getPrefix())));
+            $id = (int)substr($url, strlen($this->getPrefix()));
             $this->object = $this->client->findById($id);
             return true;
         }

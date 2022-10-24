@@ -24,7 +24,10 @@ namespace Portrino\PxShopware\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use Portrino\PxShopware\Domain\Model\ShopwareModelInterface;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class AbstractShopwareApiClient
@@ -55,7 +58,7 @@ interface AbstractShopwareApiClientInterface {
     public function getStatus();
 
     /**
-     * @return \Portrino\PxShopware\Domain\Model\ShopwareModelInterface
+     * @return ShopwareModelInterface
      */
     public function find();
 
@@ -64,7 +67,7 @@ interface AbstractShopwareApiClientInterface {
      * @param bool $doCacheRequest
      * @param array $params
      *
-     * @return \Portrino\PxShopware\Domain\Model\ShopwareModelInterface
+     * @return ShopwareModelInterface
      */
     public function findById($id, $doCacheRequest = TRUE, $params = []);
 
@@ -74,7 +77,7 @@ interface AbstractShopwareApiClientInterface {
      * @param bool $doCacheRequest
      * @param array $params
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
+     * @return ObjectStorage<ShopwareModelInterface>
      */
     public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE, $params = []);
 
@@ -82,7 +85,7 @@ interface AbstractShopwareApiClientInterface {
      * @param bool $doCacheRequest
      * @param array $params
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
+     * @return ObjectStorage<ShopwareModelInterface>
      */
     public function findAll($doCacheRequest = TRUE, $params = []);
 
@@ -90,7 +93,7 @@ interface AbstractShopwareApiClientInterface {
      * @param array $params
      * @param bool $doCacheRequest
      * 
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\ShopwareModelInterface>
+     * @return ObjectStorage<ShopwareModelInterface>
      */
     public function findByParams($params = [], $doCacheRequest = TRUE);
 

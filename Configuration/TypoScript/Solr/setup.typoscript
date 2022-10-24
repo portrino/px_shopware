@@ -1,0 +1,69 @@
+###
+### Solr indexing example configuration
+###
+plugin.tx_solr {
+    index {
+        queue {
+            tx_pxshopware_domain_model_article = 1
+            tx_pxshopware_domain_model_article {
+                external = 1
+                initialization = Portrino\PxShopware\Service\Solr\IndexQueue\Initializer\ArticleInitializer
+                indexer = Portrino\PxShopware\Service\Solr\Indexer\ArticleIndexer
+                indexer {
+                }
+                fields {
+                    changed = changed
+                    descriptionLong_textS = descriptionLong
+                    url = pxShopwareUrl
+                    price_tdoubleS = price
+                    pseudoPrice_tdoubleS = pseudoPrice
+                    tax_doubleS = tax
+                    taxName_stringS = taxName
+                    unitId_stringS = unitId
+                    packUnit_stringS = packUnit
+                    purchaseUnit_tdoubleS = purchaseUnit
+                    referenceUnit_tdoubleS = referenceUnit
+                    productNumber_textS = number
+                    ean_textS = ean
+                    additionalText_textS = additionalTextcategory
+                    supplier_textS = supplier
+                    category_textM = SOLR_MULTIVALUE
+                    category_textM {
+                        # disable here, is added in ArticleIndexer->overwriteSpecialFields
+                        #field = categories
+                        separator = ,
+                        removeEmptyValues = 1
+                    }
+                    details_textM = SOLR_MULTIVALUE
+                    details_textM {
+                        # disable here, is added in ArticleIndexer->overwriteSpecialFields
+                        #field = details
+                        separator = ,
+                        removeEmptyValues = 1
+                    }
+
+                    keywords = SOLR_MULTIVALUE
+                    keywords {
+                        field = keywords
+                        separator = ,
+                        removeEmptyValues = 1
+                    }
+                }
+            }
+
+            # deactivate for now
+            tx_pxshopware_domain_model_category = 0
+            tx_pxshopware_domain_model_category {
+                initialization = Portrino\PxShopware\Service\Solr\IndexQueue\Initializer\CategoryInitializer
+                indexer = Portrino\PxShopware\Service\Solr\Indexer\CategoryIndexer
+                indexer {
+                    ignoredIds = 1,3,4,51
+                }
+                fields {
+                    url = pxShopwareUrl
+                }
+            }
+        }
+    }
+    search.trustedFields := addToList(description, descriptionLong_textS)
+}

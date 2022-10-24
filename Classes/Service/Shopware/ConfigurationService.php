@@ -11,8 +11,7 @@ class ConfigurationService implements SingletonInterface
 {
 
     /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var ConfigurationManagerInterface
      */
     protected $configurationManager;
 
@@ -20,6 +19,11 @@ class ConfigurationService implements SingletonInterface
      * @var array
      */
     protected $settings = [];
+
+    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
+    {
+        $this->configurationManager = $configurationManager;
+    }
 
     public function initializeObject()
     {
@@ -107,7 +111,7 @@ class ConfigurationService implements SingletonInterface
      */
     public function getCacheLifeTime()
     {
-        return intval($this->settings['caching']['lifetime'] ?: 0);
+        return (int)($this->settings['caching']['lifetime'] ? : 0);
     }
 
     /**

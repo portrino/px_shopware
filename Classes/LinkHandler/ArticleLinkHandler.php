@@ -34,6 +34,7 @@ class ArticleLinkHandler extends AbstractLinkHandler
 
     public function __construct()
     {
+        parent::__construct();
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->client = $objectManager->get(ArticleClientInterface::class);
         $this->type = 'article';

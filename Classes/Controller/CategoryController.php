@@ -1,6 +1,8 @@
 <?php
 namespace Portrino\PxShopware\Controller;
 
+use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -33,8 +35,12 @@ namespace Portrino\PxShopware\Controller;
 class CategoryController extends AbstractController {
 
     /**
-     * @var \Portrino\PxShopware\Service\Shopware\CategoryClientInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var CategoryClientInterface
      */
     protected $shopwareClient;
+
+    public function injectShopwareClient(CategoryClientInterface $shopwareClient)
+    {
+        $this->shopwareClient = $shopwareClient;
+    }
 }
