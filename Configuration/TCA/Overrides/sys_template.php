@@ -1,8 +1,8 @@
 <?php
-defined('TYPO3_MODE') || die();
+
+defined('TYPO3') || die();
 
 (function () {
-
     /**
      * Temporary variables
      */
@@ -22,5 +22,4 @@ defined('TYPO3_MODE') || die();
         'Configuration/TypoScript/Solr',
         'Shopware Integration (Solr Indexing Example)'
     );
-
 })();

@@ -33,12 +33,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class ArticleInitializer
- *
- * @package Portrino\PxShopware\Service\Solr\IndexQueue\Initializer
  */
 class ArticleInitializer extends AbstractInitializer
 {
-
     /**
      * @var string
      */
@@ -47,7 +44,7 @@ class ArticleInitializer extends AbstractInitializer
     /**
      * @return bool TRUE if initialization was successful, FALSE on error.
      */
-    public function initialize()
+    public function initialize(): bool
     {
         $logData = [];
         $rowsToIndex = [];
@@ -77,5 +74,4 @@ class ArticleInitializer extends AbstractInitializer
         $this->logInitialization($logData);
         return true;
     }
-
 }

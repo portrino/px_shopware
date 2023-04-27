@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Shopware;
 
 /***************************************************************
@@ -28,14 +29,10 @@ use Portrino\PxShopware\Domain\Model\Media;
 
 /**
  * Interface MediaClientInterface
- *
- * @package Portrino\PxShopware\Service\Shopware
  */
 interface MediaClientInterface extends AbstractShopwareApiClientInterface
 {
-
     const ENDPOINT = 'media';
     const CACHE_TAG = 'shopware_media';
     const ENTITY_CLASS_NAME = Media::class;
-
 }

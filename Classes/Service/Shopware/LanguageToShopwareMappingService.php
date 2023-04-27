@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Shopware;
 
 /***************************************************************
@@ -30,19 +31,15 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * Class LanguageToShopwareMappingService
- *
- * @package Portrino\PxShopware\Service\Shopware
  */
 class LanguageToShopwareMappingService implements SingletonInterface
 {
-
     /**
      * @var ConfigurationManagerInterface
      */
     protected $configurationManager;
 
     /**
-     *
      * @var array
      */
     protected $settings;
@@ -50,17 +47,13 @@ class LanguageToShopwareMappingService implements SingletonInterface
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
     {
         $this->configurationManager = $configurationManager;
-    }
-
-    public function initializeObject()
-    {
         $this->settings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, 'PxShopware');
     }
 
     /**
      * @param int $sys_language_uid
      *
-     * @return integer the shop id for the specific language in SW
+     * @return int the shop id for the specific language in SW
      */
     public function getShopIdBySysLanguageUid($sys_language_uid)
     {
@@ -82,7 +75,7 @@ class LanguageToShopwareMappingService implements SingletonInterface
     /**
      * @param int $sys_language_uid
      *
-     * @return integer the parent category id for the specific language in SW
+     * @return int the parent category id for the specific language in SW
      */
     public function getParentCategoryBySysLanguageUid($sys_language_uid)
     {
@@ -101,7 +94,7 @@ class LanguageToShopwareMappingService implements SingletonInterface
     /**
      * @param string $path the parent category id for the specific language in SW
      *
-     * @return integer $sys_language_uid
+     * @return int $sys_language_uid
      */
     public function getSysLanguageUidByParentCategoryPath($path)
     {
@@ -119,5 +112,4 @@ class LanguageToShopwareMappingService implements SingletonInterface
 
         return $result;
     }
-
 }

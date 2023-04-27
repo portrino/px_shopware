@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\LinkHandler;
 
 /***************************************************************
@@ -29,15 +30,20 @@ use Portrino\PxShopware\Domain\Model\Article;
 use Portrino\PxShopware\Domain\Model\Category;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Recordlist\LinkHandler\LinkHandlerInterface;
 use TYPO3\CMS\Recordlist\Tree\View\LinkParameterProviderInterface;
 
 class AbstractLinkHandler extends \TYPO3\CMS\Recordlist\LinkHandler\AbstractLinkHandler implements LinkHandlerInterface, LinkParameterProviderInterface
 {
+    /**
+     * @var string[]
+     */
+    protected $linkAttributes = [];
+
+    /**
+     * @var bool
+     */
+    protected $updateSupported = false;
 
     /**
      * @var AbstractShopwareApiClientInterface
@@ -45,33 +51,33 @@ class AbstractLinkHandler extends \TYPO3\CMS\Recordlist\LinkHandler\AbstractLink
     protected $client;
 
     /**
-     * @var Article|Category
+     * @var Article|Category|null
      */
     protected $object;
+
+    /**
+     * @var array
+     */
+    protected $linkParts = [];
 
     /**
      * @var string
      */
     protected $type = '';
 
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * @inheritdoc
      */
     public function canHandleLink(array $linkParts)
     {
-        if (!$linkParts['url']) {
+        if (!isset($linkParts['type']) || $linkParts['type'] !== 'shopware_' . $this->type) {
             return false;
         }
-        $url = rawurldecode($linkParts['url']);
-        if (StringUtility::beginsWith($url, $this->getPrefix())) {
-            $id = (int)substr($url, strlen($this->getPrefix()));
-            $this->object = $this->client->findById($id);
+        if (isset($linkParts['url'][$this->type]) && (int)$linkParts['url'][$this->type] > 0) {
+            $this->linkParts = $linkParts;
+            /** @var Article|Category|null $object */
+            $object = $this->client->findById((int)$linkParts['url'][$this->type]);
+            $this->object = $object;
             return true;
         }
         return false;
@@ -90,40 +96,16 @@ class AbstractLinkHandler extends \TYPO3\CMS\Recordlist\LinkHandler\AbstractLink
      */
     public function render(ServerRequestInterface $request)
     {
-        GeneralUtility::makeInstance(PageRenderer::class)->loadRequireJsModule('TYPO3/CMS/PxShopware/' . ucfirst($this->type) .  'LinkHandler');
-        $listContent = '';
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/PxShopware/' . ucfirst($this->type) . 'LinkHandler');
+        $this->view->getRequest()->setControllerExtensionName('PxShopware');
+        $this->view->setLayoutRootPaths(['EXT:px_shopware/Resources/Private/Layouts/Backend']);
+        $this->view->setTemplateRootPaths(['EXT:px_shopware/Resources/Private/Templates/Backend/LinkBrowser']);
+        $this->view->setTemplate('Shopware' . ucfirst($this->type));
 
-        $objects = $this->client->findAll();
-        if ($objects->count()) {
-            $titleLen = (int)$this->getBackendUser()->uc['titleLen'];
-            $currentIdentifier = $this->object ? $this->object->getId() : 0;
-
-            $listContent .= '<ul class="list-tree">';
-            foreach ($objects as $object) {
-                $selected = $currentIdentifier === $object->getId() ? ' class="active"' : '';
-                $icon = '<span title="' . htmlspecialchars($object->getSelectItemLabel()) . '">'
-                    . $this->iconFactory->getIcon('px-shopware-' . $this->type, Icon::SIZE_SMALL)
-                    . '</span>';
-                $listContent .=
-                    '<li' . $selected . '>
-                        <span class="list-tree-group">
-                            <a href="#" class="t3js-fileLink list-tree-group" title="' . htmlspecialchars($object->getSelectItemLabel()) . '" data-' . $this->type . '="' . $this->getPrefix() . htmlspecialchars($object->getId()) . '">
-                                <span class="list-tree-icon">' . $icon . '</span>
-                                <span class="list-tree-title">' . htmlspecialchars(GeneralUtility::fixed_lgd_cs($object->getSelectItemLabel(), $titleLen)) . '</span>
-                            </a>
-                        </span>
-                    </li>';
-            }
-            $listContent .= '</ul>';
-        }
-
-        $content = '<table border="0" cellpadding="0" cellspacing="0" id="typo3-linkFiles">
-                        <tr>
-                            <td class="c-wCell" valign="top"><h3>' . $this->getLanguageService()->sL('LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:link_handler.' . $this->type) . ':</h3>' . $listContent . '</td>
-                        </tr>
-                    </table>';
-
-        return $content;
+//        $this->view->assign('object', $this->object);
+//        $this->view->assign('currentIdentifier', $this->object ? $this->object->getId() : 0);
+        $this->view->assign($this->type, !empty($this->linkParts) ? $this->linkParts['url'][$this->type] : '');
+        return '';
     }
 
     /**
@@ -131,9 +113,7 @@ class AbstractLinkHandler extends \TYPO3\CMS\Recordlist\LinkHandler\AbstractLink
      */
     public function getBodyTagAttributes()
     {
-        return [
-            'data-current-link' => $this->object ? $this->getPrefix() . $this->object->getId() : ''
-        ];
+        return [];
     }
 
     /**
@@ -158,10 +138,5 @@ class AbstractLinkHandler extends \TYPO3\CMS\Recordlist\LinkHandler\AbstractLink
     public function getScriptUrl()
     {
         return $this->linkBrowser->getScriptUrl();
-    }
-
-    protected function getPrefix()
-    {
-        return 'shopware_' . $this->type . ':';
     }
 }

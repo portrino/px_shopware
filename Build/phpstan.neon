@@ -1,0 +1,13 @@
+parameters:
+  level: 5
+
+  paths:
+    - %currentWorkingDirectory%/Classes
+
+  ignoreErrors:
+    -
+      message: '#Method Portrino\\PxShopware\\Cache\\CacheChain::(getBackend|remove|isValidEntryIdentifier|isValidTag)\(\) should return (.*) but return statement is missing.#'
+      path: %currentWorkingDirectory%/Classes/Cache/CacheChain.php
+    -
+      message: '#Call to an undefined method TYPO3Fluid\\Fluid\\View\\ViewInterface::(getRequest|setLayoutRootPaths|setTemplateRootPaths|setTemplate)\(\).#'
+      path: %currentWorkingDirectory%/Classes/LinkHandler/AbstractLinkHandler.php

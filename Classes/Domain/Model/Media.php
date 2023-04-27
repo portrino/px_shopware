@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Domain\Model;
 
 /***************************************************************
@@ -27,12 +28,9 @@ namespace Portrino\PxShopware\Domain\Model;
 
 /**
  * Class Media
- *
- * @package Portrino\PxShopware\Domain\Model
  */
 class Media extends AbstractShopwareModel
 {
-
     /**
      * @var string
      */
@@ -41,15 +39,15 @@ class Media extends AbstractShopwareModel
     /**
      * @var array
      */
-    protected $thumbnails = '';
+    protected $thumbnails = [];
 
     /**
      * @param object $raw
-     * @param string $token
+     * @param bool $token
      */
-    public function __construct($raw, $token)
+    public function initialize($raw, $token)
     {
-        parent::__construct($raw, $token);
+        parent::initialize($raw, $token);
 
         if (isset($this->raw->path)) {
             $this->setUrl($this->raw->path);

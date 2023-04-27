@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Backend\FormEngine\FieldControl;
 
 /***************************************************************
@@ -36,28 +37,17 @@ use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
-
 
 /**
  * Class SuggestWizardControl
  * Adds a wizard to select Shopware Items (Articles/Categories)
- *
- * @package Portrino\PxShopware\Backend\FormEngine\FieldControl
  */
 class SuggestWizardControl extends AbstractNode
 {
-
     /**
      * @var LanguageToShopwareMappingService
      */
     protected $localeToShopMappingService;
-
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
 
     /**
      * @var string
@@ -76,8 +66,7 @@ class SuggestWizardControl extends AbstractNode
             parent::__construct($nodeFactory, $data);
         }
 
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->localeToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
+        $this->localeToShopMappingService = GeneralUtility::makeInstance(LanguageToShopwareMappingService::class);
     }
 
     /**
@@ -107,6 +96,7 @@ class SuggestWizardControl extends AbstractNode
 
         $fieldname = $paramArray['itemFormElName'];
 
+        $language = 0;
         if (isset($row['sys_language_uid'][0])) {
             $language = (int)$row['sys_language_uid'][0];
         }
@@ -114,8 +104,14 @@ class SuggestWizardControl extends AbstractNode
         $selector = '
         <label>&nbsp;</label>
         <div class="px-shopware autocomplete t3-form-suggest-container">
-            <div class="input-group has-feedback">
-                <span class="input-group-addon">' . '' . '</span>
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <span class="t3js-icon icon icon-size-small icon-state-default icon-actions-search" data-identifier="actions-search">
+	                    <span class="icon-markup">
+                            <svg class="icon-color"><use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-search"></use></svg>
+	                    </span>
+                    </span>
+                </span>
                 <input type="search" class="t3-form-suggest-px-shopware form-control"
                         placeholder="' . $this->getLanguageService()->sL($this->languagePrefix . 'suggest_wizard.placeholder.' . strtolower($endpoint)) . '"
                         data-type="' . htmlspecialchars($endpoint) . '"
@@ -133,17 +129,15 @@ class SuggestWizardControl extends AbstractNode
         return $resultArray;
     }
 
-
     /**
      * Ajax handler for the "suggest" feature in FormEngine.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
      *
      * @return ResponseInterface
      * @throws ShopwareApiClientConfigurationException
      */
-    public function searchAction(ServerRequestInterface $request)
+    public function searchAction(ServerRequestInterface $request): ResponseInterface
     {
         $parsedBody = $request->getParsedBody();
         $queryParams = $request->getQueryParams();
@@ -152,16 +146,22 @@ class SuggestWizardControl extends AbstractNode
         $search = $parsedBody['value'] ?? $queryParams['value'];
         $endpoint = $parsedBody['type'] ?? $queryParams['type'];
         $language = isset($parsedBody['language']) ? (int)$parsedBody['language'] : (int)$queryParams['language'];
-        // set language to 0 if no language was given
-        if ($language < 0) {
+        $limit = isset($parsedBody['limit']) ? (int)$parsedBody['limit'] : (int)$queryParams['limit'];
+        // set valid language/ limit defaults if necessary
+        if ($language <= 0) {
             $language = 0;
+        }
+        if ($limit <= 0) {
+            $limit = 5;
         }
 
         /** @var AbstractShopwareApiClientInterface $shopwareApiClient */
-        $shopwareApiClient = $this->objectManager->get($this->getShopwareApiClientClass($endpoint));
+        $shopwareApiClient = GeneralUtility::makeInstance($this->getShopwareApiClientClass($endpoint));
 
         $shopId = $this->localeToShopMappingService->getShopIdBySysLanguageUid($language);
-        $results = $shopwareApiClient->findByTerm($search, 8, true, ['language' => $shopId]);
+        $results = $shopwareApiClient->findByTerm($search, $limit, false, ['language' => $shopId]);
+
+        $rows = [];
 
         /** @var SuggestEntryInterface $result */
         foreach ($results as $result) {
@@ -172,9 +172,9 @@ class SuggestWizardControl extends AbstractNode
                 '),
                 'label' => $result->getSuggestLabel(),
                 'uid' => $result->getSuggestId(),
-                'sprite' => ''
+                'sprite' => '',
             ];
-            $rows[$result->getId()] = $entry;
+            $rows[$result->getSuggestId()] = $entry;
         }
 
         return new JsonResponse($rows);
@@ -183,7 +183,7 @@ class SuggestWizardControl extends AbstractNode
     /**
      * @return LanguageService
      */
-    protected function getLanguageService()
+    protected function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];
     }
@@ -193,7 +193,7 @@ class SuggestWizardControl extends AbstractNode
      * @return string
      * @throws ShopwareApiClientConfigurationException
      */
-    protected function getShopwareApiClientClass($endpoint)
+    protected function getShopwareApiClientClass(string $endpoint): string
     {
         /**
          * check if the responsible shopwareApiClient interface and class exists for the given flexform type configuration
@@ -221,16 +221,16 @@ class SuggestWizardControl extends AbstractNode
      * @param string $text
      * @param string $words
      *
-     * @return mixed
+     * @return string
      */
-    protected function highlight($text, $words)
+    protected function highlight(string $text, string $words): string
     {
         $highlighted = preg_filter(
             '/' . preg_quote($words, '/') . '/i',
             '<b><span class="search-highlight">$0</span></b>',
             $text
         );
-        if (!empty($highlighted)) {
+        if (!empty($highlighted) && is_string($highlighted)) {
             $text = $highlighted;
         }
         return $text;
@@ -242,7 +242,7 @@ class SuggestWizardControl extends AbstractNode
      *
      * @return string
      */
-    private function crop($string, $limit)
+    private function crop(string $string, int $limit): string
     {
         $string = strip_tags($string);
         if (strlen($string) > $limit) {

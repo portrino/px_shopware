@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Shopware;
 
 /***************************************************************
@@ -27,12 +28,9 @@ namespace Portrino\PxShopware\Service\Shopware;
 
 /**
  * Class MediaClient
- *
- * @package Portrino\PxShopware\Service\Shopware
  */
 class MediaClient extends AbstractShopwareApiClient implements MediaClientInterface
 {
-
     /**
      * @return string
      */
@@ -48,5 +46,4 @@ class MediaClient extends AbstractShopwareApiClient implements MediaClientInterf
     {
         return self::ENTITY_CLASS_NAME;
     }
-
 }

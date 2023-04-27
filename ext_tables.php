@@ -1,17 +1,15 @@
 <?php
-defined('TYPO3_MODE') || die();
+
+defined('TYPO3') || die();
 
 (function () {
     $extensionKey = 'px_shopware';
 
-    if (TYPO3_MODE === 'BE') {
-        $GLOBALS['TBE_STYLES']['skins'][$extensionKey] = [
-            'name' => $extensionKey,
-            'stylesheetDirectories' => [
-                'structure' => '', //removes structure stylesheet
-                'visual' => 'EXT:' . $extensionKey . '/Resources/Public/Css' // changes default directory
-            ]
-        ];
-    }
-
+    $GLOBALS['TBE_STYLES']['skins'][$extensionKey] = [
+        'name' => $extensionKey,
+        'stylesheetDirectories' => [
+            'structure' => '', //removes structure stylesheet
+            'visual' => 'EXT:' . $extensionKey . '/Resources/Public/Css', // changes default directory
+        ],
+    ];
 })();

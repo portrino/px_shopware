@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Backend\Hooks;
 
 /***************************************************************
@@ -32,30 +33,19 @@ use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHookInterface;
-use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Service\FlexFormService;
+use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Class PageLayoutViewDraw
- *
- * @package Portrino\PxShopware\Backend\Hooks
  */
 class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
 {
-
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
-
     /**
      * @var BackendConfigurationManager
      */
@@ -103,21 +93,17 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
 
     /**
      * Pi1PageLayoutViewDraw constructor.
-     *
      */
     public function __construct()
     {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->configurationManager = $this->objectManager->get(BackendConfigurationManager::class);
+        $this->configurationManager = GeneralUtility::makeInstance(BackendConfigurationManager::class);
         $this->settings = $this->configurationManager->getConfiguration('PxShopware');
-        $this->typoScriptService = $this->objectManager->get(TypoScriptService::class);
-        $this->flexFormService = $this->objectManager->get(FlexFormService::class);
-        $this->articleClient = $this->objectManager->get(ArticleClient::class);
-        $this->categoryClient = $this->objectManager->get(CategoryClient::class);
-        $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
+        $this->typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
+        $this->flexFormService = GeneralUtility::makeInstance(FlexFormService::class);
+        $this->languageToShopMappingService = GeneralUtility::makeInstance(LanguageToShopwareMappingService::class);
         $this->languageService = $this->getLanguageService();
 
-        $this->view = $this->objectManager->get(StandaloneView::class);
+        $this->view = GeneralUtility::makeInstance(StandaloneView::class);
     }
 
     /**
@@ -157,12 +143,10 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
      * Preprocesses the preview rendering of a content element.
      *
      * @param PageLayoutView $parentObject Calling parent object
-     * @param boolean $drawItem Whether to draw the item using the default functionalities
+     * @param bool $drawItem Whether to draw the item using the default functionalities
      * @param string $headerContent Header content
      * @param string $itemContent Item content
      * @param array $row Record row of tt_content
-     *
-     * @return void
      */
     public function preProcess(
         PageLayoutView &$parentObject,
@@ -206,7 +190,7 @@ class PageLayoutViewDraw implements PageLayoutViewDrawItemHookInterface
 
         foreach ($selectedItemsArray as $item) {
             $language = $this->languageToShopMappingService->getShopIdBySysLanguageUid($row['sys_language_uid']);
-            /** @var ItemEntryInterface $selectedItem */
+            /** @var ItemEntryInterface|null $selectedItem */
             $selectedItem = $this->shopwareClient->findById($item, true, ['language' => $language]);
 
             if ($selectedItem) {

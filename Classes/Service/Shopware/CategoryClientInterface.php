@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Shopware;
 
 /***************************************************************
@@ -29,12 +30,9 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Interface CategoryClientInterface
- *
- * @package Portrino\PxShopware\Service\Shopware
  */
 interface CategoryClientInterface extends AbstractShopwareApiClientInterface
 {
-
     const ENDPOINT = 'categories';
     const CACHE_TAG = 'shopware_category';
     const ENTITY_CLASS_NAME = Category::class;

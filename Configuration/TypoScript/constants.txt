@@ -1,2 +1,0 @@
-# Important: This file is deprecated and will removed with EXT:px_shopware v5
-@import 'EXT:px_shopware/Configuration/TypoScript/constants.txt'

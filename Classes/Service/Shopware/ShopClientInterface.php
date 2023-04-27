@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Shopware;
 
 /***************************************************************
@@ -28,14 +29,10 @@ use Portrino\PxShopware\Domain\Model\Shop;
 
 /**
  * Interface ShopClientInterface
- *
- * @package Portrino\PxShopware\Service\Shopware
  */
 interface ShopClientInterface extends AbstractShopwareApiClientInterface
 {
-
     const ENDPOINT = 'shops';
     const CACHE_TAG = 'shopware_shop';
     const ENTITY_CLASS_NAME = Shop::class;
-
 }

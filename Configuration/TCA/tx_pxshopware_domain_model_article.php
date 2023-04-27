@@ -1,5 +1,6 @@
 <?php
-defined('TYPO3_MODE') || die('Access denied.');
+
+defined('TYPO3') || die('Access denied.');
 
 return [
     'ctrl' => [
@@ -29,8 +30,8 @@ return [
     ],
     'types' => [
         '0' => [
-            'showitem' => 'title, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, hidden'
-        ]
+            'showitem' => 'title, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, hidden',
+        ],
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -44,17 +45,17 @@ return [
                     [
                         'LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages',
                         -1,
-                        'flags-multiple'
+                        'flags-multiple',
                     ],
                 ],
                 'default' => 0,
-            ]
+            ],
         ],
         'l10n_diffsource' => [
             'config' => [
                 'type' => 'passthrough',
-                'default' => ''
-            ]
+                'default' => '',
+            ],
         ],
         'hidden' => [
             'exclude' => 1,
@@ -66,34 +67,34 @@ return [
                     [
                         0 => '',
                         1 => '',
-                        'invertStateDisplay' => true
-                    ]
+                        'invertStateDisplay' => true,
+                    ],
                 ],
             ],
         ],
         'cruser_id' => [
             'label' => 'cruser_id',
             'config' => [
-                'type' => 'passthrough'
-            ]
+                'type' => 'passthrough',
+            ],
         ],
         'pid' => [
             'label' => 'pid',
             'config' => [
-                'type' => 'passthrough'
-            ]
+                'type' => 'passthrough',
+            ],
         ],
         'crdate' => [
             'label' => 'crdate',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'tstamp' => [
             'label' => 'tstamp',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
 
         'title' => [
@@ -106,7 +107,7 @@ return [
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
                 ],
-            ]
+            ],
         ],
     ],
 ];

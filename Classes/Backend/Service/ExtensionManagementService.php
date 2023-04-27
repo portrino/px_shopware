@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Backend\Service;
 
 /***************************************************************
@@ -29,7 +30,6 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
  * Class ExtensionManagementService
- * @package Portrino\PxShopware\Backend\Service
  */
 class ExtensionManagementService implements SingletonInterface
 {
@@ -40,12 +40,10 @@ class ExtensionManagementService implements SingletonInterface
      * @param string $piKeyToMatch Plugin key as used in the list_type field. Use the asterisk * to match all list_type values.
      * @param string $value Either a reference to a flex-form XML file (eg. "FILE:EXT:newloginbox/flexform_ds.xml") or the XML directly.
      * @param string $CTypeToMatch Value of tt_content.CType (Content Type) to match. The default is "list" which corresponds to the "Insert Plugin" content element.  Use the asterisk * to match all CType values.
-     * @return void
      * @see addPlugin()
      */
     public function addPiFlexFormValue($piKeyToMatch, $value, $CTypeToMatch = 'list')
     {
         ExtensionManagementUtility::addPiFlexFormValue($piKeyToMatch, $value, $CTypeToMatch);
     }
-
 }

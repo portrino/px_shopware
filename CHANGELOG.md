@@ -1,5 +1,12 @@
 # PxShopware Changelog
 
+6.0.0 - 2023-04-27
+------------------
+* [TASK] updates several classes regarding symfony based dependency injection and TYPO3 v11 compatibility in general
+* [TASK] adds dev packages and composer scripts for static code analysis
+* [!!!][TASK] updates custom LinkHandler implementation for Article and Category links in RTE
+* [CLEANUP] updates several files after php-cs-fixer run
+
 5.0.0 - 2022-10-24
 ------------------
 * [CLEANUP] removes unnecessary code (like xclasses) and assets (like images)

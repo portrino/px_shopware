@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Shopware;
 
 /***************************************************************
@@ -30,12 +31,9 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class CategoryClient
- *
- * @package Portrino\PxShopware\Service\Shopware
  */
 class CategoryClient extends AbstractShopwareApiClient implements CategoryClientInterface
 {
-
     /**
      * Do not use this during initialization, because it could lead to max nesting level exception
      *
@@ -44,32 +42,21 @@ class CategoryClient extends AbstractShopwareApiClient implements CategoryClient
      */
     public function findByParent($parentId)
     {
-        $result = new ObjectStorage();
-
         $filterByParentId = [
             [
                 'property' => 'parentId',
                 'expression' => '=',
-                'value' => $parentId
+                'value' => $parentId,
             ],
         ];
-        $response = $this->get($this->getValidEndpoint(), ['filter' => $filterByParentId]);
+        $params = [
+            'filter' => $filterByParentId,
+        ];
 
-        if ($response) {
-            $token = (isset($response->pxShopwareTypo3Token)) ? (bool)$response->pxShopwareTypo3Token : false;
+        /** @var ObjectStorage<Category> $categories */
+        $categories = $this->findByParams($params);
 
-            if (isset($response->data) && is_array($response->data)) {
-                foreach ($response->data as $data) {
-                    if (isset($data->id)) {
-                        $category = $this->objectManager->get($this->getEntityClassName(), $data, $token);
-                        if ($category !== null) {
-                            $result->attach($category);
-                        }
-                    }
-                }
-            }
-        }
-        return $result;
+        return $categories;
     }
 
     /**
@@ -87,5 +74,4 @@ class CategoryClient extends AbstractShopwareApiClient implements CategoryClient
     {
         return self::ENTITY_CLASS_NAME;
     }
-
 }

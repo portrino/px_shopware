@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Solr\IndexQueue\Initializer;
 
 /***************************************************************
@@ -32,7 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class CategoryInitializer extends AbstractInitializer
 {
-
     /**
      * @var string
      */
@@ -41,7 +41,7 @@ class CategoryInitializer extends AbstractInitializer
     /**
      * @return bool TRUE if initialization was successful, FALSE on error.
      */
-    public function initialize()
+    public function initialize(): bool
     {
         $logData = [];
         $rowsToIndex = [];
@@ -70,5 +70,4 @@ class CategoryInitializer extends AbstractInitializer
         $this->logInitialization($logData);
         return true;
     }
-
 }

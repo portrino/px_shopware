@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Solr\Indexer;
 
 /***************************************************************
@@ -35,12 +36,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class ArticleIndexer
- *
- * @package Portrino\PxShopware\Service\Solr\Indexer
  */
 class ArticleIndexer extends AbstractShopwareIndexer
 {
-
     /**
      * @var string
      */
@@ -52,7 +50,7 @@ class ArticleIndexer extends AbstractShopwareIndexer
      * @param AbstractShopwareModel $itemRecord The item to index
      * @return bool valid or not
      */
-    protected function itemIsValid(AbstractShopwareModel $itemRecord)
+    protected function itemIsValid(AbstractShopwareModel $itemRecord): bool
     {
         $result = parent::itemIsValid($itemRecord);
 
@@ -71,14 +69,14 @@ class ArticleIndexer extends AbstractShopwareIndexer
      *
      * @param Document $itemDocument
      * @param AbstractShopwareModel $itemRecord
-     * @param integer $language The language to use.
+     * @param int $language The language to use.
      * @return Document $itemDocument
      */
     protected function overwriteSpecialFields(
         Document $itemDocument,
         AbstractShopwareModel $itemRecord,
-        $language = 0
-    ) {
+        int $language = 0
+    ): Document {
         if ($itemRecord instanceof Article) {
             $itemDocument->setField('title', $itemRecord->getName());
 

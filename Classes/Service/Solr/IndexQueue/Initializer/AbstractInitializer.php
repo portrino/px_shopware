@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Solr\IndexQueue\Initializer;
 
 /***************************************************************
@@ -27,11 +28,9 @@ namespace Portrino\PxShopware\Service\Solr\IndexQueue\Initializer;
 
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 abstract class AbstractInitializer extends \ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer
 {
-
     /**
      * @var string
      */
@@ -54,8 +53,7 @@ abstract class AbstractInitializer extends \ApacheSolrForTypo3\Solr\IndexQueue\I
             parent::__construct();
         }
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->shopwareClient = $objectManager->get($this->clientClassName);
+        $this->shopwareClient = GeneralUtility::makeInstance($this->clientClassName);
     }
 
     /**
@@ -70,7 +68,7 @@ abstract class AbstractInitializer extends \ApacheSolrForTypo3\Solr\IndexQueue\I
             'item_uid' => 0,
             'indexing_configuration' => $this->indexingConfigurationName,
             'indexing_priority' => $this->getIndexingPriority(),
-            'changed' => (new \DateTime())->getTimestamp()
+            'changed' => (new \DateTime())->getTimestamp(),
         ];
     }
 }

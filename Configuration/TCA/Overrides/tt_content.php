@@ -1,13 +1,11 @@
 <?php
-defined('TYPO3_MODE') or die();
 
-$boot = function () {
-    /** @var string $extKey */
+defined('TYPO3') or die();
+
+(function () {
     $extKey = 'px_shopware';
 
-    /** @var \Portrino\PxShopware\Backend\Service\LanguageFilePrefixService $languageFilePrefixService */
     $languageFilePrefixService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Portrino\PxShopware\Backend\Service\LanguageFilePrefixService::class);
-    /** @var \Portrino\PxShopware\Backend\Service\ExtensionManagementService $extensionManagementService */
     $extensionManagementService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Portrino\PxShopware\Backend\Service\ExtensionManagementService::class);
 
     $languageFilePrefix = $languageFilePrefixService->getLanguagePrefixForExtension($extKey);
@@ -27,20 +25,19 @@ $boot = function () {
      */
     $pluginSignatures = [
         0 => str_replace('_', '', $extKey) . '_pi1',
-        1 => str_replace('_', '', $extKey) . '_pi2'
+        1 => str_replace('_', '', $extKey) . '_pi2',
     ];
     foreach ($pluginSignatures as $pluginSignature) {
-
         if (\Portrino\PxShopware\Backend\Utility\ExtensionConfigurationMatcher::isFeatureEnabled([0 => 'plugin.', 1 => 'fetchAllItems'])) {
             $extensionManagementService->addPiFlexFormValue(
                 '*',
-                'FILE:EXT:' . $extKey . '/Configuration/FlexForms/FetchAllItems/'. $pluginSignature .'.xml',
+                'FILE:EXT:' . $extKey . '/Configuration/FlexForms/FetchAllItems/' . $pluginSignature . '.xml',
                 $pluginSignature
             );
         } else {
             $extensionManagementService->addPiFlexFormValue(
                 '*',
-                'FILE:EXT:' . $extKey . '/Configuration/FlexForms/'. $pluginSignature .'.xml',
+                'FILE:EXT:' . $extKey . '/Configuration/FlexForms/' . $pluginSignature . '.xml',
                 $pluginSignature
             );
         }
@@ -51,7 +48,7 @@ $boot = function () {
             [
                 $languageFilePrefix . 'tt_content.CType.' . $pluginSignature,
                 $pluginSignature,
-                str_replace('_', '-', $pluginSignature)
+                str_replace('_', '-', $pluginSignature),
             ]
         );
         $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['default'] = $pluginSignature;
@@ -61,14 +58,14 @@ $boot = function () {
         $GLOBALS['TCA']['tt_content']['types'][$pluginSignature] = [
             'showitem' => '
                 --palette--;' . $frontendLanguageFilePrefix . 'palette.general;general,
-                --palette--;'. $frontendLanguageFilePrefix . 'header;header,rowDescription,
+                --palette--;' . $frontendLanguageFilePrefix . 'header;header,rowDescription,
             --div--;' . $frontendLanguageFilePrefix . 'tabs.plugin,
                 pi_flexform,
             --div--;' . $frontendLanguageFilePrefix . 'tabs.access,
                 hidden;' . $frontendLanguageFilePrefix . 'field.default.hidden,
                 --palette--;' . $frontendLanguageFilePrefix . 'palette.access;access,
             --div--;' . $frontendLanguageFilePrefix . 'tabs.extended
-        '
+        ',
         ];
 
 //        $GLOBALS['TCA']['tt_content']['types'][$pluginSignature] = $GLOBALS['TCA']['tt_content']['types']['list'];
@@ -80,7 +77,4 @@ $boot = function () {
                 categories';
         }
     }
-};
-
-$boot();
-unset($boot);
+})();

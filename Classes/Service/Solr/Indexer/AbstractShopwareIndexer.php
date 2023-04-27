@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Solr\Indexer;
 
 /***************************************************************
@@ -27,6 +28,7 @@ namespace Portrino\PxShopware\Service\Solr\Indexer;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
@@ -39,25 +41,16 @@ use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
 use Solarium\Exception\HttpException;
 use Symfony\Component\Mailer\Exception\HttpTransportException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class AbstractShopwareIndexer
- *
- * @package Portrino\PxShopware\Service\Solr\Indexer
  */
 class AbstractShopwareIndexer extends Indexer
 {
-
     /**
      * @var string
      */
     protected $clientClassName = AbstractShopwareApiClientInterface::class;
-
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
 
     /**
      * @var LanguageToShopwareMappingService
@@ -73,24 +66,22 @@ class AbstractShopwareIndexer extends Indexer
     {
         parent::__construct($options);
 
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
+        $this->languageToShopMappingService = GeneralUtility::makeInstance(LanguageToShopwareMappingService::class);
     }
 
     /**
      * Creates a single Solr Document for an item in a specific language.
      *
      * @param Item $item An index queue item to index.
-     * @param integer $language The language to use.
-     * @return boolean TRUE if item was indexed successfully, FALSE on failure
+     * @param int $language The language to use.
+     * @return bool TRUE if item was indexed successfully, FALSE on failure
      * @throws HttpTransportException
      */
-    protected function indexItem(Item $item, $language = 0)
+    protected function indexItem(Item $item, $language = 0): bool
     {
         $itemIndexed = false;
         $documents = [];
 
-        /** @var AbstractShopwareModel $itemRecord */
         $itemRecord = $this->getShopwareRecord($item, $language);
 
         // In this case we have no item for the current language and skip indexing
@@ -102,13 +93,22 @@ class AbstractShopwareIndexer extends Indexer
         $itemDataRaw = json_decode(json_encode($itemRecord->getRaw()), true);
 
         // get general fields
-        /** @var Document $itemDocument */
-        $itemDocument = $this->getBaseDocument($item, $itemDataRaw);
-
         $itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
+        $itemDocument = $this->getBaseDocument($item, $itemDataRaw);
+        $pidToUse = $this->getPageIdOfItem($item);
+        $tsfe = GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdAndLanguageId(
+            $pidToUse,
+            $language,
+            $item->getRootPageUid()
+        );
 
         // process TS config for additional fields
-        $itemDocument = $this->addDocumentFieldsFromTyposcript($itemDocument, $itemIndexingConfiguration, $itemDataRaw);
+        $itemDocument = $this->addDocumentFieldsFromTyposcript(
+            $itemDocument,
+            $itemIndexingConfiguration,
+            $itemDataRaw,
+            $tsfe
+        );
 
         // overwrite fields for specific item type
         $itemDocument = $this->overwriteSpecialFields($itemDocument, $itemRecord, $language);
@@ -128,7 +128,7 @@ class AbstractShopwareIndexer extends Indexer
             $documents = $this->processDocuments($item, $documents);
 
             // allow preAddModifyDocuments Hooks
-            $documents = $this->preAddModifyDocuments(
+            $documents = Indexer::preAddModifyDocuments(
                 $item,
                 $language,
                 $documents
@@ -141,7 +141,7 @@ class AbstractShopwareIndexer extends Indexer
 
         try {
             $response = $this->solr->getWriteService()->addDocuments($documents);
-            if ($response->getHttpStatus() == 200) {
+            if ($response->getHttpStatus() === 200) {
                 $itemIndexed = true;
             }
         } catch (HttpException $e) {
@@ -153,14 +153,13 @@ class AbstractShopwareIndexer extends Indexer
         return $itemIndexed;
     }
 
-
     /**
      * check if record should be added/updated or deleted from index
      *
      * @param AbstractShopwareModel $itemRecord The item to index
      * @return bool valid or not
      */
-    protected function itemIsValid(AbstractShopwareModel $itemRecord)
+    protected function itemIsValid(AbstractShopwareModel $itemRecord): bool
     {
         $result = true;
 
@@ -182,12 +181,12 @@ class AbstractShopwareIndexer extends Indexer
      * Get data from shopware API
      *
      * @param Item $item The item to index
-     * @param integer $language The language to use.
-     * @return AbstractShopwareModel The record to use to build the base document
+     * @param int $language The language to use.
+     * @return AbstractShopwareModel|null The record to use to build the base document
      */
-    protected function getShopwareRecord(Item $item, $language = 0)
+    protected function getShopwareRecord(Item $item, int $language = 0): ?AbstractShopwareModel
     {
-        $shopwareClient = $this->objectManager->get($this->clientClassName);
+        $shopwareClient = GeneralUtility::makeInstance($this->clientClassName);
         $shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
         return $shopwareClient->findById($item->getRecordUid(), true, ['language' => $shopId]);
     }
@@ -197,15 +196,15 @@ class AbstractShopwareIndexer extends Indexer
      *
      * @param Document $itemDocument
      * @param AbstractShopwareModel $itemRecord
-     * @param integer $language The language to use.
+     * @param int $language The language to use.
      * @return Document $itemDocument
      */
     protected function overwriteSpecialFields(
         Document $itemDocument,
         AbstractShopwareModel $itemRecord,
-        $language = 0
-    ) {
-        // overwrite in sub classes
+        int $language = 0
+    ): Document {
+        // overwrite in subclasses
         return $itemDocument;
     }
 
@@ -216,7 +215,7 @@ class AbstractShopwareIndexer extends Indexer
      * @param array $itemRecord The record to use to build the base document
      * @return Document A basic Solr document
      */
-    protected function getBaseDocument(Item $item, array $itemRecord)
+    protected function getBaseDocument(Item $item, array $itemRecord): Document
     {
         $site = $this->getSiteByPageId($item->getRootPageUid());
 
@@ -255,10 +254,10 @@ class AbstractShopwareIndexer extends Indexer
     }
 
     /**
-     * @param integer $pageId
+     * @param int $pageId
      * @return Site
      */
-    protected function getSiteByPageId($pageId)
+    protected function getSiteByPageId(int $pageId): Site
     {
         return GeneralUtility::makeInstance(SiteRepository::class)->getSiteByPageId($pageId);
     }

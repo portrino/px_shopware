@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Backend\Hooks;
 
 /***************************************************************
@@ -25,29 +26,17 @@ namespace Portrino\PxShopware\Backend\Hooks;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Portrino\PxShopware\Domain\Model\Article;
-use Portrino\PxShopware\Domain\Model\Category;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurationException;
 use Portrino\PxShopware\Service\Shopware\LanguageToShopwareMappingService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Class ItemsProcFunc
- *
- * @package Portrino\PxShopware\Backend\Hooks
  */
 class ItemsProcFunc
 {
-
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
-
     /**
      * @var ConfigurationManagerInterface
      */
@@ -60,12 +49,10 @@ class ItemsProcFunc
 
     /**
      * ItemsProcFunc constructor.
-     *
      */
     public function __construct()
     {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
+        $this->languageToShopMappingService = GeneralUtility::makeInstance(LanguageToShopwareMappingService::class);
     }
 
     /**
@@ -97,21 +84,22 @@ class ItemsProcFunc
         }
 
         /** @var AbstractShopwareApiClientInterface $shopwareApiClient */
-        $shopwareApiClient = $this->objectManager->get($shopwareApiClientClass);
+        $shopwareApiClient = GeneralUtility::makeInstance($shopwareApiClientClass);
 
         $language = isset($config['flexParentDatabaseRow']['sys_language_uid']) ? $config['flexParentDatabaseRow']['sys_language_uid'] : 0;
         $shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
 
         /** @var array $selectedItems */
-        $selectedItems = isset($config['row'][$config['field']]) ? GeneralUtility::trimExplode(',',
-            $config['row'][$config['field']], true) : [];
+        $selectedItems = isset($config['row'][$config['field']]) ?
+            GeneralUtility::trimExplode(',', $config['row'][$config['field']], true) :
+            [];
         foreach ($selectedItems as $item) {
-            /** @var ItemEntryInterface $selectedItem */
+            /** @var ItemEntryInterface|null $selectedItem */
             $selectedItem = $shopwareApiClient->findById($item, false, ['language' => $shopId]);
             if ($selectedItem) {
                 $selectedItemOption = [
                     $selectedItem->getSelectItemLabel(),
-                    $selectedItem->getSelectItemId()
+                    $selectedItem->getSelectItemId(),
                 ];
                 $config['items'][] = $selectedItemOption;
             }
@@ -125,7 +113,6 @@ class ItemsProcFunc
      */
     public function getAllItems(array &$config, $key)
     {
-
         $params = isset($config['config']['itemsProcFunc_params']) ? $config['config']['itemsProcFunc_params'] : [];
         $endpoint = isset($params['type']) ? $params['type'] : '';
         /**
@@ -148,7 +135,7 @@ class ItemsProcFunc
         }
 
         /** @var AbstractShopwareApiClientInterface $shopwareApiClient */
-        $shopwareApiClient = $this->objectManager->get($shopwareApiClientClass);
+        $shopwareApiClient = GeneralUtility::makeInstance($shopwareApiClientClass);
 
         $language = isset($config['flexParentDatabaseRow']['sys_language_uid']) ? $config['flexParentDatabaseRow']['sys_language_uid'] : 0;
         $shopId = $this->languageToShopMappingService->getShopIdBySysLanguageUid($language);
@@ -158,11 +145,9 @@ class ItemsProcFunc
         foreach ($items as $item) {
             $option = [
                 $item->getSelectItemLabel(),
-                $item->getSelectItemId()
+                $item->getSelectItemId(),
             ];
             $config['items'][] = $option;
         }
     }
-
 }
-

@@ -1,0 +1,9 @@
+.idea/
+.Build/
+Build/phpunit/.phpunit.result.cache
+Build/testing-docker/.env
+var/
+.env
+.php-cs-fixer.cache
+config
+composer.lock

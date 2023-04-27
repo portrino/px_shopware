@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Domain\Model;
 
 /***************************************************************
@@ -27,12 +28,9 @@ namespace Portrino\PxShopware\Domain\Model;
 
 /**
  * Class Detail
- *
- * @package Portrino\PxShopware\Domain\Model
  */
 class Detail extends AbstractShopwareModel
 {
-
     /**
      * @var string
      */
@@ -45,11 +43,11 @@ class Detail extends AbstractShopwareModel
 
     /**
      * @param object $raw
-     * @param string $token
+     * @param bool $token
      */
-    public function __construct($raw, $token)
+    public function initialize($raw, $token)
     {
-        parent::__construct($raw, $token);
+        parent::initialize($raw, $token);
 
         if (isset($this->raw->number)) {
             $this->setNumber($this->raw->number);
@@ -90,5 +88,4 @@ class Detail extends AbstractShopwareModel
     {
         $this->additionalText = $additionalText;
     }
-
 }

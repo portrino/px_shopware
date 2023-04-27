@@ -1,4 +1,4 @@
-.t3js-topbar-toolbar .t3js-toolbar-item .dropdown-toggle .badge {
+.t3js-topbar-toolbar .t3js-toolbar-item[data-toolbar-identifier="shopware-connector-information-toolbar-item"] .dropdown-toggle .badge {
     display: none;
     font-size: 10px;
     min-width: 15px;

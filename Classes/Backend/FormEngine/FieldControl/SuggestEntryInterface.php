@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Backend\FormEngine\FieldControl;
 
 /***************************************************************
@@ -27,12 +28,9 @@ namespace Portrino\PxShopware\Backend\FormEngine\FieldControl;
 
 /**
  * Interface SuggestEntryInterface
- *
- * @package Portrino\PxShopware\Backend\FormEngine\FieldControl
  */
 interface SuggestEntryInterface
 {
-
     /**
      * @return int
      */

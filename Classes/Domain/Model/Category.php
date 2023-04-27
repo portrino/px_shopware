@@ -37,12 +37,9 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class Category
- *
- * @package Portrino\PxShopware\Domain\Model
  */
 class Category extends AbstractShopwareModel implements SuggestEntryInterface, ItemEntryInterface
 {
-
     /**
      * @var string
      */
@@ -56,10 +53,10 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     /**
      * @var Uri
      */
-    protected $uri = '';
+    protected $uri;
 
     /**
-     * @var Media
+     * @var Media|null
      */
     protected $image;
 
@@ -105,11 +102,11 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
 
     /**
      * @param object $raw
-     * @param string $token
+     * @param bool $token
      */
-    public function __construct($raw, $token)
+    public function initialize($raw, $token)
     {
-        parent::__construct($raw, $token);
+        parent::initialize($raw, $token);
 
         if (isset($this->raw->name)) {
             $this->setName($this->raw->name);
@@ -122,8 +119,8 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
         }
 
         if ($this->raw->path) {
-            if (!$this->languageToShopMappingService) {
-                $this->languageToShopMappingService = $this->objectManager->get(LanguageToShopwareMappingService::class);
+            if ($this->languageToShopMappingService === null) {
+                $this->languageToShopMappingService = GeneralUtility::makeInstance(LanguageToShopwareMappingService::class);
             }
             $this->language = $this->languageToShopMappingService->getSysLanguageUidByParentCategoryPath($this->raw->path);
         }
@@ -133,9 +130,9 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     {
         $this->path = new ObjectStorage();
         if (isset($this->getRaw()->mediaId)) {
-            /** @var Media $media */
+            /** @var Media|null $media */
             $media = $this->mediaClient->findById($this->getRaw()->mediaId);
-            if ($media && is_a($media, Media::class)) {
+            if ($media instanceof Media) {
                 $this->setImage($media);
             }
         }
@@ -204,7 +201,7 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     }
 
     /**
-     * @return Media
+     * @return Media|null
      */
     public function getImage()
     {
@@ -239,8 +236,6 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
      * Adds a path element
      *
      * @param Category $pathElement
-     *
-     * @return void
      */
     public function addPathElement(Category $pathElement)
     {
@@ -251,8 +246,6 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
      * Removes a path
      *
      * @param Category $pathElementToRemove The path element to be removed
-     *
-     * @return void
      */
     public function removePathElement(Category $pathElementToRemove)
     {
@@ -266,11 +259,10 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
      */
     public function getBreadCrumbPath($includeSelf = true)
     {
-
         if (isset($this->getRaw()->path) && $this->getRaw()->path != '') {
             $pathArray = array_reverse(GeneralUtility::trimExplode('|', $this->getRaw()->path, true));
             foreach ($pathArray as $pathItem) {
-                /** @var Category|NULL $pathElement */
+                /** @var Category|null $pathElement */
                 $pathElement = $this->categoryClient->findById($pathItem);
                 if ($pathElement && is_a($pathElement, Category::class)) {
                     $this->addPathElement($pathElement);
@@ -283,7 +275,7 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
             return $item->getName();
         }, $this->getPath()->toArray());
         if ($includeSelf === true) {
-            array_push($path, $this->getName());
+            $path[] = $this->getName();
         }
         return implode('/', $path);
     }
@@ -351,5 +343,4 @@ class Category extends AbstractShopwareModel implements SuggestEntryInterface, I
     {
         $this->language = $language;
     }
-
 }

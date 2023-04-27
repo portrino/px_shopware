@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Controller;
 
 use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
@@ -29,11 +30,9 @@ use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
 
 /**
  * Class CategoryController
- *
- * @package Portrino\PxShopware\Controller
  */
-class CategoryController extends AbstractController {
-
+class CategoryController extends AbstractController
+{
     /**
      * @var CategoryClientInterface
      */

@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Shopware\Exceptions;
 
 /***************************************************************
@@ -27,8 +28,7 @@ namespace Portrino\PxShopware\Service\Shopware\Exceptions;
 
 /**
  * Class ShopwareApiClientRequestException
- *
- * @package Portrino\PxShopware\Service\Shopware\Exceptions
  */
-class ShopwareApiClientRequestException extends ShopwareApiClientException{
+class ShopwareApiClientRequestException extends ShopwareApiClientException
+{
 }

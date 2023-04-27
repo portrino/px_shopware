@@ -1,0 +1,30 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Portrino\PxShopware\:
+        resource: '../Classes/*'
+        #exclude: '../Classes/Domain/Model/*'
+
+    Portrino\PxShopware\Backend\EventListener\ClearShopwareCacheEventListener:
+        tags:
+            - name: event.listener
+              identifier: 'px-shopware/toolbar/clear-shopware-cache-event-listener'
+
+    Portrino\PxShopware\Backend\ToolbarItems\ShopwareConnectorInformationToolbarItem:
+        public: true
+
+    Portrino\PxShopware\Domain\Model\:
+        resource: '../Classes/Domain/Model/*'
+        public: true
+
+    Portrino\PxShopware\LinkHandler\:
+        resource: '../Classes/LinkHandler/*'
+        public: true
+        shared: false
+
+    Portrino\PxShopware\Service\Shopware\:
+        resource: '../Classes/Service/Shopware/*'
+        public: true

@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Shopware;
 
 /***************************************************************
@@ -28,12 +29,9 @@ use TYPO3\CMS\Core\SingletonInterface;
 
 /**
  * Class LocaleMappingService
- *
- * @package Portrino\PxShopware\Service\Shopware
  */
 class LocaleMappingService implements SingletonInterface
 {
-
     /**
      * Export to PHP Array plugin for PHPMyAdmin
      * @version 0.2b
@@ -50,7 +48,7 @@ class LocaleMappingService implements SingletonInterface
         ['id' => '7', 'locale' => 'af_ZA', 'language' => 'Afrikaans', 'territory' => 'Südafrika'],
         ['id' => '8', 'locale' => 'ak_GH', 'language' => 'Akan', 'territory' => 'Ghana'],
         ['id' => '9', 'locale' => 'am_ET', 'language' => 'Amharisch', 'territory' => 'Äthiopien'],
-        ['id' => '10', 'locale' => 'ar_AE', 'language' => 'Arabisch','territory' => 'Vereinigte Arabische Emirate'],
+        ['id' => '10', 'locale' => 'ar_AE', 'language' => 'Arabisch', 'territory' => 'Vereinigte Arabische Emirate'],
         ['id' => '11', 'locale' => 'ar_BH', 'language' => 'Arabisch', 'territory' => 'Bahrain'],
         ['id' => '12', 'locale' => 'ar_DZ', 'language' => 'Arabisch', 'territory' => 'Algerien'],
         ['id' => '13', 'locale' => 'ar_EG', 'language' => 'Arabisch', 'territory' => 'Ägypten'],
@@ -294,15 +292,15 @@ class LocaleMappingService implements SingletonInterface
         ['id' => '252', 'locale' => 'zh_MO', 'language' => 'Chinesisch', 'territory' => 'Sonderverwaltungszone Macao'],
         ['id' => '253', 'locale' => 'zh_SG', 'language' => 'Chinesisch', 'territory' => 'Singapur'],
         ['id' => '254', 'locale' => 'zh_TW', 'language' => 'Chinesisch', 'territory' => 'Taiwan'],
-        ['id' => '255', 'locale' => 'zu_ZA', 'language' => 'Zulu', 'territory' => 'Südafrika']
+        ['id' => '255', 'locale' => 'zu_ZA', 'language' => 'Zulu', 'territory' => 'Südafrika'],
     ];
 
     /**
      * @param $locale
      *
-     * @return bool
+     * @return int
      */
-    public function getLanguageId($locale)
+    public function getLanguageId($locale): int
     {
         foreach ($this->s_core_locales as $s_core_locale) {
             if ($s_core_locale['locale'] === $locale) {
@@ -311,5 +309,4 @@ class LocaleMappingService implements SingletonInterface
         }
         return 1;
     }
-
 }

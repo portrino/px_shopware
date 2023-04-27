@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Backend\Hooks;
 
 /***************************************************************
@@ -27,12 +28,9 @@ namespace Portrino\PxShopware\Backend\Hooks;
 
 /**
  * Interface ItemEntryInterface
- *
- * @package Portrino\PxShopware\Backend\Hooks
  */
 interface ItemEntryInterface
 {
-
     /**
      * @return int
      */
@@ -42,5 +40,4 @@ interface ItemEntryInterface
      * @return string
      */
     public function getSelectItemLabel();
-
 }

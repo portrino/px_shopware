@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Backend\ToolbarItems;
 
 /***************************************************************
@@ -26,6 +27,7 @@ namespace Portrino\PxShopware\Backend\ToolbarItems;
  ***************************************************************/
 
 use Portrino\PxShopware\Cache\CacheChainFactory;
+use Portrino\PxShopware\Domain\Model\Shop;
 use Portrino\PxShopware\Domain\Model\Version;
 use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException;
@@ -45,18 +47,15 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Exception\InvalidExtensionNameException;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Class ShopwareConnectorInformationToolbarItem
- *
- * @package Portrino\PxShopware\Backend\ToolbarItems
  */
 class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
 {
-
     /**
      * @var StandaloneView
      */
@@ -115,11 +114,6 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
     protected $shopClient;
 
     /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
-
-    /**
      * @var ConfigurationManagerInterface
      */
     protected $configurationManager;
@@ -142,30 +136,36 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
     /**
      * Constructor
      */
-    public function __construct()
-    {
+    public function __construct(
+        VersionClientInterface $versionClient,
+        ShopClientInterface $shopClient,
+        IconFactory $iconFactory,
+        StandaloneView $standaloneView
+    ) {
         if (!$this->checkAccess()) {
             return;
         }
-        $this->objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-        $this->configurationManager = $this->objectManager->get(ConfigurationManagerInterface::class);
-        $this->settings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, 'PxShopware');
+        $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+        $this->settings = $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
+            'PxShopware'
+        );
 
         if (!array_key_exists('api', $this->settings)) {
             $this->messages[] = [
                 'status' => InformationStatus::STATUS_WARNING,
-                'text' => $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.configuration.status.missing')
+                'text' => $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.configuration.status.missing'),
             ];
         }
 
-        $this->versionClient = $this->objectManager->get(VersionClientInterface::class);
-        $this->shopClient = $this->objectManager->get(ShopClientInterface::class);
+        $this->versionClient = $versionClient;
+        $this->shopClient = $shopClient;
 
-        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        $this->iconFactory = $iconFactory;
 
         $extPath = ExtensionManagementUtility::extPath('px_shopware');
         /* @var $view StandaloneView */
-        $this->standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
+        $this->standaloneView = $standaloneView;
         $this->standaloneView->setTemplatePathAndFilename($extPath . 'Resources/Private/Templates/Backend/ToolbarMenu/' . static::TOOLBAR_MENU_TEMPLATE);
     }
 
@@ -178,7 +178,6 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
      */
     protected function collectInformation()
     {
-
         $this->getExtensionInformation();
 
         $this->getShopStatus();
@@ -190,13 +189,11 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
         $this->getCacheStatus();
 
         $this->severityBadgeClass = InformationStatus::STATUS_OK;
-
     }
 
     /**
      * Gets the connected Shops
      *
-     * @return void
      * @throws \TYPO3\CMS\Core\Package\Exception
      */
     protected function getExtensionInformation()
@@ -206,12 +203,10 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
 
     /**
      * Gets the connected Shops
-     *
-     * @return void
      */
     protected function getShops()
     {
-        /** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Portrino\PxShopware\Domain\Model\Shop> $shops */
+        /** @var ObjectStorage<Shop> $shops */
         $shops = $this->shopClient->findAll(false);
 
         $shopString = '';
@@ -219,13 +214,11 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
             $shopString .= $shop->getName() . '<br>';
         }
 
-        if ($shops) {
-            $this->shopInformation[] = [
-                'title' => $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.shops'),
-                'value' => $shopString,
-                'icon' => $this->iconFactory->getIcon('px-shopware-shop-shop', Icon::SIZE_SMALL)->render()
-            ];
-        }
+        $this->shopInformation[] = [
+            'title' => $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.shops'),
+            'value' => $shopString,
+            'icon' => $this->iconFactory->getIcon('px-shopware-shop-shop', Icon::SIZE_SMALL)->render(),
+        ];
     }
 
     /**
@@ -246,7 +239,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
                 $this->extensionName,
                 [
                     1 => $this->settings['emails']['portrino_support'],
-                    2 => $this->settings['urls']['portrino_website']
+                    2 => $this->settings['urls']['portrino_website'],
                 ]
             );
         } else {
@@ -260,7 +253,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
                     [
                         1 => $this->settings['urls']['shopware_plugin_repository'],
                         2 => $this->settings['emails']['portrino_support'],
-                        3 => $this->settings['urls']['portrino_website']
+                        3 => $this->settings['urls']['portrino_website'],
                     ]
                 );
             } else {
@@ -273,7 +266,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
                     [
                         1 => $this->settings['urls']['typo3_documentation'],
                         2 => $this->settings['emails']['portrino_support'],
-                        3 => $this->settings['urls']['portrino_website']
+                        3 => $this->settings['urls']['portrino_website'],
                     ]
                 );
             }
@@ -283,36 +276,34 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
             'title' => $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.status'),
             'value' => $value,
             'status' => $status,
-            'icon' => $this->iconFactory->getIcon($icon, Icon::SIZE_SMALL)->render()
+            'icon' => $this->iconFactory->getIcon($icon, Icon::SIZE_SMALL)->render(),
         ];
 
         $this->messages[] = [
             'status' => $status,
-            'text' => $messageText
+            'text' => $messageText,
         ];
     }
 
     /**
      * Gets the Shop Version and Revision
-     *
-     * @return void
      */
     protected function getShopVersionAndRevision()
     {
-        /** @var Version $version */
+        /** @var Version|null $version */
         $version = $this->versionClient->find();
 
         if ($version) {
             $this->shopInformation[] = [
                 'title' => $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.version'),
                 'value' => $version->getVersion(),
-                'icon' => $this->iconFactory->getIcon('px-shopware-shop-version', Icon::SIZE_SMALL)->render()
+                'icon' => $this->iconFactory->getIcon('px-shopware-shop-version', Icon::SIZE_SMALL)->render(),
             ];
 
             $this->shopInformation[] = [
                 'title' => $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.shop.revision'),
                 'value' => $version->getRevision(),
-                'icon' => $this->iconFactory->getIcon('px-shopware-shop-revision', Icon::SIZE_SMALL)->render()
+                'icon' => $this->iconFactory->getIcon('px-shopware-shop-revision', Icon::SIZE_SMALL)->render(),
             ];
         }
     }
@@ -320,7 +311,6 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
     /**
      * Gets the Cache Status
      *
-     * @return void
      * @throws \ReflectionException
      */
     protected function getCacheStatus()
@@ -342,7 +332,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
             'title' => $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.status'),
             'value' => $value,
             'status' => $status,
-            'icon' => $this->iconFactory->getIcon('information-database', Icon::SIZE_SMALL)->render()
+            'icon' => $this->iconFactory->getIcon('information-database', Icon::SIZE_SMALL)->render(),
         ];
 
         /**
@@ -354,7 +344,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
                 $this->cacheInformation[] = [
                     'title' => $this->getLanguageService()->sL($this->languagePrefix . 'toolbar_items.shopware_connector_information.cache.level.' . $priority),
                     'value' => $backendReflection->getShortName(),
-                    'icon' => $this->iconFactory->getIcon('px-shopware-cache-level', Icon::SIZE_SMALL)->render()
+                    'icon' => $this->iconFactory->getIcon('px-shopware-cache-level', Icon::SIZE_SMALL)->render(),
                 ];
 
                 if ($backend instanceof Typo3DatabaseBackend) {
@@ -378,10 +368,7 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
                     }
                 }
             }
-
         }
-
-
     }
 
     /**
@@ -416,7 +403,10 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
                 $badgeIcon = $this->iconFactory->getIcon('px-shopware-shop-connected', Icon::SIZE_SMALL)->getMarkup();
             } else {
                 $badgeClass = InformationStatus::STATUS_ERROR;
-                $badgeIcon = $this->iconFactory->getIcon('px-shopware-shop-disconnected', Icon::SIZE_SMALL)->getMarkup();
+                $badgeIcon = $this->iconFactory->getIcon(
+                    'px-shopware-shop-disconnected',
+                    Icon::SIZE_SMALL
+                )->getMarkup();
             }
         }
 
@@ -510,5 +500,4 @@ class ShopwareConnectorInformationToolbarItem implements ToolbarItemInterface
     {
         return $GLOBALS['LANG'];
     }
-
 }

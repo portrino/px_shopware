@@ -35,12 +35,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Ajax
- *
- * @package Portrino\PxShopware\Backend\Hooks
  */
 class Ajax
 {
-
     /**
      * @var string Key of the extension
      */
@@ -58,5 +55,4 @@ class Ajax
 
         return new HtmlResponse('');
     }
-
 }

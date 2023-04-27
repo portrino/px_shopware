@@ -49,8 +49,7 @@ define(['jquery', 'jquery/autocomplete', 'TYPO3/CMS/Backend/FormEngine'], functi
                 var labelEl = $('<div>').html($(element).data('label'));
                 var label = labelEl.text();
                 var title = labelEl.find('span').attr('title') || label;
-                setFormValueFromBrowseWin(formEl, insertData, label, title);
-                // TBE_EDITOR.fieldChanged(table, uid, field, formEl);
+                TYPO3.FormEngine.setSelectOptionFromExternalSource(formEl, insertData, label, title);
             };
 
         var timeoutId = 0;

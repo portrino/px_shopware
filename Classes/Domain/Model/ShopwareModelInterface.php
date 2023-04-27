@@ -7,42 +7,38 @@
  */
 namespace Portrino\PxShopware\Domain\Model;
 
-
 /**
  * Class AbstractShopwareModel
- *
- * @package Portrino\PxShopware\Domain\Model
  */
-interface ShopwareModelInterface {
-
+interface ShopwareModelInterface
+{
     /**
-     * @return string
+     * @return int
      */
     public function getId();
 
     /**
-     * @param string $id
+     * @param int $id
      */
     public function setId($id);
 
     /**
-     * @return string
+     * @return object
      */
     public function getRaw();
 
     /**
-     * @param string $raw
+     * @param object $raw
      */
     public function setRaw($raw);
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isToken();
 
     /**
-     * @param boolean $token
+     * @param bool $token
      */
     public function setToken($token);
-
 }

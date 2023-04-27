@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Solr\Hooks;
 
 /***************************************************************
@@ -29,13 +30,12 @@ use TYPO3\CMS\Core\SingletonInterface;
 
 class Queue implements SingletonInterface
 {
-
     /**
      * @var array
      */
     protected $tables = [
         'tx_pxshopware_domain_model_article',
-        'tx_pxshopware_domain_model_category'
+        'tx_pxshopware_domain_model_category',
     ];
 
     /**

@@ -2,56 +2,64 @@
       xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<ul class="dropdown-list" data-count="{count}" data-severityclass="{severityBadgeClass}">
-    <li class="dropdown-header">
+<div class="dropdown-list" data-count="{count}" data-severityclass="{severityBadgeClass}">
+    <h3 class="dropdown-headline">
         <core:icon identifier="px-shopware" />
         <f:translate key="LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information.header" />
-        <span> - {extensionInformation.version}</span>
-    </li>
-    <li class="dropdown-intro typo3-module-menu-item submodule">
-        <f:translate key="LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information.shop" />
-    </li>
-    <li>
-        <dl class="dl-horizontal">
-            <f:for each="{shopInformation}" as="info">
-                <dt title="{info.title}"><f:format.raw>{info.icon}</f:format.raw> {info.title}</dt>
-                <dd><f:if condition="{info.status}">
-                    <f:then>
-                        <span class="text-{info.status}"><f:format.raw>{info.value}</f:format.raw></span>
-                    </f:then>
-                    <f:else>
-                        <f:format.raw>{info.value}</f:format.raw>
-                    </f:else>
-                </f:if></dd>
-            </f:for>
-        </dl>
-    </li>
-
-    <li class="dropdown-intro typo3-module-menu-item submodule">
-        <f:translate key="LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:toolbar_items.shopware_connector_information.cache" />
-    </li>
-    <li>
-        <dl class="dl-horizontal">
-            <f:for each="{cacheInformation}" as="info">
-                <dt title="{info.title}"><f:format.raw>{info.icon}</f:format.raw> {info.title}</dt>
-                <dd><f:if condition="{info.status}">
-                    <f:then>
-                        <span class="text-{info.status}"> <f:format.raw>{info.value}</f:format.raw></span>
-                    </f:then>
-                    <f:else>
-                        <f:format.raw>{info.value}</f:format.raw>
-                    </f:else>
-                </f:if></dd>
-            </f:for>
-        </dl>
-    </li>
-
-    <li class="divider"></li>
+    </h3>
+    <p class="dropdown-text typo3-module-menu-item submodule">
+        Version: {extensionInformation.version}
+    </p>
+    <hr>
+    <div class="dropdown-table">
+        <f:for each="{shopInformation}" as="info">
+            <div class="dropdown-table-row">
+                <div class="dropdown-table-column dropdown-table-column-top dropdown-table-icon">
+                    <f:format.raw>{info.icon}</f:format.raw>
+                </div>
+                <div class="dropdown-table-column dropdown-table-column-top dropdown-table-title">
+                    {info.title}
+                </div>
+                <div class="dropdown-table-column dropdown-table-column-top dropdown-table-value">
+                    <f:if condition="{info.status}">
+                        <f:then>
+                            <span class="text-{info.status}"><f:format.raw>{info.value}</f:format.raw></span>
+                        </f:then>
+                        <f:else>
+                            <f:format.raw>{info.value}</f:format.raw>
+                        </f:else>
+                    </f:if>
+                </div>
+            </div>
+        </f:for>
+    </div>
+    <hr>
+    <div class="dropdown-table">
+        <f:for each="{cacheInformation}" as="info">
+            <div class="dropdown-table-row">
+                <div class="dropdown-table-column dropdown-table-column-top dropdown-table-icon">
+                    <f:format.raw>{info.icon}</f:format.raw>
+                </div>
+                <div class="dropdown-table-column dropdown-table-column-top dropdown-table-title">
+                    <f:if condition="{info.title}">Cache-</f:if>{info.title}
+                </div>
+                <div class="dropdown-table-column dropdown-table-column-top dropdown-table-value">
+                    <f:if condition="{info.status}">
+                        <f:then>
+                            <span class="text-{info.status}"><f:format.raw>{info.value}</f:format.raw></span>
+                        </f:then>
+                        <f:else>
+                            <f:format.raw>{info.value}</f:format.raw>
+                        </f:else>
+                    </f:if>
+                </div>
+            </div>
+        </f:for>
+    </div>
+    <hr>
     <f:for each="{messages}" as="message">
-        <li>
-            <span class="text-{message.status}"><f:format.raw>{message.text}</f:format.raw></span>
-        </li>
+        <p class="dropdown-text text-{message.status}"><f:format.raw>{message.text}</f:format.raw></p>
     </f:for>
-</ul>
+</div>
 
 </html>

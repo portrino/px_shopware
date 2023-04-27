@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Shopware;
 
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurationException;
@@ -9,7 +10,6 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 class ConfigurationService implements SingletonInterface
 {
-
     /**
      * @var ConfigurationManagerInterface
      */
@@ -61,13 +61,17 @@ class ConfigurationService implements SingletonInterface
     public function getApiUrl()
     {
         if ($this->settings['api']['url'] === false) {
-            throw new ShopwareApiClientConfigurationException('No apiUrl given to connect to shopware REST-Service! Please add it to your extension configuration, TS or flexform.',
-                1458807513);
+            throw new ShopwareApiClientConfigurationException(
+                'No apiUrl given to connect to shopware REST-Service! Please add it to your extension configuration, TS or flexform.',
+                1458807513
+            );
         }
 
         if (filter_var($this->settings['api']['url'], FILTER_VALIDATE_URL) === false) {
-            throw new ShopwareApiClientConfigurationException('apiUrl is not valid. Please enter a valid url in your extension configuration, TS or flexform.',
-                1459492118);
+            throw new ShopwareApiClientConfigurationException(
+                'apiUrl is not valid. Please enter a valid url in your extension configuration, TS or flexform.',
+                1459492118
+            );
         }
         return rtrim($this->settings['api']['url'], '/') . '/';
     }
@@ -79,8 +83,10 @@ class ConfigurationService implements SingletonInterface
     public function getApiUsername()
     {
         if ($this->settings['api']['username'] === false) {
-            throw new ShopwareApiClientConfigurationException('No username given to connect to shopware REST-Service! Please add it to your extension configuration, TS or Flexform.',
-                1458807514);
+            throw new ShopwareApiClientConfigurationException(
+                'No username given to connect to shopware REST-Service! Please add it to your extension configuration, TS or Flexform.',
+                1458807514
+            );
         }
         return $this->settings['api']['username'];
     }
@@ -92,14 +98,16 @@ class ConfigurationService implements SingletonInterface
     public function getApiKey()
     {
         if ($this->settings['api']['key'] === false) {
-            throw new ShopwareApiClientConfigurationException('No apiKey given to connect to shopware REST-Service! Please add it to your extension configuration, TS or Flexform.',
-                1458807515);
+            throw new ShopwareApiClientConfigurationException(
+                'No apiKey given to connect to shopware REST-Service! Please add it to your extension configuration, TS or Flexform.',
+                1458807515
+            );
         }
         return $this->settings['api']['key'];
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isCachingEnabled()
     {
@@ -107,7 +115,7 @@ class ConfigurationService implements SingletonInterface
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getCacheLifeTime()
     {
@@ -115,11 +123,10 @@ class ConfigurationService implements SingletonInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isLoggingEnabled()
     {
         return (boolean)$this->settings['logging']['disable'] !== true;
     }
-
 }

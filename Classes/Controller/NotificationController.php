@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Controller;
 
 /***************************************************************
@@ -35,29 +36,34 @@ use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientConfigurati
 use Portrino\PxShopware\Service\Shopware\MediaClientInterface;
 use Portrino\PxShopware\Service\Shopware\ShopClientInterface;
 use Portrino\PxShopware\Service\Shopware\VersionClientInterface;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
-/**
- * @property \TYPO3\CMS\Extbase\Mvc\Web\Response $response
- */
 class NotificationController extends ActionController
 {
-
     const COMMAND_CREATE = 'create';
+
     const COMMAND_UPDATE = 'update';
+
     const COMMAND_DELETE = 'delete';
 
     const TYPE_ARTICLE = 'article';
+
     const TYPE_CATEGORY = 'category';
+
     const TYPE_MEDIA = 'media';
+
     const TYPE_SHOP = 'shop';
+
     const TYPE_VERSION = 'version';
 
     const SOLR_ITEM_TYPE_ARTICLE = 'Portrino_PxShopware_Domain_Model_Article';
+
     const SOLR_ITEM_TYPE_CATEGORY = 'Portrino_PxShopware_Domain_Model_Category';
 
     /**
@@ -123,7 +129,7 @@ class NotificationController extends ActionController
         $this->currentTimeStamp = time();
 
         if (ExtensionManagementUtility::isLoaded('solr') === true) {
-            $this->indexQueue = $this->objectManager->get(Queue::class);
+            $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
         }
 
         if ($this->request->getMethod() === 'POST') {
@@ -135,61 +141,56 @@ class NotificationController extends ActionController
 
     /**
      * @param array $payload
-     * @return string
+     * @return ResponseInterface
      */
     public function indexAction($payload)
     {
         foreach ($payload['data'] as $command) {
             $this->flushCacheForCommand($command['type'], (int)$command['id']);
             if (isset($command['id']) && $command['id'] !== '' && ExtensionManagementUtility::isLoaded('solr') === true) {
-
                 switch ($command['action']) {
-                    case self::COMMAND_CREATE;
+                    case self::COMMAND_CREATE:
                         $this->addItemToQueue($command['type'], (int)$command['id']);
                         break;
-                    case self::COMMAND_UPDATE;
+                    case self::COMMAND_UPDATE:
                         $this->updateItemInQueue($command['type'], (int)$command['id']);
                         break;
-                    case self::COMMAND_DELETE;
+                    case self::COMMAND_DELETE:
                         $this->deleteItemFromQueueAndCore($command['type'], (int)$command['id']);
                         break;
                     default:
-                        $this->response->setStatus(400);
-                        return json_encode([
+                        return new JsonResponse([
                             'status' => 'error',
                             'code' => 1471432314,
-                            'message' => 'Invalid command type'
-                        ]);
+                            'message' => 'Invalid command type',
+                        ], 400);
                 }
             }
         }
 
-        $this->response->setStatus(201);
-        return '';
+        return new JsonResponse(null, 201);
     }
 
     /**
-     * @return string
+     * @return ResponseInterface
      */
     public function authorizationErrorAction()
     {
-        $this->response->setStatus(401);
-        return json_encode([
+        return new JsonResponse([
             'status' => 'error',
             'code' => 1471432315,
-            'message' => 'The given credentials are wrong!'
-        ]);
+            'message' => 'The given credentials are wrong!',
+        ], 401);
     }
 
     /**
      * @param string $type
-     * @param integer $id
-     * @return void
+     * @param int $id
      */
     protected function addItemToQueue($type, $id)
     {
         switch ($type) {
-            case self::TYPE_ARTICLE;
+            case self::TYPE_ARTICLE:
                 if ($this->indexQueue->containsItem(self::SOLR_ITEM_TYPE_ARTICLE, $id)) {
                     $this->updateItemInQueue($type, $id);
                     return;
@@ -198,11 +199,11 @@ class NotificationController extends ActionController
                     'item_type' => self::SOLR_ITEM_TYPE_ARTICLE,
                     'item_uid' => $id,
                     'indexing_configuration' => self::SOLR_ITEM_TYPE_ARTICLE,
-                    'changed' => $this->currentTimeStamp
+                    'changed' => $this->currentTimeStamp,
                 ];
                 $this->addItem($item);
                 break;
-            case self::TYPE_CATEGORY;
+            case self::TYPE_CATEGORY:
                 if ($this->indexQueue->containsItem(self::SOLR_ITEM_TYPE_CATEGORY, $id)) {
                     $this->updateItemInQueue($type, $id);
                     return;
@@ -211,7 +212,7 @@ class NotificationController extends ActionController
                     'item_type' => self::SOLR_ITEM_TYPE_CATEGORY,
                     'item_uid' => $id,
                     'indexing_configuration' => self::SOLR_ITEM_TYPE_CATEGORY,
-                    'changed' => $this->currentTimeStamp
+                    'changed' => $this->currentTimeStamp,
                 ];
                 $this->addItem($item);
                 break;
@@ -237,23 +238,23 @@ class NotificationController extends ActionController
 
     /**
      * @param string $type
-     * @param integer $id
+     * @param int $id
      */
     protected function updateItemInQueue($type, $id)
     {
         switch ($type) {
-            case self::TYPE_ARTICLE;
-                $this->indexQueue->updateItem(self::SOLR_ITEM_TYPE_ARTICLE, $id, null, $this->currentTimeStamp);
+            case self::TYPE_ARTICLE:
+                $this->indexQueue->updateItem(self::SOLR_ITEM_TYPE_ARTICLE, $id, $this->currentTimeStamp);
                 break;
-            case self::TYPE_CATEGORY;
-                $this->indexQueue->updateItem(self::SOLR_ITEM_TYPE_CATEGORY, $id, null, $this->currentTimeStamp);
+            case self::TYPE_CATEGORY:
+                $this->indexQueue->updateItem(self::SOLR_ITEM_TYPE_CATEGORY, $id, $this->currentTimeStamp);
                 break;
         }
     }
 
     /**
      * @param string $type
-     * @param integer $id
+     * @param int $id
      */
     protected function deleteItemFromQueueAndCore($type, $id)
     {
@@ -261,10 +262,10 @@ class NotificationController extends ActionController
         $garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
 
         switch ($type) {
-            case self::TYPE_ARTICLE;
+            case self::TYPE_ARTICLE:
                 $garbageCollector->collectGarbage(self::SOLR_ITEM_TYPE_ARTICLE, $id);
                 break;
-            case self::TYPE_CATEGORY;
+            case self::TYPE_CATEGORY:
                 $garbageCollector->collectGarbage(self::SOLR_ITEM_TYPE_CATEGORY, $id);
                 break;
             default:
@@ -275,24 +276,24 @@ class NotificationController extends ActionController
 
     /**
      * @param string $type
-     * @param integer $id
+     * @param int $id
      */
     protected function flushCacheForCommand($type, $id)
     {
         switch ($type) {
-            case self::TYPE_ARTICLE;
+            case self::TYPE_ARTICLE:
                 $tag = ArticleClientInterface::CACHE_TAG;
                 break;
-            case self::TYPE_CATEGORY;
+            case self::TYPE_CATEGORY:
                 $tag = CategoryClientInterface::CACHE_TAG;
                 break;
-            case self::TYPE_MEDIA;
+            case self::TYPE_MEDIA:
                 $tag = MediaClientInterface::CACHE_TAG;
                 break;
-            case self::TYPE_SHOP;
+            case self::TYPE_SHOP:
                 $tag = ShopClientInterface::CACHE_TAG;
                 break;
-            case self::TYPE_VERSION;
+            case self::TYPE_VERSION:
                 $tag = VersionClientInterface::CACHE_TAG;
                 break;
             default:

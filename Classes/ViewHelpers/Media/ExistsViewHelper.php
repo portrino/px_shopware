@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\ViewHelpers\Media;
 
 /***************************************************************
@@ -30,16 +31,11 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
 
 /**
  * Class ExistsViewHelper
- *
- * @package Portrino\PxShopware\ViewHelpers\Media
  */
 class ExistsViewHelper extends AbstractConditionViewHelper
 {
-
     /**
      * Initialize arguments
-     *
-     * @return void
      */
     public function initializeArguments()
     {
@@ -59,12 +55,11 @@ class ExistsViewHelper extends AbstractConditionViewHelper
         $file = GeneralUtility::getFileAbsFileName($arguments['file']);
         $directory = $arguments['directory'];
         $evaluation = false;
-        if (true === isset($arguments['file'])) {
-            $evaluation = (boolean)((true === file_exists($file) || true === file_exists(constant('PATH_site') . $file)) && true === is_file($file));
-        } elseif (true === isset($arguments['directory'])) {
-            $evaluation = (boolean)(true === is_dir($directory) || true === is_dir(constant('PATH_site') . $directory));
+        if (isset($arguments['file']) === true) {
+            $evaluation = (boolean)((file_exists($file) === true || file_exists(constant('PATH_site') . $file) === true) && is_file($file) === true);
+        } elseif (isset($arguments['directory']) === true) {
+            $evaluation = (boolean)(is_dir($directory) === true || is_dir(constant('PATH_site') . $directory) === true);
         }
         return $evaluation;
     }
-
 }

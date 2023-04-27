@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\LinkHandler;
 
 /***************************************************************
@@ -25,19 +26,15 @@ namespace Portrino\PxShopware\LinkHandler;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
+use Portrino\PxShopware\Service\Shopware\CategoryClient;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 class CategoryLinkHandler extends AbstractLinkHandler
 {
-
     public function __construct()
     {
         parent::__construct();
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->client = $objectManager->get(CategoryClientInterface::class);
+        $this->client = GeneralUtility::makeInstance(CategoryClient::class);
         $this->type = 'category';
     }
-
 }

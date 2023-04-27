@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Cache;
 
 /***************************************************************
@@ -31,23 +32,22 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class CacheChainFactory
- *
- * @package Portrino\PxShopware\Backend\Form\Wizard
  */
-class CacheChainFactory implements SingletonInterface {
-
+class CacheChainFactory implements SingletonInterface
+{
     /**
      * @return CacheChain
      * @throws \TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException
      */
-    public function create() {
+    public function create()
+    {
         /** @var CacheManager $cacheManager */
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
         $cacheChain = new CacheChain();
 
         if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['px_shopware']['cache_chain'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXT']['px_shopware']['cache_chain'] as $cachePriority => $cacheIdentifier) {
-                $cache = ($cacheManager->hasCache($cacheIdentifier)) ? $cacheManager->getCache($cacheIdentifier) : NULL;
+                $cache = ($cacheManager->hasCache($cacheIdentifier)) ? $cacheManager->getCache($cacheIdentifier) : null;
                 if ($cache) {
                     $cacheChain->addCache($cache, $cachePriority);
                 }

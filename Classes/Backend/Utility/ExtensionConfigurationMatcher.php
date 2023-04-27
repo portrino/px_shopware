@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Backend\Utility;
 
 /***************************************************************
@@ -30,12 +31,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class ExtensionConfigurationMatcher
- *
- * @package Portrino\PxShopware\Backend\Utility
  */
 class ExtensionConfigurationMatcher
 {
-
     /**
      * @param array $conditionParameters
      *

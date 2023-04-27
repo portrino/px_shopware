@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Backend\Service;
 
 /***************************************************************
@@ -27,17 +28,16 @@ namespace Portrino\PxShopware\Backend\Service;
 
 /**
  * Class LanguagePrefixService
- *
- * @package Portrino\PxShopware\Backend\Service
  */
-class LanguageFilePrefixService {
-
+class LanguageFilePrefixService
+{
     /**
      * @param string $extension
      *
      * @return string
      */
-    public function getLanguagePrefixForExtension($extension) {
+    public function getLanguagePrefixForExtension($extension)
+    {
         switch ($extension) {
             case 'frontend':
                 $prefix = 'LLL:EXT:' . $extension . '/Resources/Private/Language/locallang_ttc.xlf:';
@@ -48,5 +48,4 @@ class LanguageFilePrefixService {
 
         return $prefix;
     }
-
 }

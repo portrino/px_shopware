@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Shopware;
 
 /***************************************************************
@@ -28,14 +29,10 @@ use Portrino\PxShopware\Domain\Model\Version;
 
 /**
  * Interface VersionClientInterface
- *
- * @package Portrino\PxShopware\Service\Shopware
  */
 interface VersionClientInterface extends AbstractShopwareApiClientInterface
 {
-
     const ENDPOINT = 'version';
     const CACHE_TAG = 'shopware_version';
     const ENTITY_CLASS_NAME = Version::class;
-
 }

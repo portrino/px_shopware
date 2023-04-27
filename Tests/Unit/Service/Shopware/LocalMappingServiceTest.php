@@ -25,46 +25,39 @@ namespace Portrino\PxShopware\Tests\Unit\Service\Shopware;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use Portrino\PxShopware\Domain\Model\Article;
-use Portrino\PxShopware\Domain\Model\ShopwareModelInterface;
-use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClient;
-use Portrino\PxShopware\Service\Shopware\ArticleClient;
 use Portrino\PxShopware\Service\Shopware\LocaleMappingService;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class LocalMappingServiceTest
- *
- * @package Portrino\PxShopware\Tests\Unit\Service\Shopware
  */
-class LocalMappingServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
-
+class LocalMappingServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+{
     /**
      * @var LocaleMappingService
      */
     protected $localeMappingService;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->localeMappingService = new LocaleMappingService();
     }
 
-    public function tearDown() {
+    public function tearDown()
+    {
         unset($this->localeMappingService);
     }
 
     /**
-     *
      * @test
-     * @return void
      */
-    public function getLanguageIdTest() {
-        $this->assertEquals(1, $this->localeMappingService->getLanguageId('de_DE'));
+    public function getLanguageIdTest()
+    {
+        self::assertEquals(1, $this->localeMappingService->getLanguageId('de_DE'));
         /**
          * en_EN is not available for shopware locales so we return the default language (mostly de_DE) instead
          */
-        $this->assertEquals(1, $this->localeMappingService->getLanguageId('en_EN'));
-        $this->assertEquals(2, $this->localeMappingService->getLanguageId('en_GB'));
-        $this->assertEquals(136, $this->localeMappingService->getLanguageId('it_IT'));
+        self::assertEquals(1, $this->localeMappingService->getLanguageId('en_EN'));
+        self::assertEquals(2, $this->localeMappingService->getLanguageId('en_GB'));
+        self::assertEquals(136, $this->localeMappingService->getLanguageId('it_IT'));
     }
-
 }

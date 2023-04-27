@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Controller;
 
 /***************************************************************
@@ -32,12 +33,9 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class ArticleController
- *
- * @package Portrino\PxShopware\Controller
  */
 class ArticleController extends AbstractController
 {
-
     /**
      * @var \Portrino\PxShopware\Service\Shopware\ArticleClientInterface
      */
@@ -48,9 +46,6 @@ class ArticleController extends AbstractController
         $this->shopwareClient = $shopwareClient;
     }
 
-    /**
-     * @return void
-     */
     public function listByCategoriesAction()
     {
         $categoryIdList = isset($this->settings['categories']) ?
@@ -63,7 +58,7 @@ class ArticleController extends AbstractController
             foreach ($categoryIdList as $categoryId) {
                 $filter['filter'][] = [
                     'property' => 'categories.id',
-                    'value' => $categoryId
+                    'value' => $categoryId,
                 ];
             }
             $articles = $this->shopwareClient->findByParams($filter, false);

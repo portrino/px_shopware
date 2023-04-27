@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Cache;
 
 /***************************************************************
@@ -29,6 +30,7 @@ use TYPO3\CMS\Core\Cache\Backend\BackendInterface;
 use TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend;
 use TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -36,20 +38,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class CacheChain
- *
- * @package Portrino\PxShopware\Backend\Form\Wizard
  */
-class CacheChain implements FrontendInterface, SingletonInterface {
-
+class CacheChain implements FrontendInterface, SingletonInterface
+{
     /**
      * @var array
      */
     protected $chain = [];
-
-    /**
-     * @var LogManager
-     */
-    protected $logger;
 
     /**
      * @var FrontendInterface
@@ -60,19 +55,21 @@ class CacheChain implements FrontendInterface, SingletonInterface {
      * @param FrontendInterface $cache
      * @param int $priority
      */
-    public function addCache($cache, $priority) {
+    public function addCache($cache, $priority)
+    {
         $this->chain[$priority] = $cache;
         if ($cache->getBackend() instanceof TransientMemoryBackend) {
             $this->transientMemoryCache = $cache;
         }
     }
 
-
-    public function getIdentifier() {
+    public function getIdentifier()
+    {
         return 'cache_chain';
     }
 
-    public function getBackends() {
+    public function getBackends()
+    {
         $result = [];
         /**
          * @var int $priority
@@ -89,8 +86,9 @@ class CacheChain implements FrontendInterface, SingletonInterface {
      *
      * @return \TYPO3\CMS\Core\Cache\Backend\BackendInterface The backend used by this cache
      */
-    public function getBackend() {
-
+    public function getBackend()
+    {
+        // TODO: Implement getBackend() method.
     }
 
     /**
@@ -100,10 +98,10 @@ class CacheChain implements FrontendInterface, SingletonInterface {
      * @param mixed $data The data to cache - also depends on the concrete cache implementation
      * @param array $tags Tags to associate with this cache entry
      * @param int $lifetime Lifetime of this cache entry in seconds. If NULL is specified, the default lifetime is used. "0" means unlimited liftime.
-     * @return void
      * @api
      */
-    public function set($entryIdentifier, $data, array $tags = [], $lifetime = NULL) {
+    public function set($entryIdentifier, $data, array $tags = [], $lifetime = null)
+    {
         /**
          * @var FrontendInterface $cache
          */
@@ -119,7 +117,8 @@ class CacheChain implements FrontendInterface, SingletonInterface {
      * @return mixed
      * @api
      */
-    public function get($entryIdentifier) {
+    public function get($entryIdentifier)
+    {
         $result = false;
 
         ksort($this->chain);
@@ -135,9 +134,9 @@ class CacheChain implements FrontendInterface, SingletonInterface {
                  * if the entry identifier was found in database, store the result in the faster transient memory cache
                  */
                 if ($cache->getBackend() instanceof Typo3DatabaseBackend) {
-                    /** @var LogManager $logger */
-                    $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
-                    $this->logger->log(LogLevel::INFO, $entryIdentifier);
+                    /** @var Logger $logger */
+                    $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+                    $logger->log(LogLevel::INFO, $entryIdentifier);
 
                     if ($this->transientMemoryCache !== null) {
                         $this->transientMemoryCache->set($entryIdentifier, $result);
@@ -149,14 +148,16 @@ class CacheChain implements FrontendInterface, SingletonInterface {
         return $result;
     }
 
-    public function isActive() {
-        return (count($this->chain) > 0);
+    public function isActive()
+    {
+        return count($this->chain) > 0;
     }
 
     /**
      * @return array
      */
-    public function getCacheTables() {
+    public function getCacheTables()
+    {
         $result = [];
         /** @var BackendInterface $backend */
         foreach ($this->getBackends() as $backend) {
@@ -175,11 +176,14 @@ class CacheChain implements FrontendInterface, SingletonInterface {
      * @return array An array with the content of all matching entries. An empty array if no entries matched
      * @api
      */
-    public function getByTag($tag) {
+    public function getByTag($tag)
+    {
         // TODO: Implement getByTag() method.
+        return [];
     }
 
-    public function has($entryIdentifier) {
+    public function has($entryIdentifier)
+    {
         $result = false;
         /** @var FrontendInterface $cache */
         foreach ($this->chain as $cache) {
@@ -191,21 +195,24 @@ class CacheChain implements FrontendInterface, SingletonInterface {
         return $result;
     }
 
-    public function remove($entryIdentifier) {
+    public function remove($entryIdentifier)
+    {
         /** @var FrontendInterface $cache */
         foreach ($this->chain as $cache) {
             $cache->remove($entryIdentifier);
         }
     }
 
-    public function flush() {
+    public function flush()
+    {
         /**  @var FrontendInterface $cache */
         foreach ($this->chain as $cache) {
             $cache->flush();
         }
     }
 
-    public function flushByTag($tag) {
+    public function flushByTag($tag)
+    {
         /** @var FrontendInterface $cache */
         foreach ($this->chain as $cache) {
             $cache->flushByTag($tag);
@@ -226,18 +233,21 @@ class CacheChain implements FrontendInterface, SingletonInterface {
         }
     }
 
-    public function collectGarbage() {
+    public function collectGarbage()
+    {
         /**  @var FrontendInterface $cache */
         foreach ($this->chain as $cache) {
             $cache->collectGarbage();
         }
     }
 
-    public function isValidEntryIdentifier($identifier) {
+    public function isValidEntryIdentifier($identifier)
+    {
         // TODO: Implement isValidEntryIdentifier() method.
     }
 
-    public function isValidTag($tag) {
+    public function isValidTag($tag)
+    {
         // TODO: Implement isValidTag() method.
     }
 }

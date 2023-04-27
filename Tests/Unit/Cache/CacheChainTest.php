@@ -30,62 +30,58 @@ use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 
 /**
  * Class CacheChainTest
- *
- * @package Portrino\PxShopware\Tests\Unit\Cache
  */
-class CacheChainTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
-
+class CacheChainTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+{
     /**
      * @var CacheChain
      */
     protected $cache;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->cache = new CacheChain();
     }
 
-    public function tearDown() {
+    public function tearDown()
+    {
         unset($this->cache);
     }
 
     /**
-     *
      * @test
-     * @return void
      */
-    public function noCachesInCacheChainTest() {
+    public function noCachesInCacheChainTest()
+    {
         $this->cache->set('123456', 'foo');
-        $this->assertFalse($this->cache->get('123456'));
+        self::assertFalse($this->cache->get('123456'));
     }
 
     /**
-     *
      * @test
-     * @return void
      */
-    public function oneCacheInCacheChainTest() {
+    public function oneCacheInCacheChainTest()
+    {
         $cacheStub = $this->getMock(FrontendInterface::class);
-        $cacheStub->expects($this->any())->method('get')->will($this->returnValue('foo'));
+        $cacheStub->expects(self::any())->method('get')->willReturn('foo');
         $this->cache->addCache($cacheStub, 0);
-        $this->assertEquals('foo', $this->cache->get('123456'));
+        self::assertEquals('foo', $this->cache->get('123456'));
     }
 
     /**
-     *
      * @test
-     * @return void
      */
-    public function twoCachesInCacheChainPriorityTest() {
+    public function twoCachesInCacheChainPriorityTest()
+    {
         $cacheLevel1Stub = $this->getMock(FrontendInterface::class);
-        $cacheLevel1Stub->expects($this->any())->method('get')->will($this->returnValue('foo'));
+        $cacheLevel1Stub->expects(self::any())->method('get')->willReturn('foo');
 
         $cacheLevel2Stub = $this->getMock(FrontendInterface::class);
-        $cacheLevel2Stub->expects($this->any())->method('get')->will($this->returnValue('bar'));
+        $cacheLevel2Stub->expects(self::any())->method('get')->willReturn('bar');
 
         $this->cache->addCache($cacheLevel2Stub, 1);
         $this->cache->addCache($cacheLevel1Stub, 0);
 
-        $this->assertEquals('foo', $this->cache->get('123456'));
+        self::assertEquals('foo', $this->cache->get('123456'));
     }
-
 }

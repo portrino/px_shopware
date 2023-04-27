@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Domain\Model;
 
 /***************************************************************
@@ -24,22 +25,16 @@ namespace Portrino\PxShopware\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Class AbstractShopwareModel
- *
- * @package Portrino\PxShopware\Domain\Model
  */
 abstract class AbstractShopwareModel implements ShopwareModelInterface
 {
-
     /**
      * @var int
      */
-    protected $id = '';
+    protected $id;
 
     /**
      * @var object
@@ -47,26 +42,19 @@ abstract class AbstractShopwareModel implements ShopwareModelInterface
     protected $raw;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $token;
 
     /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
-
-    /**
      * @param object $raw
-     * @param string $token
+     * @param bool $token
      */
-    public function __construct($raw, $token)
+    public function initialize($raw, $token)
     {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
         $this->setRaw($raw);
         if (isset($this->raw->id)) {
-            $this->setId($this->raw->id);
+            $this->setId((int)$this->raw->id);
         }
         $this->setToken($token);
     }
@@ -104,7 +92,7 @@ abstract class AbstractShopwareModel implements ShopwareModelInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isToken()
     {
@@ -112,7 +100,7 @@ abstract class AbstractShopwareModel implements ShopwareModelInterface
     }
 
     /**
-     * @param boolean $token
+     * @param bool $token
      */
     public function setToken($token)
     {
@@ -126,10 +114,10 @@ abstract class AbstractShopwareModel implements ShopwareModelInterface
      */
     public function __get($name)
     {
-        if (property_exists($name, $this->raw)) {
+        if (property_exists($this->raw, $name)) {
             return $this->raw->$name;
         }
 
-        throw new \BadMethodCallException('Requested property "' . $name .'" not found in "' . get_class($this) . '"');
+        throw new \BadMethodCallException('Requested property "' . $name . '" not found in "' . static::class . '"');
     }
 }

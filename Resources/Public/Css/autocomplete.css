@@ -11,21 +11,21 @@
 }
 
 .px-shopware.autocomplete .form-control {
-    border-right: 0px solid #fefefe !important;
+    border-right: 0 solid #fefefe !important;
 }
 
 .px-shopware.autocomplete .form-control:focus {
-    border-right: 0px solid #fefefe !important;
+    border-right: 0 solid #fefefe !important;
 }
 
 .px-shopware.autocomplete .loading.input-group-addon {
     background-color: #fefefe !important;
-    border-left: 0px solid #fefefe !important;
+    border-left: 0 solid #fefefe !important;
 }
 
 .px-shopware.autocomplete .loading.input-group-addon:focus {
     background-color: #fefefe !important;
-    border-left: 0px solid #fefefe !important;
+    border-left: 0 solid #fefefe !important;
 }
 
 .px-shopware.autocomplete .loading.input-group-addon .fa {

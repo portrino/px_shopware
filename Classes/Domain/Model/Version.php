@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Domain\Model;
 
 /***************************************************************
@@ -27,12 +28,9 @@ namespace Portrino\PxShopware\Domain\Model;
 
 /**
  * Class Version
- *
- * @package Portrino\PxShopware\Domain\Model
  */
 class Version extends AbstractShopwareModel
 {
-
     /**
      * @var string
      */
@@ -45,11 +43,11 @@ class Version extends AbstractShopwareModel
 
     /**
      * @param object $raw
-     * @param string $token
+     * @param bool $token
      */
-    public function __construct($raw, $token)
+    public function initialize($raw, $token)
     {
-        parent::__construct($raw, $token);
+        parent::initialize($raw, $token);
 
         if (isset($this->raw->version)) {
             $this->setVersion($this->raw->version);
@@ -91,5 +89,4 @@ class Version extends AbstractShopwareModel
     {
         $this->revision = $revision;
     }
-
 }

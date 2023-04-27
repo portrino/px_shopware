@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Shopware;
 
 /***************************************************************
@@ -31,11 +32,9 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class AbstractShopwareApiClient
- *
- * @package Portrino\PxShopware\Service\Shopware
  */
-interface AbstractShopwareApiClientInterface {
-
+interface AbstractShopwareApiClientInterface
+{
     const STATUS_CONNECTED_FULL = 'status_connected_full';
     const STATUS_CONNECTED_TRIAL = 'status_connected_trial';
     const STATUS_DISCONNECTED = 'status_disconnected';
@@ -58,7 +57,7 @@ interface AbstractShopwareApiClientInterface {
     public function getStatus();
 
     /**
-     * @return ShopwareModelInterface
+     * @return ShopwareModelInterface|null
      */
     public function find();
 
@@ -67,9 +66,9 @@ interface AbstractShopwareApiClientInterface {
      * @param bool $doCacheRequest
      * @param array $params
      *
-     * @return ShopwareModelInterface
+     * @return ShopwareModelInterface|null
      */
-    public function findById($id, $doCacheRequest = TRUE, $params = []);
+    public function findById($id, $doCacheRequest = true, $params = []);
 
     /**
      * @param $term
@@ -79,7 +78,7 @@ interface AbstractShopwareApiClientInterface {
      *
      * @return ObjectStorage<ShopwareModelInterface>
      */
-    public function findByTerm($term, $limit = -1, $doCacheRequest = TRUE, $params = []);
+    public function findByTerm($term, $limit = -1, $doCacheRequest = true, $params = []);
 
     /**
      * @param bool $doCacheRequest
@@ -87,14 +86,13 @@ interface AbstractShopwareApiClientInterface {
      *
      * @return ObjectStorage<ShopwareModelInterface>
      */
-    public function findAll($doCacheRequest = TRUE, $params = []);
+    public function findAll($doCacheRequest = true, $params = []);
 
     /**
      * @param array $params
      * @param bool $doCacheRequest
-     * 
+     *
      * @return ObjectStorage<ShopwareModelInterface>
      */
-    public function findByParams($params = [], $doCacheRequest = TRUE);
-
+    public function findByParams($params = [], $doCacheRequest = true);
 }

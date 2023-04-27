@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Shopware;
 
 /***************************************************************
@@ -27,12 +28,9 @@ namespace Portrino\PxShopware\Service\Shopware;
 
 /**
  * Class ShopClient
- *
- * @package Portrino\PxShopware\Service\Shopware
  */
 class ShopClient extends AbstractShopwareApiClient implements ShopClientInterface
 {
-
     /**
      * @return string
      */
@@ -48,5 +46,4 @@ class ShopClient extends AbstractShopwareApiClient implements ShopClientInterfac
     {
         return self::ENTITY_CLASS_NAME;
     }
-
 }

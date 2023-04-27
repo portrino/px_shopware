@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Shopware;
 
 /***************************************************************
@@ -25,18 +26,14 @@ namespace Portrino\PxShopware\Service\Shopware;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Portrino\PxShopware\Domain\Model\AbstractShopwareModel;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class ArticleClient
- *
- * @package Portrino\PxShopware\Service\Shopware
  */
 class ArticleClient extends AbstractShopwareApiClient implements ArticleClientInterface
 {
-
     /**
      * @param string $term
      * @param int $limit
@@ -44,37 +41,32 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
      * @param array $params
      * @return ObjectStorage
      */
-    public function findByTerm($term, $limit = -1, $doCacheRequest = true, $params = [])
+    public function findByTerm($term, $limit = -1, $doCacheRequest = true, $params = []): ObjectStorage
     {
-        $shopwareModels = new ObjectStorage();
-
         /**
          * only search for id if term is integer
          */
         if (is_numeric($term)) {
-
             $filter = [
                 [
                     'property' => 'id',
                     'expression' => '=',
-                    'value' => $term
+                    'value' => $term,
                 ],
             ];
-
         } else {
-
             $filter = [
                 [
                     'property' => 'name',
                     'expression' => 'LIKE',
-                    'value' => '%' . $term . '%'
+                    'value' => '%' . $term . '%',
                 ],
                 [
                     'operator' => 'OR',
                     'property' => 'mainDetail.number',
                     'expression' => 'LIKE',
-                    'value' => '%' . $term . '%'
-                ]
+                    'value' => '%' . $term . '%',
+                ],
             ];
         }
 
@@ -83,28 +75,13 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
             'sort' => [
                 [
                     'property' => 'name',
-                    'direction' => 'ASC'
-                ]
+                    'direction' => 'ASC',
+                ],
             ],
-            'filter' => $filter
+            'filter' => $filter,
         ]);
 
-        $result = $this->get($this->getValidEndpoint(), $params, $doCacheRequest);
-        if ($result) {
-            $token = (isset($result->pxShopwareTypo3Token)) ? (bool)$result->pxShopwareTypo3Token : false;
-            if (isset($result->data) && is_array($result->data)) {
-                foreach ($result->data as $data) {
-                    if (isset($data->id)) {
-                        /** @var AbstractShopwareModel $shopwareModel */
-                        $shopwareModel = $this->objectManager->get($this->getEntityClassName(), $data, $token);
-                        if ($shopwareModel !== null) {
-                            $shopwareModels->attach($shopwareModel);
-                        }
-                    }
-                }
-            }
-        }
-        return $shopwareModels;
+        return $this->findByParams($params, $doCacheRequest);
     }
 
     /**
@@ -122,5 +99,4 @@ class ArticleClient extends AbstractShopwareApiClient implements ArticleClientIn
     {
         return self::ENTITY_CLASS_NAME;
     }
-
 }

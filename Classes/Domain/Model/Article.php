@@ -31,19 +31,16 @@ use Portrino\PxShopware\Backend\Hooks\ItemEntryInterface;
 use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
 use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
 use Portrino\PxShopware\Service\Shopware\MediaClientInterface;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class Article
- *
- * @package Portrino\PxShopware\Domain\Model
  */
 class Article extends AbstractShopwareModel implements SuggestEntryInterface, ItemEntryInterface
 {
-
     /**
      * @var string
      */
@@ -57,7 +54,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * @var Uri
      */
-    protected $uri = '';
+    protected $uri;
 
     /**
      * @var string
@@ -72,7 +69,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * @var string
      */
-    protected $orderNumber = null;
+    protected $orderNumber;
 
     /**
      * @var ObjectStorage<Media>
@@ -85,7 +82,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     protected $categories;
 
     /**
-     * @var Detail
+     * @var Detail|null
      */
     protected $detail;
 
@@ -109,11 +106,6 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      */
     protected $articleClient;
 
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
-
     public function injectCategoryClient(CategoryClientInterface $categoryClient)
     {
         $this->categoryClient = $categoryClient;
@@ -129,20 +121,15 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
         $this->articleClient = $articleClient;
     }
 
-    public function injectObjectManager(ObjectManagerInterface $objectManager)
-    {
-        $this->objectManager = $objectManager;
-    }
-
     /**
      * Article constructor.
      *
-     * @param $raw
-     * @param $token
+     * @param object $raw
+     * @param bool $token
      */
-    public function __construct($raw, $token)
+    public function initialize($raw, $token)
     {
-        parent::__construct($raw, $token);
+        parent::initialize($raw, $token);
 
         if (isset($this->raw->name)) {
             $this->setName($this->raw->name);
@@ -180,8 +167,6 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
 
     /**
      * Initializes all \TYPO3\CMS\Extbase\Persistence\ObjectStorage properties.
-     *
-     * @return void
      */
     protected function initStorageObjects()
     {
@@ -190,9 +175,6 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
         $this->details = new ObjectStorage();
     }
 
-    /**
-     *
-     */
     public function initializeObject()
     {
     }
@@ -245,7 +227,6 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
         $this->descriptionLong = $descriptionLong;
     }
 
-
     /**
      * @return \DateTime
      */
@@ -269,8 +250,6 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      * Adds a image
      *
      * @param Media $image
-     *
-     * @return void
      */
     public function addImage(Media $image)
     {
@@ -281,8 +260,6 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      * Removes a image
      *
      * @param Media $imageToRemove The image to be removed
-     *
-     * @return void
      */
     public function removeImage(Media $imageToRemove)
     {
@@ -300,9 +277,9 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
             if (isset($this->getRaw()->images) && is_array($this->getRaw()->images)) {
                 foreach ($this->getRaw()->images as $image) {
                     if (isset($image->mediaId)) {
-                        /** @var Media $media */
+                        /** @var Media|null $media */
                         $media = $this->mediaClient->findById($image->mediaId);
-                        if ($media && is_a($media, Media::class)) {
+                        if ($media instanceof Media) {
                             $this->addImage($media);
                         }
                     }
@@ -316,8 +293,6 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      * Sets the images
      *
      * @param ObjectStorage<Media> $images
-     *
-     * @return void
      */
     public function setImages(ObjectStorage $images)
     {
@@ -327,7 +302,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * Return the first image
      *
-     * @return NULL|Media
+     * @return Media|null
      * @deprecated Use getTeaserImage()
      */
     public function getFirstImage()
@@ -338,7 +313,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     /**
      * Return the main/ teaser image (selected in shopware backend)
      *
-     * @return NULL|Media
+     * @return Media|null
      */
     public function getTeaserImage()
     {
@@ -346,9 +321,9 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
         if ($this->getImages() != null && $this->getImages()->count() > 0) {
             foreach ($this->getRaw()->images as $image) {
                 if (isset($image->mediaId) && isset($image->main) && (int)$image->main === 1) {
-                    /** @var Media $media */
+                    /** @var Media|null $media */
                     $media = $this->mediaClient->findById($image->mediaId);
-                    if ($media && is_a($media, Media::class)) {
+                    if ($media instanceof Media) {
                         $result = $media;
                     }
                 }
@@ -362,8 +337,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      */
     public function getDetail()
     {
-        if (!$this->detail) {
-
+        if ($this->detail === null) {
             /**
              * try to get the detail object from raw
              */
@@ -371,12 +345,12 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
                 /** @var Article $detailedArticle */
                 $detailedArticle = $this->articleClient->findById($this->getId(), false);
                 /** @var Detail $detail */
-                $detail = $this->objectManager->get(Detail::class, $detailedArticle->raw->mainDetail, $this->token);
+                $detail = GeneralUtility::makeInstance(Detail::class, $detailedArticle->raw->mainDetail, $this->token);
                 $this->setDetail($detail);
             } else {
                 if (isset($this->getRaw()->mainDetail)) {
                     /** @var Detail $detail */
-                    $detail = $this->objectManager->get(Detail::class, $this->getRaw()->mainDetail, $this->token);
+                    $detail = GeneralUtility::makeInstance(Detail::class, $this->getRaw()->mainDetail, $this->token);
                     $this->setDetail($detail);
                 }
             }
@@ -399,19 +373,21 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     public function getDetails()
     {
         if ($this->details->count() === 0) {
-
+            $details = [];
             // check if raw details are available or get them from API
             if (!isset($this->getRaw()->details)) {
-                /** @var Article $detail */
+                /** @var Article|null $detailedArticle */
                 $detailedArticle = $this->articleClient->findById($this->getId(), false);
-                $details = (array)$detailedArticle->raw->details;
+                if ($detailedArticle instanceof Article) {
+                    $details = (array)$detailedArticle->raw->details;
+                }
             } else {
                 $details = (array)$this->getRaw()->details;
             }
             // build Detail models and add them to ObjectStorage
             foreach ($details as $detailData) {
                 /** @var Detail $detail */
-                $detail = $this->objectManager->get(Detail::class, $detailData, $this->token);
+                $detail = GeneralUtility::makeInstance(Detail::class, $detailData, $this->token);
                 $this->addDetail($detail);
             }
         }
@@ -430,8 +406,6 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      * Adds a detail
      *
      * @param Detail $detail
-     *
-     * @return void
      */
     public function addDetail(Detail $detail)
     {
@@ -442,14 +416,11 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      * Removes a detail
      *
      * @param Detail $detailToRemove The detail to be removed
-     *
-     * @return void
      */
     public function removeDetail(Detail $detailToRemove)
     {
         $this->details->detach($detailToRemove);
     }
-
 
     /**
      * @param string $orderNumber
@@ -487,7 +458,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
     public function setUri($uri)
     {
         if (is_string($uri)) {
-//            $uri = new \TYPO3\CMS\Core\Http\Uri($uri);
+            $uri = new Uri($uri);
         }
         $this->uri = $uri;
     }
@@ -497,7 +468,6 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      */
     public function getCategories()
     {
-
         if ($this->categories->count() === 0) {
             if (isset($this->getRaw()->categories)) {
                 /**
@@ -506,7 +476,7 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
                 $categories = (array)$this->raw->categories;
                 foreach ($categories as $category) {
                     if (isset($category->id)) {
-                        /** @var Category $detailedCategory */
+                        /** @var Category|null $detailedCategory */
                         $detailedCategory = $this->categoryClient->findById($category->id);
                         if (!$detailedCategory || !is_a($detailedCategory, Category::class)) {
                             continue;
@@ -514,11 +484,13 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
 
                         /**
                          * Get the current language
-                         * -> depends on the TYPO3_MODE
                          */
-                        if (TYPO3_MODE === 'FE') {
-                            $language = GeneralUtility::trimExplode('.',
-                                $GLOBALS['TSFE']->config['config']['sys_language_uid'], true);
+                        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
+                            $language = GeneralUtility::trimExplode(
+                                '.',
+                                $GLOBALS['TSFE']->config['config']['sys_language_uid'],
+                                true
+                            );
                             $sys_language_id = ($language && isset($language[0])) ? $language[0] : 0;
                             // add only categories of current FE language
                             if ($detailedCategory->getLanguage() == $sys_language_id) {
@@ -548,8 +520,6 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      * Adds a category
      *
      * @param Category $category
-     *
-     * @return void
      */
     public function addCategory(Category $category)
     {
@@ -560,8 +530,6 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
      * Removes a category
      *
      * @param Category $categoryToRemove The category to be removed
-     *
-     * @return void
      */
     public function removeCategory(Category $categoryToRemove)
     {
@@ -621,5 +589,4 @@ class Article extends AbstractShopwareModel implements SuggestEntryInterface, It
         $result .= $orderNumber;
         return $result;
     }
-
 }

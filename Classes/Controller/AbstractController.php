@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Controller;
 
 /***************************************************************
@@ -31,15 +32,20 @@ use Portrino\PxShopware\Service\Shopware\AbstractShopwareApiClientInterface;
 use Portrino\PxShopware\Service\Shopware\ArticleClientInterface;
 use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
 use Portrino\PxShopware\Service\Shopware\Exceptions\ShopwareApiClientException;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Core\ApplicationContext;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Property\Exception;
@@ -51,12 +57,9 @@ use TYPO3\CMS\Frontend\Page\PageAccessFailureReasons;
 
 /**
  * Class AbstractController
- *
- * @package Portrino\PxShopware\Controller
  */
-abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+abstract class AbstractController extends ActionController
 {
-
     /**
      * @var ApplicationContext
      */
@@ -71,6 +74,11 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * @var array
      */
     protected $extConf = [];
+
+    /**
+     * @var string
+     */
+    protected $extensionName = '';
 
     /**
      * @var string
@@ -129,7 +137,6 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * Override this method to solve tasks which all actions have in
      * common.
      *
-     * @return void
      * @throws \Exception
      */
     protected function initializeAction()
@@ -141,10 +148,11 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         $this->extbaseFrameworkConfiguration = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
         );
+        $this->extensionName = $this->request->getControllerExtensionName();
         $this->controllerSettings = $this->settings['controllers'][$this->request->getControllerName()];
         $this->actionSettings = $this->controllerSettings['actions'][$this->request->getControllerActionName()];
 
-        if (TYPO3_MODE === 'FE') {
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
             $context = GeneralUtility::makeInstance(Context::class);
             $this->language = $context->getPropertyFromAspect('language', 'id');
         }
@@ -157,8 +165,6 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * or prepare the view in another way before the action is called.
      *
      * @param \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view
-     *
-     * @return void
      */
     protected function initializeView(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view)
     {
@@ -175,7 +181,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             'actionSettings' => $this->actionSettings,
             'extConf' => $this->extConf,
             'dateTime' => $this->dateTime,
-            'language' => $this->language
+            'language' => $this->language,
         ]);
 
         try {
@@ -187,7 +193,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                         [
                             1 => $this->settings['urls']['shopware_plugin_repository'],
                             2 => $this->settings['emails']['portrino_support'],
-                            3 => $this->settings['urls']['portrino_website']
+                            3 => $this->settings['urls']['portrino_website'],
                         ]
                     ),
                     LocalizationUtility::translate('flash.warning.trial.title', $this->extensionName),
@@ -202,29 +208,26 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     /**
      * redirects to page
      *
-     * @param null $pageUid
+     * @param int $pageUid
      * @param array $additionalParams
      * @param int $pageType
      * @param bool $noCache
-     * @param bool $noCacheHash
      * @param string $section
      * @param bool $linkAccessRestrictedPages
      * @param bool $absolute
      * @param bool $addQueryString
      * @param array $argumentsToBeExcludedFromQueryString
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws StopActionException
      */
     protected function redirectToPage(
-        $pageUid = null,
+        int $pageUid,
         array $additionalParams = [],
-        $pageType = 0,
-        $noCache = false,
-        $noCacheHash = false,
-        $section = '',
-        $linkAccessRestrictedPages = false,
-        $absolute = false,
-        $addQueryString = false,
+        int $pageType = 0,
+        bool $noCache = false,
+        string $section = '',
+        bool $linkAccessRestrictedPages = false,
+        bool $absolute = false,
+        bool $addQueryString = false,
         array $argumentsToBeExcludedFromQueryString = []
     ) {
         $uri = $this->uriBuilder
@@ -232,7 +235,6 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             ->setTargetPageUid($pageUid)
             ->setTargetPageType($pageType)
             ->setNoCache($noCache)
-//            ->setUseCacheHash(!$noCacheHash)
             ->setSection($section)
             ->setLinkAccessRestrictedPages($linkAccessRestrictedPages)
             ->setArguments($additionalParams)
@@ -285,22 +287,17 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      *
      * We add some stuff to handle exceptions when we are in production context to prevent ugly extbase error messages
      *
-     * @param \TYPO3\CMS\Extbase\Mvc\RequestInterface $request The request object
-     * @param \TYPO3\CMS\Extbase\Mvc\ResponseInterface $response The response, modified by this handler
+     * @param RequestInterface $request The request object
      *
      *
      * @throws \Exception
      * @throws Exception
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
-     * @return void
      * @override \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
-    public function processRequest(
-        \TYPO3\CMS\Extbase\Mvc\RequestInterface $request,
-        \TYPO3\CMS\Extbase\Mvc\ResponseInterface $response
-    ) {
+    public function processRequest(RequestInterface $request): ResponseInterface
+    {
         try {
-            parent::processRequest($request, $response);
+            return parent::processRequest($request);
         } catch (\Exception $exception) {
             $applicationContext = Environment::getContext();
             if ($applicationContext->isProduction()) {
@@ -337,16 +334,21 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * @api
      * @override \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
-    protected function callActionMethod()
+    protected function callActionMethod(RequestInterface $request): ResponseInterface
     {
         try {
-            parent::callActionMethod();
+            return parent::callActionMethod($request);
         } catch (\Exception $exception) {
             if ($this->applicationContext->isProduction()) {
                 // This enables you to trigger the call of TYPO3s page-not-found handler by throwing
                 // \TYPO3\CMS\Core\Error\Http\PageNotFoundException
                 if ($exception instanceof PageNotFoundException) {
-                    $this->getTypoScriptFrontendController()->pageNotFoundAndExit($this->entityNotFoundMessage);
+                    $pageNotFoundResponse = GeneralUtility::makeInstance(ErrorController::class)->pageNotFoundAction(
+                        $this->request,
+                        $this->entityNotFoundMessage,
+                        ['code' => PageAccessFailureReasons::PAGE_NOT_FOUND]
+                    );
+                    throw new ImmediateResponseException($pageNotFoundResponse, 1679478432);
                 }
             }
 
@@ -354,13 +356,12 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         }
     }
 
-    /**
-     * @return void
-     */
     public function listAction()
     {
-        $itemUidList = isset($this->settings['items']) ? GeneralUtility::trimExplode(',',
-            $this->settings['items']) : [];
+        $itemUidList = isset($this->settings['items']) ? GeneralUtility::trimExplode(
+            ',',
+            $this->settings['items']
+        ) : [];
         $items = new ObjectStorage();
         $cacheTags = [];
         foreach ($itemUidList as $itemUid) {

@@ -1,0 +1,44 @@
+<f:layout name="LinkBrowser" />
+
+<f:section name="Content">
+    <form action="" id="lshopware-article-form" name="editform">
+        <div class="row mb-1">
+            <label class="col-3 col-form-label" for="lshopware-article">
+                <f:translate key="LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:link_handler.article" />
+            </label>
+            <div class="col-9">
+                <div class="input-group">
+                    <input id="lshopware-article" type="text" name="lshopware-article" size="20" class="form-control" value="{article}" required />
+                    <div class="input-group-btn">
+                        <input class="btn btn-default" type="submit" value="{f:translate(key: 'LLL:EXT:recordlist/Resources/Private/Language/locallang_browse_links.xlf:setLink')}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3 col-form-label">
+                &nbsp;
+            </div>
+            <div class="col-9 px-shopware autocomplete t3-form-suggest-container w-75">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <span class="t3js-icon icon icon-size-small icon-state-default icon-actions-search" data-identifier="actions-search">
+                            <span class="icon-markup">
+                                <svg class="icon-color"><use xlink:href="/typo3/sysext/core/Resources/Public/Icons/T3Icons/sprites/actions.svg#actions-search"></use></svg>
+                            </span>
+                        </span>
+                    </span>
+                    <input id="lshopware-article-wizard" type="search" class="t3-form-suggest-px-shopware form-control"
+                           placeholder="{f:translate(key: 'LLL:EXT:px_shopware/Resources/Private/Language/locallang_db.xlf:suggest_wizard.placeholder.article')}"
+                           data-type="Article"
+                           data-fieldname="lshopware-article"
+                           data-language=""
+                           data-minchars="3" />
+                    <span class="loading input-group-addon">
+                        <i style="display: none;" id="loader" class="fa fa-circle-o-notch fa-spin"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </form>
+</f:section>

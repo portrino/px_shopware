@@ -1,4 +1,5 @@
 <?php
+
 namespace Portrino\PxShopware\Service\Solr\Indexer;
 
 /***************************************************************
@@ -32,12 +33,9 @@ use Portrino\PxShopware\Service\Shopware\CategoryClientInterface;
 
 /**
  * Class CategoryIndexer
- *
- * @package Portrino\PxShopware\Service\Solr\Indexer
  */
 class CategoryIndexer extends AbstractShopwareIndexer
 {
-
     /**
      * @var string
      */
@@ -48,15 +46,14 @@ class CategoryIndexer extends AbstractShopwareIndexer
      *
      * @param Document $itemDocument
      * @param AbstractShopwareModel $itemRecord
-     * @param integer $language The language to use.
+     * @param int $language The language to use.
      * @return Document $itemDocument
      */
     protected function overwriteSpecialFields(
         Document $itemDocument,
         AbstractShopwareModel $itemRecord,
-        $language = 0
-    )
-    {
+        int $language = 0
+    ): Document {
         if ($itemRecord instanceof Category) {
             $itemDocument->setField('title', $itemRecord->getName());
             if (\is_object($itemRecord->getRaw())
